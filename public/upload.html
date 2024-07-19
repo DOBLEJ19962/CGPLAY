@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir Juego - CGcommunityPlay</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .progress {
+            width: 100%;
+            background-color: #f1f1f1;
+            margin-bottom: 20px;
+        }
+
+        .bar {
+            width: 0%;
+            height: 30px;
+            background-color: #4CAF50;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+            .tooltip .tooltiptext {
+                visibility: hidden;
+                width: 200px;
+                background-color: #f44336;
+                color: #fff;
+                text-align: center;
+                border-radius: 6px;
+                padding: 5px;
+                position: absolute;
+                z-index: 1;
+                bottom: 100%;
+                left: 50%;
+                margin-left: -100px;
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+                .tooltip .tooltiptext::after {
+                    content: "";
+                    position: absolute;
+                    top: 100%;
+                    left: 50%;
+                    margin-left: -5px;
+                    border-width: 5px;
+                    border-style: solid;
+                    border-color: #f44336 transparent transparent transparent;
+                }
+
+            .tooltip.visible .tooltiptext {
+                visibility: visible;
+                opacity: 1;
+            }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="main-nav">
+            <img src="https://cdn.glitch.global/e5a5cdd1-5c78-4bd8-8fd5-7b2ee58c8459/Logo.png?v=1720826870070" alt="Logo">
+            <h1><a href="index.html">CGcommunityPlay</a></h1>
+        </div>
+    </header>
+    <main>
+        <section id="uploadSection">
+            <h2>Subir Juego</h2>
+            <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+                <label for="gameName">Nombre del Juego:</label>
+                <input type="text" id="gameName" name="gameName" required>
+                <label for="gameDescription">Descripción:</label>
+                <textarea id="gameDescription" name="gameDescription"></textarea>
+                <label for="platform">Plataforma:</label>
+                <select id="platform" name="platform" required>
+                    <option value="Windows">Windows</option>
+                    <option value="Linux">Linux</option>
+                    <option value="Web">Web</option>
+                    <option value="Android">Android</option>
+                    <option value="MacOS">MacOS</option>
+                </select>
+                <label for="genre">Género:</label>
+                <select id="genre" name="genre" required>
+                    <option value="Terror">Terror</option>
+                    <option value="Acción">Acción</option>
+                    <option value="Aventura">Aventura</option>
+                    <option value="Puzzle">Puzzle</option>
+                    <option value="Estrategia">Estrategia</option>
+                    <option value="Deportes">Deportes</option>
+                    <option value="Simulación">Simulación</option>
+                    <option value="Carreras">Carreras</option>
+                    <option value="RPG">RPG</option>
+                </select>
+                <label for="engine">Motor del Juego:</label>
+                <select id="engine" name="engine" required>
+                    <option value="Unity">Unity</option>
+                    <option value="Godot">Godot</option>
+                    <option value="Unreal Engine">Unreal Engine</option>
+                    <option value="GameMaker">GameMaker</option>
+                    <option value="RPG Maker">RPG Maker</option>
+                    <option value="Construct">Construct</option>
+                    <option value="CryEngine">CryEngine</option>
+                </select>
+                <label for="gameFile">Archivo ZIP del Juego (opcional):</label>
+                <div class="tooltip" id="gameFileTooltip">
+                    <input type="file" id="gameFile" name="gameFile" accept=".zip">
+                    <span class="tooltiptext">El archivo no puede pesar más de 500MB.</span>
+                </div>
+                <label for="coverImage">Captura de Carátula:</label>
+                <input type="file" id="coverImage" name="coverImage" accept="image/*" required>
+                <label for="screenshots">Capturas de Pantalla:</label>
+                <input type="file" id="screenshots" name="screenshots" accept="image/*" multiple>
+                <label for="downloadableFile">Archivo Descargable:</label>
+                <div class="tooltip" id="downloadableFileTooltip">
+                    <input type="file" id="downloadableFile" name="downloadableFile" accept=".zip,.rar,.7z" required>
+                    <span class="tooltiptext">El archivo no puede pesar más de 500MB.</span>
+                </div>
+                <div class="progress">
+                    <div class="bar" id="progressBar">0%</div>
+                </div>
+                <div id="message" style="text-align: center; margin-bottom: 20px;"></div>
+                <button type="submit">Subir</button>
+            </form>
+        </section>
+    </main>
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const maxFileSize = 500 * 1024 * 1024; // 500MB in bytes
+            const webFile = document.getElementById('gameFile').files[0];
+            const downloadableFile = document.getElementById('downloadableFile').files[0];
+            let isValid = true;
+
+            // Validación del nombre del juego
+            const gameName = document.getElementById('gameName').value.trim();
+            if (gameName.length < 5) {
+                alert('El nombre del juego debe tener al menos 5 caracteres.');
+                isValid = false;
+            }
+
+            // Validación de la descripción
+            const gameDescription = document.getElementById('gameDescription').value.trim();
+            if (gameDescription.length < 20) {
+                alert('La descripción del juego debe tener al menos 20 caracteres.');
+                isValid = false;
+            }
+
+            if (webFile && webFile.size > maxFileSize) {
+                document.getElementById('gameFileTooltip').classList.add('visible');
+                isValid = false;
+            } else {
+                document.getElementById('gameFileTooltip').classList.remove('visible');
+            }
+
+            if (downloadableFile && downloadableFile.size > maxFileSize) {
+                document.getElementById('downloadableFileTooltip').classList.add('visible');
+                isValid = false;
+            } else {
+                document.getElementById('downloadableFileTooltip').classList.remove('visible');
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            let formData = new FormData(this);
+
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', '/upload', true);
+
+            // Progress bar
+            xhr.upload.onprogress = function (e) {
+                if (e.lengthComputable) {
+                    let percentComplete = (e.loaded / e.total) * 100;
+                    document.getElementById('progressBar').style.width = percentComplete + '%';
+                    document.getElementById('progressBar').innerHTML = Math.round(percentComplete) + '%';
+                    if (percentComplete >= 98) {
+                        document.getElementById('message').innerHTML = 'No toques nada. Una vez el juego se suba, te llevará automáticamente a la página principal.';
+                    }
+                }
+            };
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    console.log('Archivo(s) subido(s) correctamente.');
+                    window.location.href = '/'; // Redireccionar a la página principal
+                } else {
+                    console.error('Error al subir archivo(s).');
+                }
+            };
+
+            xhr.send(formData);
+        });
+    </script>
+</body>
+</html>

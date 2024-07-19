@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGPlay</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilo adicional para la imagen del paso 3 */
+        .step3 img {
+            width: 300px; /* Ajusta el tamaño según sea necesario */
+            height: auto;
+        }
+
+        /* Estilos para la imagen en pantalla completa */
+        .fullscreen-img {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+            .fullscreen-img img {
+                max-width: 90%;
+                max-height: 90%;
+            }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="main-nav">
+            <img src="https://cdn.glitch.global/e5a5cdd1-5c78-4bd8-8fd5-7b2ee58c8459/Logo.png?v=1720826870070" alt="Logo">
+            <h1>CGPlay</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li id="userMenuContainer"></li>
+                <div class="menu">
+                    <button class="menu-button">⋮</button>
+                    <div class="menu-content" id="menuContent">
+                        <a href="profile.html" id="profileLink">Perfil</a>
+                        <a href="upload.html" id="uploadLink">Subir Juego</a>
+                        <button id="logoutButton">Logout</button>
+                    </div>
+                </div>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="center-text">
+            <p>Cómo subir juegos WebGL de Unity para ser Jugados desde la Web</p>
+        </div>
+        <div class="steps-container">
+            <div class="step">
+                <h2>Paso 1</h2>
+                <img src="https://cdn.glitch.global/4d4c08a3-d396-4e10-a0a0-5cef0ac5da47/Farm%20Simulator%20-%20SampleScene%20-%20WebGL%20-%20Unity%202022.3.30f1%20_DX11_%207_15_2024%201_04_44%20AM.png?v=1721049681099" alt="Imagen del paso 1" class="clickable-img">
+                <div class="step-description">
+                    <p>En la Seccion PlayerSettings/PublishingSettings/Compression Format // Asegurese de que el tipo sea Disable antes de Exportar su Juego Web</p>
+                </div>
+            </div>
+            <div class="step">
+                <h2>Paso 2</h2>
+                <img src="https://cdn.glitch.global/4d4c08a3-d396-4e10-a0a0-5cef0ac5da47/CaerpetaDePrueba%207_15_2024%201_06_09%20AM.png?v=1721020005484" alt="Imagen del paso 2" class="clickable-img">
+                <div class="step-description">
+                    <p>Una Vez Exportado Su Proyecto Asegurese de Comprimir Solo El Contenido del Juego No La Carperpeta.</p>
+                </div>
+            </div>
+            <div class="step3">
+                <h2>Consejo</h2>
+                <img src="https://cdn.glitch.global/4d4c08a3-d396-4e10-a0a0-5cef0ac5da47/recommended-with-thumbs-up-sticker-illustration-in-yellow-colors-png.png?v=1721020345700" alt="Imagen del paso 2" class="clickable-img">
+                <div class="step-description">
+                    <p>Los Juegos Web No Son Obligatorios, Son Opcionales pero subir Brindara una mejor experiencia para que los usuarios vean tu trabajo antes de Descargar tu Juego</p>
+                </div>
+            </div>
+            <!-- Puedes añadir más pasos de la misma manera -->
+        </div>
+    </main>
+
+    <div class="fullscreen-img" id="fullscreenImg">
+        <span class="close-btn" id="closeBtn">&times;</span>
+        <img src="" alt="Fullscreen Image" id="fullscreenImgSrc">
+    </div>
+
+    <script>
+        document.querySelectorAll('.clickable-img').forEach(img => {
+            img.addEventListener('click', () => {
+                document.getElementById('fullscreenImgSrc').src = img.src;
+                document.getElementById('fullscreenImg').style.display = 'flex';
+            });
+        });
+
+        document.getElementById('closeBtn').addEventListener('click', () => {
+            document.getElementById('fullscreenImg').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

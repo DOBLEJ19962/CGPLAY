@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - CGCommunityPlay</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="main-nav">
+            <img src="https://cdn.glitch.global/e5a5cdd1-5c78-4bd8-8fd5-7b2ee58c8459/Logo.png?v=1720826870070" alt="Logo">
+            <h1>CGPlay</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li id="userMenuContainer"></li>
+                <div class="menu">
+                    <button class="menu-button">⋮</button>
+                    <div class="menu-content" id="menuContent">
+                        <a href="profile.html" id="profileLink">Perfil</a>
+                        <a href="upload.html" id="uploadLink">Subir Juego</a>
+                        <button id="logoutButton">Logout</button>
+                    </div>
+                </div>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="profile-section">
+            <div class="profile-header">
+                <img id="profilePicture" src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="user">
+                <h2 id="username"></h2>
+                <div class="inline-container">
+                    <p><strong>Likes:</strong> <span id="likeCount">0</span></p>
+                    <p><strong>Vistas:</strong> <span id="viewCount">0</span></p>
+                    <p><strong>Comentarios:</strong> <span id="commentCount">0</span></p>
+                </div>
+                <button id="editProfileButton" style="display: none;">Editar Perfil</button>
+            </div>
+            <div class="profile-info">
+                <p><strong>Teléfono:</strong> <span id="phone"></span></p>
+                <p><strong>Correo:</strong> <span id="email"></span></p>
+                <p><strong>Descripción:</strong> <span id="description"></span></p>
+            </div>
+            <h3>Mis Juegos</h3>
+            <ul id="userGames" class="game-list"></ul>
+            <button id="deleteAccountButton" class="delete-button" style="display: none;">Eliminar Cuenta</button>
+        </section>
+    </main>
+    <script src="profile.js"></script>
+</body>
+</html>

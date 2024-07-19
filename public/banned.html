@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuenta Baneada - CGPlay</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #e74c3c;
+        }
+
+        .info {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+            .info p {
+                margin: 5px 0;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Su Cuenta ha sido Baneada Permanentemente</h1>
+        <div class="info">
+            <p><strong>Administraci�n:</strong></p>
+            <p><strong>Nombre del Usuario Baneado:</strong> <span id="bannedUsername"></span></p>
+            <p><strong>Correo Baneado:</strong> <span id="bannedEmail"></span></p>
+            <p><strong>Raz�n del Ban:</strong> <span id="banReason"></span></p>
+            <p><strong>Fecha y Hora:</strong> <span id="banDate"></span></p>
+        </div>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const bannedInfo = {
+            username: urlParams.get('username'),
+            email: urlParams.get('email'),
+            reason: urlParams.get('reason'),
+            date: urlParams.get('date')
+        };
+
+        document.getElementById("bannedUsername").textContent = bannedInfo.username;
+        document.getElementById("bannedEmail").textContent = bannedInfo.email;
+        document.getElementById("banReason").textContent = bannedInfo.reason;
+        document.getElementById("banDate").textContent = bannedInfo.date;
+    </script>
+</body>
+</html>

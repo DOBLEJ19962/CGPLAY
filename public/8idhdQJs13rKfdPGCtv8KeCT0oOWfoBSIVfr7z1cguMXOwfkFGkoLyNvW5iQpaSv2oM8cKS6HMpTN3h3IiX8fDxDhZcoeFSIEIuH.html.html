@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - CGPlay</title>
+    <style>
+        /* Estilo general */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            margin: 0;
+            padding: 0;
+            color: #f4f4f4;
+        }
+
+        header {
+            background-color: #1e1e1e;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+            header .main-nav {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+                header .main-nav img {
+                    height: 40px;
+                    margin-right: 10px;
+                }
+
+        main {
+            padding: 20px;
+        }
+
+        .admin-panel {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+            .search-container input {
+                width: 80%;
+                padding: 10px;
+                font-size: 16px;
+                border-radius: 4px;
+                border: 1px solid #333;
+                background-color: #2e2e2e;
+                color: #f4f4f4;
+            }
+
+        h2 {
+            border-bottom: 2px solid #333;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            color: #f4f4f4;
+        }
+
+        .list-container {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            table-layout: fixed; /* Para evitar que las celdas se extiendan infinitamente */
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #333;
+            text-align: left;
+            word-wrap: break-word; /* Para que el texto se ajuste dentro de la celda */
+            white-space: pre-wrap; /* Para mantener los saltos de línea */
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+        }
+
+        td {
+            background-color: #2e2e2e;
+            color: #f4f4f4;
+        }
+
+        a {
+            color: white;
+            text-decoration: none;
+        }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+        .delete-button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .delete-button:hover {
+                background-color: #c0392b;
+            }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #333;
+            margin-bottom: 10px;
+            font-size: 16px;
+            background-color: #2e2e2e;
+            color: #f4f4f4;
+        }
+
+            textarea#notificationMessage {
+                height: 100px;
+            }
+
+            textarea#banReason {
+                height: 50px;
+            }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+            button#banUserButton {
+                background-color: #e74c3c;
+            }
+
+                button#banUserButton:hover {
+                    background-color: #c0392b;
+                }
+
+            button#sendNotificationButton:hover {
+                background-color: #2980b9;
+            }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="main-nav">
+            <img src="https://cdn.glitch.global/e5a5cdd1-5c78-4bd8-8fd5-7b2ee58c8459/Logo.png?v=1720826870070" alt="Logo">
+            <h1>CGPlay - Panel de Administración</h1>
+        </div>
+    </header>
+    <main>
+        <section class="admin-panel">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Buscar juegos o usuarios...">
+            </div>
+
+            <h2>Reportes</h2>
+            <div id="reportList" class="list-container">
+                <table id="reportTable">
+                    <thead>
+                        <tr>
+                            <th>Reportado Por</th>
+                            <th>Reportado A</th>
+                            <th>Juego Reportado</th>
+                            <th>Descripción</th>
+                            <th>Fecha y Hora</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Los reportes se mostrarán aquí -->
+                    </tbody>
+                </table>
+            </div>
+
+            <h2>Juegos</h2>
+            <div id="gameList" class="list-container">
+                <table id="gameTable">
+                    <thead>
+                        <tr>
+                            <th>Nombre del Juego</th>
+                            <th>Subido Por</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Los juegos se mostrarán aquí -->
+                    </tbody>
+                </table>
+            </div>
+
+            <h2>Usuarios</h2>
+            <div id="userList" class="list-container">
+                <table id="userTable">
+                    <thead>
+                        <tr>
+                            <th>Nombre de Usuario</th>
+                            <th>Email</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Los usuarios se mostrarán aquí -->
+                    </tbody>
+                </table>
+            </div>
+
+            <h2>Banear Usuario</h2>
+            <textarea id="banReason" placeholder="Escribe el motivo del ban aquí..."></textarea>
+            <button id="banUserButton">Banear</button>
+
+            <h2>Enviar Notificación</h2>
+            <textarea id="notificationMessage" placeholder="Escribe tu mensaje aquí..."></textarea>
+            <button id="sendNotificationButton">Enviar</button>
+        </section>
+    </main>
+    <script src="admin.js"></script>
+</body>
+</html>

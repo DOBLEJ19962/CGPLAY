@@ -1,0 +1,30 @@
+twillio recoverycode:  BE4A7H5UY1K2USUH4CXXVZ1B
+
+contraseña google app rcxu cvbu owho fcge
+
+Modulos npm install express express-session bcrypt multer compression @google-cloud/storage unzipper async nodemailer
+
+npm install helmet
+
+
+Admin URL /8idhdQJs13rKfdPGCtv8KeCT0oOWfoBSIVfr7z1cguMXOwfkFGkoLyNvW5iQpaSv2oM8cKS6HMpTN3h3IiX8fDxDhZcoeFSIEIuH.html
+
+adminPass
+A092864619
+P092864619
+
+
+
+Godot Files
+
+Index.apple-touch-icon.png
+Index.audio.worklet.js
+Index.html
+Index.icon.png
+Index.js
+Index.pck
+Index.png
+Index.wasm
+Index.worker.js
+
+npx local-web-server --https --cors.embedder-policy "require-corp" --cors.opener-policy "same-origin" --directory "."

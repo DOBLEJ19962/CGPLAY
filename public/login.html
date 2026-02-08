@@ -1,72 +1,98 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - CeVesGames-VPlay</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - CeVesGames-VPlay</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <div class="main-nav">
-            <img src="https://cdn.glitch.global/e5a5cdd1-5c78-4bd8-8fd5-7b2ee58c8459/Logo.png?v=1720826870070" alt="Logo">
-            <h1>CGPlay</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="index.html">Inicio</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section class="auth-section">
-            <h2>Iniciar Sesión</h2>
-            <form id="loginForm" action="/login" method="post">
-                <label for="username">Nombre de usuario:</label>
-                <input type="text" id="username" name="username" required>
-                <label for="password">Contraseña:</label>
-                <input type="password" id="password" name="password" required>
-                <button type="submit">Login</button>
-            </form>
-            <p>¿No tienes una cuenta? <a href="register.html">Regístrate aquí</a></p>
-            <p><a href="forgot_password.html">¿Olvidaste tu contraseña?</a></p>
-            <button id="guestButton">Continuar como Invitado</button>
-        </section>
-    </main>
-    <script>
-        document.getElementById('guestButton').addEventListener('click', () => {
-            localStorage.setItem('guest', 'true');
-            window.location.href = 'index.html';
+  <header>
+    <div class="main-nav">
+      <img src="https://cdn.glitch.global/e5a5cdd1-5c78-4bd8-8fd5-7b2ee58c8459/Logo.png?v=1720826870070" alt="Logo">
+      <h1>CGPlay</h1>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="auth-section">
+      <h2>Iniciar Sesión</h2>
+
+      <!-- Mantenemos username para tu UI -->
+      <form id="loginForm">
+        <label for="username">Nombre de usuario:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Login</button>
+      </form>
+
+      <p>¿No tienes una cuenta? <a href="register.html">Regístrate aquí</a></p>
+
+      <!-- ✅ Volvió el link -->
+      <p><a href="forgot_password.html">¿Olvidaste tu contraseña?</a></p>
+
+      <button id="guestButton">Continuar como Invitado</button>
+    </section>
+  </main>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase.js"></script>
+
+  <script>
+    document.getElementById('guestButton').addEventListener('click', () => {
+      localStorage.setItem('guest', 'true');
+      window.location.href = 'index.html';
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      try {
+        // 1) Buscar email por username en profiles
+        const { data: prof, error: profErr } = await window.sb
+          .from('profiles')
+          .select('email, username')
+          .eq('username', username)
+          .single();
+
+        if (profErr || !prof?.email) {
+          alert('Usuario no encontrado.');
+          return;
+        }
+
+        // 2) Login Supabase con email+password
+        const { data, error } = await window.sb.auth.signInWithPassword({
+          email: prof.email,
+          password
         });
 
-        document.getElementById('loginForm').addEventListener('submit', (event) => {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+        if (error) {
+          alert('Nombre de usuario o contraseña incorrectos');
+          return;
+        }
 
-            fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        localStorage.setItem('username', username);
-                        localStorage.removeItem('guest');
-                        window.location.href = 'index.html';
-                    } else if (data.redirectUrl) {
-                        window.location.href = data.redirectUrl;
-                    } else {
-                        alert('Nombre de usuario o contraseña incorrectos');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        });
-    </script>
+        // 3) Mantén tu localStorage para lo viejo (opcional)
+        localStorage.setItem('username', prof.username);
+        localStorage.removeItem('guest');
+
+        window.location.href = 'index.html';
+      } catch (e) {
+        console.error(e);
+        alert('Error en login.');
+      }
+    });
+  </script>
 </body>
 </html>

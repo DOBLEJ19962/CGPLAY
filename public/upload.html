@@ -121,7 +121,7 @@
     const session = await requireSessionOrRedirect();
     if (!session) return;
 
-    const maxFileSize = 500 * 1024 * 1024; // 500MB
+    const maxFileSize = 50 * 1024 * 1024; // 500MB
     const webFile = document.getElementById('gameFile').files[0];
     const downloadableFile = document.getElementById('downloadableFile').files[0];
     let isValid = true;

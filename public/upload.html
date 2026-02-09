@@ -1,198 +1,629 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Subir Juego - CGcommunityPlay</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Subir Juego - CGPlay</title>
+
   <link rel="stylesheet" href="style.css">
+
+  <!-- Tipografía (opcional) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
   <style>
-    .progress{width:100%;background-color:#f1f1f1;margin-bottom:20px}
-    .bar{width:0%;height:30px;background-color:#4CAF50;text-align:center;line-height:30px;color:white}
-    .tooltip{position:relative;display:inline-block}
+    :root{
+      --bg:#0b0f17;
+      --panel: rgba(255,255,255,0.03);
+      --panel2: rgba(255,255,255,0.045);
+      --border: rgba(255,255,255,0.10);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.65);
+      --shadow: 0 10px 26px rgba(0,0,0,0.35);
+      --radius: 14px;
+      --accent: #6ee7ff;
+      --danger: #ff5a7a;
+      --ok: #4CAF50;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at 20% -10%, rgba(110,231,255,0.10), transparent 60%),
+        radial-gradient(900px 500px at 110% 20%, rgba(140,120,255,0.10), transparent 60%),
+        var(--bg);
+    }
+
+    /* ===== Header tipo app ===== */
+    header.app-header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 12px 16px;
+      background: rgba(11,15,23,0.78);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-row{
+      display:flex;
+      gap: 12px;
+      align-items:center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap: 12px;
+      text-decoration:none;
+      color: var(--text);
+      min-width: 220px;
+    }
+    .brand img{
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    }
+    .brand .t{
+      display:flex;
+      flex-direction: column;
+      line-height: 1.05;
+    }
+    .brand .t strong{
+      font-weight: 900;
+      letter-spacing: 0.2px;
+      font-size: 14px;
+    }
+    .brand .t span{
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      text-decoration:none;
+      font-weight: 900;
+      font-size: 13px;
+      cursor:pointer;
+      white-space: nowrap;
+    }
+    .btn:hover{ background: rgba(255,255,255,0.06); }
+
+    /* ===== Main ===== */
+    main{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .card{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      min-width: 0;
+    }
+
+    .card-header{
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      display:flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 10px;
+    }
+
+    .card-header h2{
+      margin:0;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+    }
+    .card-header p{
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .card-body{
+      padding: 16px;
+    }
+
+    /* ===== Form ===== */
+    form{
+      display:grid;
+      gap: 12px;
+    }
+
+    .row-2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    label{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 900;
+      letter-spacing: 0.2px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    input[type="text"], textarea, select, input[type="file"]{
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      outline:none;
+    }
+    textarea{
+      min-height: 110px;
+      resize: vertical;
+    }
+    input[type="text"]:focus, textarea:focus, select:focus{
+      border-color: rgba(110,231,255,0.35);
+      box-shadow: 0 0 0 4px rgba(110,231,255,0.08);
+    }
+
+    .hint{
+      margin-top: 6px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.70);
+      line-height: 1.35;
+    }
+
+    .divider{
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      margin: 6px 0;
+    }
+
+    .submit{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    button[type="submit"]{
+      border: 1px solid rgba(110,231,255,0.25);
+      background: rgba(110,231,255,0.10);
+      color: rgba(255,255,255,0.95);
+      font-weight: 900;
+      font-size: 14px;
+      border-radius: 14px;
+      padding: 12px 14px;
+      cursor:pointer;
+      min-width: 170px;
+    }
+    button[type="submit"]:hover{
+      background: rgba(110,231,255,0.14);
+    }
+
+    /* ===== Progress ===== */
+    .progress{
+      width:100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 999px;
+      overflow:hidden;
+      height: 18px;
+    }
+    .bar{
+      width:0%;
+      height: 18px;
+      background: var(--ok);
+      text-align:center;
+      line-height:18px;
+      color:white;
+      font-weight: 900;
+      font-size: 12px;
+      transition: width 140ms ease;
+    }
+    #message{
+      text-align:center;
+      margin-top: 10px;
+      color: rgba(255,255,255,0.82);
+      font-size: 13px;
+      line-height: 1.4;
+      min-height: 18px;
+    }
+
+    /* ===== Tooltips (mejor estilo) ===== */
+    .tooltip{ position:relative; display:block; }
     .tooltip .tooltiptext{
-      visibility:hidden;width:200px;background-color:#f44336;color:#fff;text-align:center;border-radius:6px;
-      padding:5px;position:absolute;z-index:1;bottom:100%;left:50%;margin-left:-100px;opacity:0;transition:opacity .3s
+      visibility:hidden;
+      width: 240px;
+      background: rgba(255,90,122,0.95);
+      color:#fff;
+      text-align:center;
+      border-radius: 12px;
+      padding:10px 10px;
+      position:absolute;
+      z-index:10;
+      bottom: calc(100% + 10px);
+      left:50%;
+      margin-left:-120px;
+      opacity:0;
+      transition:opacity .2s;
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: var(--shadow);
+      font-weight: 900;
+      font-size: 12px;
     }
     .tooltip .tooltiptext::after{
-      content:"";position:absolute;top:100%;left:50%;margin-left:-5px;border-width:5px;border-style:solid;
-      border-color:#f44336 transparent transparent transparent
+      content:"";
+      position:absolute;
+      top:100%;
+      left:50%;
+      margin-left:-6px;
+      border-width:6px;
+      border-style:solid;
+      border-color: rgba(255,90,122,0.95) transparent transparent transparent;
     }
-    .tooltip.visible .tooltiptext{visibility:visible;opacity:1}
+    .tooltip.visible .tooltiptext{ visibility:visible; opacity:1; }
+
+    /* ===== Side help card ===== */
+    .side{
+      position: sticky;
+      top: 86px;
+    }
+    .side .mini{
+      padding: 14px;
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.04);
+      font-weight: 900;
+      font-size: 12px;
+      color: rgba(255,255,255,0.88);
+    }
+    .pill.accent{
+      border-color: rgba(110,231,255,0.18);
+      background: rgba(110,231,255,0.07);
+    }
+    .note{
+      font-size: 13px;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.5;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.02);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .preview{
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.02);
+      border-radius: 14px;
+      overflow:hidden;
+    }
+    .preview img{
+      width:100%;
+      aspect-ratio: 16/10;
+      object-fit: cover;
+      display:block;
+      background: rgba(255,255,255,0.04);
+    }
+    .preview .cap{
+      padding: 10px 12px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    /* ===== Mobile ===== */
+    @media (max-width: 980px){
+      .layout{ grid-template-columns: 1fr; }
+      .side{ position: static; }
+    }
+    @media (max-width: 700px){
+      .row-2{ grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px){
+      header.app-header{ padding: 10px 10px; }
+      .brand{ min-width: 44px; }
+      .brand .t{ display:none; }
+      main{ padding: 12px; }
+      .card-header, .card-body{ padding: 12px; }
+      button[type="submit"]{ width: 100%; }
+      .submit{ justify-content: stretch; }
+    }
   </style>
 </head>
+
 <body>
-<header>
-  <div class="main-nav">
-    <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/Logo.png" alt="Logo">
-    <h1><a href="index.html">CGcommunityPlay</a></h1>
-  </div>
-</header>
+  <header class="app-header">
+    <div class="header-row">
+      <a class="brand" href="index.html">
+        <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/Logo.png" alt="Logo">
+        <div class="t">
+          <strong>CGPlay</strong>
+          <span>Subir Juego</span>
+        </div>
+      </a>
 
-<main>
-  <section id="uploadSection">
-    <h2>Subir Juego</h2>
+      <a class="btn" href="index.html">← Inicio</a>
+    </div>
+  </header>
 
-    <form id="uploadForm" enctype="multipart/form-data">
-      <label for="gameName">Nombre del Juego:</label>
-      <input type="text" id="gameName" name="gameName" required>
+  <main>
+    <div class="layout">
+      <!-- FORM -->
+      <section class="card" id="uploadSection">
+        <div class="card-header">
+          <div>
+            <h2>Subir Juego</h2>
+            <p>Completa los datos y sube tu carátula + archivos. ⭐</p>
+          </div>
+        </div>
 
-      <label for="gameDescription">Descripción:</label>
-      <textarea id="gameDescription" name="gameDescription"></textarea>
+        <div class="card-body">
+          <form id="uploadForm" enctype="multipart/form-data">
+            <div>
+              <label for="gameName">Nombre del Juego</label>
+              <input type="text" id="gameName" name="gameName" required placeholder="Ej: Ogaruma: Rise of Orishas">
+              <div class="hint">Mínimo 5 caracteres.</div>
+            </div>
 
-      <label for="platform">Plataforma:</label>
-      <select id="platform" name="platform" required>
-        <option value="Windows">Windows</option>
-        <option value="Linux">Linux</option>
-        <option value="Web">Web</option>
-        <option value="Android">Android</option>
-        <option value="MacOS">MacOS</option>
-      </select>
+            <div>
+              <label for="gameDescription">Descripción</label>
+              <textarea id="gameDescription" name="gameDescription" placeholder="Describe el juego, controles, historia, etc. (mínimo 20 caracteres)"></textarea>
+            </div>
 
-      <label for="genre">Género:</label>
-      <select id="genre" name="genre" required>
-        <option value="Terror">Terror</option>
-        <option value="Acción">Acción</option>
-        <option value="Aventura">Aventura</option>
-        <option value="Puzzle">Puzzle</option>
-        <option value="Estrategia">Estrategia</option>
-        <option value="Deportes">Deportes</option>
-        <option value="Simulación">Simulación</option>
-        <option value="Carreras">Carreras</option>
-        <option value="RPG">RPG</option>
-      </select>
+            <div class="row-2">
+              <div>
+                <label for="platform">Plataforma</label>
+                <select id="platform" name="platform" required>
+                  <option value="Windows">Windows</option>
+                  <option value="Linux">Linux</option>
+                  <option value="Web">Web</option>
+                  <option value="Android">Android</option>
+                  <option value="MacOS">MacOS</option>
+                </select>
+              </div>
 
-      <label for="engine">Motor del Juego:</label>
-      <select id="engine" name="engine" required>
-        <option value="Unity">Unity</option>
-        <option value="Godot">Godot</option>
-        <option value="Unreal Engine">Unreal Engine</option>
-        <option value="GameMaker">GameMaker</option>
-        <option value="RPG Maker">RPG Maker</option>
-        <option value="Construct">Construct</option>
-        <option value="CryEngine">CryEngine</option>
-      </select>
+              <div>
+                <label for="genre">Género</label>
+                <select id="genre" name="genre" required>
+                  <option value="Terror">Terror</option>
+                  <option value="Acción">Acción</option>
+                  <option value="Aventura">Aventura</option>
+                  <option value="Puzzle">Puzzle</option>
+                  <option value="Estrategia">Estrategia</option>
+                  <option value="Deportes">Deportes</option>
+                  <option value="Simulación">Simulación</option>
+                  <option value="Carreras">Carreras</option>
+                  <option value="RPG">RPG</option>
+                </select>
+              </div>
+            </div>
 
-      <label for="gameFile">Archivo ZIP del Juego (opcional):</label>
-      <div class="tooltip" id="gameFileTooltip">
-        <input type="file" id="gameFile" name="gameFile" accept=".zip">
-        <span class="tooltiptext">El archivo no puede pesar más de 50MB.</span>
-      </div>
+            <div>
+              <label for="engine">Motor del Juego</label>
+              <select id="engine" name="engine" required>
+                <option value="Unity">Unity</option>
+                <option value="Godot">Godot</option>
+                <option value="Unreal Engine">Unreal Engine</option>
+                <option value="GameMaker">GameMaker</option>
+                <option value="RPG Maker">RPG Maker</option>
+                <option value="Construct">Construct</option>
+                <option value="CryEngine">CryEngine</option>
+              </select>
+            </div>
 
-      <label for="coverImage">Captura de Carátula:</label>
-      <input type="file" id="coverImage" name="coverImage" accept="image/*" required>
+            <div class="divider"></div>
 
-      <label for="screenshots">Capturas de Pantalla:</label>
-      <input type="file" id="screenshots" name="screenshots" accept="image/*" multiple>
+            <div>
+              <label for="gameFile">Archivo ZIP del Juego (opcional)</label>
+              <div class="tooltip" id="gameFileTooltip">
+                <input type="file" id="gameFile" name="gameFile" accept=".zip">
+                <span class="tooltiptext">El archivo no puede pesar más de 50MB.</span>
+              </div>
+              <div class="hint">Si es un juego Web, puedes subir aquí el ZIP del build.</div>
+            </div>
 
-      <label for="downloadableFile">Archivo Descargable:</label>
-      <div class="tooltip" id="downloadableFileTooltip">
-        <input type="file" id="downloadableFile" name="downloadableFile" accept=".zip,.rar,.7z" required>
-        <span class="tooltiptext">El archivo no puede pesar más de 50MB.</span>
-      </div>
+            <div>
+              <label for="coverImage">Captura de Carátula</label>
+              <input type="file" id="coverImage" name="coverImage" accept="image/*" required>
+              <div class="hint">Recomendado: 1280×720 (se recorta a 16:10).</div>
+            </div>
 
-      <div class="progress">
-        <div class="bar" id="progressBar">0%</div>
-      </div>
-      <div id="message" style="text-align:center;margin-bottom:20px;"></div>
+            <div>
+              <label for="screenshots">Capturas de Pantalla</label>
+              <input type="file" id="screenshots" name="screenshots" accept="image/*" multiple>
+              <div class="hint">Puedes seleccionar varias imágenes.</div>
+            </div>
 
-      <button type="submit">Subir</button>
-    </form>
-  </section>
-</main>
+            <div>
+              <label for="downloadableFile">Archivo Descargable</label>
+              <div class="tooltip" id="downloadableFileTooltip">
+                <input type="file" id="downloadableFile" name="downloadableFile" accept=".zip,.rar,.7z" required>
+                <span class="tooltiptext">El archivo no puede pesar más de 50MB.</span>
+              </div>
+              <div class="hint">ZIP/RAR/7Z del juego para descargar.</div>
+            </div>
 
-<!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/js/supabase.js"></script>
+            <div class="divider"></div>
 
-<script>
-  async function requireSessionOrRedirect() {
-    const { data: { user } } = await window.sb.auth.getUser();
-    if (!user) {
-      window.location.href = "login.html";
-      return null;
-    }
-    const { data: { session } } = await window.sb.auth.getSession();
-    return session;
-  }
+            <div class="progress">
+              <div class="bar" id="progressBar">0%</div>
+            </div>
+            <div id="message"></div>
 
-  document.getElementById('uploadForm').addEventListener('submit', async function (event) {
-    event.preventDefault();
+            <div class="submit">
+              <button type="submit">Subir</button>
+              <div class="hint">No cierres la página mientras sube.</div>
+            </div>
+          </form>
+        </div>
+      </section>
 
-    const session = await requireSessionOrRedirect();
-    if (!session) return;
+      <!-- SIDE -->
+      <aside class="card side">
+        <div class="mini">
+          <div class="pill accent">Tips rápidos</div>
 
-    const maxFileSize = 50 * 1024 * 1024; // 500MB
-    const webFile = document.getElementById('gameFile').files[0];
-    const downloadableFile = document.getElementById('downloadableFile').files[0];
-    let isValid = true;
+          <div class="note">
+            ✅ Usa una carátula clara (sin texto pequeño).<br>
+            ✅ Descripción con controles y objetivo.<br>
+            ✅ Si el archivo pesa mucho, comprímelo bien.
+          </div>
 
-    const gameName = document.getElementById('gameName').value.trim();
-    if (gameName.length < 5) { alert('El nombre del juego debe tener al menos 5 caracteres.'); isValid = false; }
+          <div class="pill">Preview Carátula</div>
+          <div class="preview">
+            <img id="coverPreview" src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/Logo.png" alt="">
+            <div class="cap">Se verá así en el listado</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
 
-    const gameDescription = document.getElementById('gameDescription').value.trim();
-    if (gameDescription.length < 20) { alert('La descripción del juego debe tener al menos 20 caracteres.'); isValid = false; }
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase.js"></script>
 
-    if (webFile && webFile.size > maxFileSize) {
-      document.getElementById('gameFileTooltip').classList.add('visible');
-      isValid = false;
-    } else {
-      document.getElementById('gameFileTooltip').classList.remove('visible');
-    }
+  <script>
+    // Preview carátula (solo UI, no afecta tu backend)
+    const coverInput = document.getElementById("coverImage");
+    const coverPreview = document.getElementById("coverPreview");
+    coverInput?.addEventListener("change", () => {
+      const f = coverInput.files?.[0];
+      if (!f) return;
+      const url = URL.createObjectURL(f);
+      coverPreview.src = url;
+      coverPreview.onload = () => URL.revokeObjectURL(url);
+    });
 
-    if (downloadableFile && downloadableFile.size > maxFileSize) {
-      document.getElementById('downloadableFileTooltip').classList.add('visible');
-      isValid = false;
-    } else {
-      document.getElementById('downloadableFileTooltip').classList.remove('visible');
-    }
-
-    if (!isValid) return;
-
-    // username actual desde profiles (para owner_username)
-    const { data: prof } = await window.sb
-      .from("profiles")
-      .select("username")
-      .eq("id", session.user.id)
-      .single();
-
-    const ownerUsername = prof?.username || (session.user.email || "user");
-
-    const formData = new FormData(this);
-    formData.append("username", ownerUsername);
-
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/upload', true);
-
-    // ✅ Token supabase al server
-    xhr.setRequestHeader("Authorization", "Bearer " + session.access_token);
-
-    xhr.upload.onprogress = function (e) {
-      if (e.lengthComputable) {
-        let percentComplete = (e.loaded / e.total) * 100;
-        document.getElementById('progressBar').style.width = percentComplete + '%';
-        document.getElementById('progressBar').innerHTML = Math.round(percentComplete) + '%';
-        if (percentComplete >= 98) {
-          document.getElementById('message').innerHTML =
-            'No toques nada. Una vez el juego se suba, te llevará automáticamente a la página principal.';
-        }
+    async function requireSessionOrRedirect() {
+      const { data: { user } } = await window.sb.auth.getUser();
+      if (!user) {
+        window.location.href = "login.html";
+        return null;
       }
-    };
+      const { data: { session } } = await window.sb.auth.getSession();
+      return session;
+    }
 
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        window.location.href = 'index.html';
+    document.getElementById('uploadForm').addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      const session = await requireSessionOrRedirect();
+      if (!session) return;
+
+      const maxFileSize = 50 * 1024 * 1024; // 50MB
+      const webFile = document.getElementById('gameFile').files[0];
+      const downloadableFile = document.getElementById('downloadableFile').files[0];
+      let isValid = true;
+
+      const gameName = document.getElementById('gameName').value.trim();
+      if (gameName.length < 5) { alert('El nombre del juego debe tener al menos 5 caracteres.'); isValid = false; }
+
+      const gameDescription = document.getElementById('gameDescription').value.trim();
+      if (gameDescription.length < 20) { alert('La descripción del juego debe tener al menos 20 caracteres.'); isValid = false; }
+
+      if (webFile && webFile.size > maxFileSize) {
+        document.getElementById('gameFileTooltip').classList.add('visible');
+        isValid = false;
       } else {
-        console.error(xhr.responseText);
-        alert('Error al subir archivo(s).');
+        document.getElementById('gameFileTooltip').classList.remove('visible');
       }
-    };
 
-    xhr.onerror = function () {
-      alert('Error de red al subir.');
-    };
+      if (downloadableFile && downloadableFile.size > maxFileSize) {
+        document.getElementById('downloadableFileTooltip').classList.add('visible');
+        isValid = false;
+      } else {
+        document.getElementById('downloadableFileTooltip').classList.remove('visible');
+      }
 
-    xhr.send(formData);
-  });
-</script>
+      if (!isValid) return;
+
+      // username actual desde profiles (para owner_username)
+      const { data: prof } = await window.sb
+        .from("profiles")
+        .select("username")
+        .eq("id", session.user.id)
+        .single();
+
+      const ownerUsername = prof?.username || (session.user.email || "user");
+
+      const formData = new FormData(this);
+      formData.append("username", ownerUsername);
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/upload', true);
+
+      // ✅ Token supabase al server
+      xhr.setRequestHeader("Authorization", "Bearer " + session.access_token);
+
+      xhr.upload.onprogress = function (e) {
+        if (e.lengthComputable) {
+          let percentComplete = (e.loaded / e.total) * 100;
+          document.getElementById('progressBar').style.width = percentComplete + '%';
+          document.getElementById('progressBar').innerHTML = Math.round(percentComplete) + '%';
+          if (percentComplete >= 98) {
+            document.getElementById('message').innerHTML =
+              'No toques nada. Una vez el juego se suba, te llevará automáticamente a la página principal.';
+          }
+        }
+      };
+
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          window.location.href = 'index.html';
+        } else {
+          console.error(xhr.responseText);
+          alert('Error al subir archivo(s).');
+        }
+      };
+
+      xhr.onerror = function () {
+        alert('Error de red al subir.');
+      };
+
+      xhr.send(formData);
+    });
+  </script>
 </body>
 </html>

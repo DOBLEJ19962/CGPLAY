@@ -697,3 +697,47 @@ button {
     #clearNotificationsButton:hover {
         text-decoration: underline;
     }
+
+
+/* ===========================
+   GLOBAL DESKTOP BOOST (PC)
+   Pégalo al final de style.css
+   =========================== */
+
+/* En pantallas grandes, deja respirar todo */
+@media (min-width: 1024px) {
+  main, .app, .header-row, .layout, .grid {
+    max-width: 1600px !important;   /* antes 1100/1200/1280 */
+    width: 100% !important;
+  }
+
+  main { padding: 28px !important; }
+  header { padding-left: 22px !important; padding-right: 22px !important; }
+}
+
+/* Pantallas MUY grandes */
+@media (min-width: 1400px) {
+  main, .app, .header-row, .layout, .grid {
+    max-width: 1800px !important;
+  }
+
+  /* Tipografía más grande */
+  body { font-size: 16px; }
+
+  /* Cards más grandes */
+  .card, .filters, section, aside {
+    border-radius: 18px !important;
+  }
+
+  /* Inputs más grandes */
+  input, select, textarea, button {
+    font-size: 15px !important;
+  }
+}
+
+/* Ultra wide (monitores grandes) */
+@media (min-width: 1800px) {
+  main, .app, .header-row, .layout, .grid {
+    max-width: 2100px !important;
+  }
+}

@@ -1,196 +1,329 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Términos y Condiciones - CGPlay</title>
-    <style>
-        body {
-            font-family: 'Times New Roman', Times, serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Términos y Condiciones - CGPlay</title>
 
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+  <link rel="stylesheet" href="style.css">
 
-        .main-nav {
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-        }
+  <!-- Tipografía (opcional, igual que index) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-            .main-nav img {
-                height: 50px;
-                margin-right: 15px;
-            }
+  <style>
+    :root{
+      --bg:#0b0f17;
+      --panel: rgba(255,255,255,0.03);
+      --panel2: rgba(255,255,255,0.045);
+      --border: rgba(255,255,255,0.10);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.65);
+      --shadow: 0 10px 26px rgba(0,0,0,0.35);
+      --radius: 14px;
+      --accent: #6ee7ff;
+      --danger: #ff5a7a;
+    }
 
-        header h1 {
-            margin: 0;
-            font-size: 2em;
-        }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at 20% -10%, rgba(110,231,255,0.10), transparent 60%),
+        radial-gradient(900px 500px at 110% 20%, rgba(140,120,255,0.10), transparent 60%),
+        var(--bg);
+    }
 
-        nav {
-            padding: 0 20px;
-        }
+    /* ====== Header tipo app (igual que index) ====== */
+    header.app-header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 10px 12px;
+      background: rgba(11,15,23,0.78);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-row{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      justify-content: space-between;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
 
-            nav ul {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-                display: flex;
-                align-items: center;
-            }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      text-decoration:none;
+      color: var(--text);
+      min-width: 160px;
+    }
+    .brand img{
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    }
+    .brand .t{
+      display:flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+    .brand .t strong{
+      font-weight: 900;
+      letter-spacing: 0.2px;
+    }
+    .brand .t span{
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
 
-                nav ul li {
-                    margin: 0 10px;
-                }
+    .top-actions{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      text-decoration:none;
+      font-weight: 900;
+      font-size: 13px;
+      cursor:pointer;
+    }
+    .btn:hover{ background: rgba(255,255,255,0.06); }
 
-                    nav ul li a {
-                        color: #fff;
-                        text-decoration: none;
-                        font-size: 1.2em;
-                    }
+    /* ====== Main ====== */
+    main{
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 12px;
+    }
 
-                        nav ul li a:hover {
-                            text-decoration: underline;
-                        }
+    .card{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
 
-        main {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 40px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            position: relative;
-            background: url('https://cdn.glitch.global/e5a5cdd1-5c78-4bd8-8fd5-7b2ee58c8459/Logo.png?v=1720826870070') no-repeat center bottom;
-            background-size: 150px 150px;
-            background-color: #fefefe;
-            font-family: 'Courier New', Courier, monospace;
-            line-height: 1.6;
-            border: 1px solid #ccc;
-        }
+    .card-header{
+      padding: 14px 14px 10px 14px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+    .card-header h1{
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0.2px;
+      font-weight: 900;
+    }
+    .card-header p{
+      margin: 6px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
 
-            main h2 {
-                text-align: center;
-                color: #333;
-                font-size: 1.8em;
-                text-decoration: underline;
-            }
+    .card-body{
+      padding: 14px;
+      line-height: 1.65;
+      font-size: 14px;
+    }
 
-            main h3 {
-                color: #555;
-                font-size: 1.4em;
-                margin-top: 20px;
-            }
+    .section{
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.02);
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
+    .section h2{
+      margin: 0 0 8px;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+    }
+    .section p{
+      margin: 0;
+      color: rgba(255,255,255,0.82);
+    }
+    .section ul{
+      margin: 8px 0 0;
+      padding-left: 18px;
+      color: rgba(255,255,255,0.82);
+    }
+    .section li{
+      margin: 6px 0;
+    }
 
-            main p {
-                text-align: justify;
-                margin-bottom: 20px;
-            }
+    .signature{
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(110,231,255,0.18);
+      background: rgba(110,231,255,0.07);
+      color: rgba(255,255,255,0.92);
+      font-weight: 800;
+      font-size: 12px;
+      white-space: nowrap;
+    }
 
-        .signature {
-            margin-top: 50px;
-            text-align: right;
-            font-size: 1.2em;
-            font-family: 'Courier New', Courier, monospace;
-        }
+    /* ====== Footer ====== */
+    footer{
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 14px 12px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      text-align: center;
+    }
+    footer a{
+      color: rgba(255,255,255,0.85);
+      text-decoration:none;
+      font-weight: 800;
+    }
+    footer a:hover{ text-decoration: underline; }
 
-        footer {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 10px 0;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-        }
-
-        .footer-left {
-            margin: 0;
-        }
-
-            .footer-left a {
-                color: #fff;
-                text-decoration: none;
-            }
-
-                .footer-left a:hover {
-                    text-decoration: underline;
-                }
-    </style>
+    /* ====== Mobile ====== */
+    @media (max-width: 520px){
+      header.app-header{ padding: 10px 10px; }
+      .brand{ min-width: 44px; }
+      .brand .t{ display:none; } /* como app */
+      .btn{ padding: 9px 10px; border-radius: 13px; }
+      .card-body{ font-size: 13.5px; }
+    }
+  </style>
 </head>
-<body>
-    <header>
-        <div class="main-nav">
-            <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/Logo.png" alt="Logo">
-            <h1>CGPlay</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="index.html">Inicio</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <h2>Términos y Condiciones</h2>
-        <p>
-            Bienvenido a CGPlay. Al acceder y utilizar nuestro sitio web, aceptas cumplir con los siguientes términos y condiciones. Estos términos y condiciones están diseñados para asegurar una experiencia positiva y segura para todos los miembros de nuestra comunidad de gamers y desarrolladores.
-        </p>
-        <h3>1. Publicación de Juegos</h3>
-        <p>
-            - Solo puedes publicar juegos que hayas creado tú mismo. <br>
-            - Está estrictamente prohibido subir juegos creados por otras personas o compañías conocidas. <br>
-            - No se permite la publicación de juegos Npor, pornográficos o con contenido sexual explícito.
-        </p>
-        <h3>2. Derechos de Autor y Propiedad Intelectual</h3>
-        <p>
-            - Al subir un juego, confirmas que eres el creador y titular de todos los derechos de propiedad intelectual relacionados con dicho juego. <br>
-            - No está permitido subir juegos que infrinjan los derechos de autor o la propiedad intelectual de terceros.
-        </p>
-        <h3>3. Comportamiento en la Comunidad</h3>
-        <p>
-            - Todos los usuarios deben comportarse de manera respetuosa y cortés con otros miembros de la comunidad. <br>
-            - El acoso, la discriminación, el lenguaje ofensivo y cualquier comportamiento inapropiado no serán tolerados.
-        </p>
-        <h3>4. Sanciones por Incumplimiento</h3>
-        <p>
-            - Cualquier infracción de estos términos y condiciones resultará en la sanción correspondiente, que puede incluir el baneo permanente de la cuenta. <br>
-            - Nos reservamos el derecho de eliminar cualquier contenido que consideremos inapropiado o que viole estos términos.
-        </p>
-        <h3>5. Responsabilidad del Usuario</h3>
-        <p>
-            - Eres responsable de cualquier contenido que publiques en CGPlay. <br>
-            - Nos reservamos el derecho de revisar y, si es necesario, eliminar contenido que no cumpla con nuestras normas.
-        </p>
-        <h3>6. Modificaciones de los Términos y Condiciones</h3>
-        <p>
-            - Nos reservamos el derecho de modificar estos términos y condiciones en cualquier momento. <br>
-            - Se notificará a los usuarios sobre cualquier cambio importante en estos términos y condiciones.
-        </p>
-        <h3>7. Contacto</h3>
-        <p>
-            - Si tienes alguna pregunta o inquietud sobre estos términos y condiciones, por favor contáctanos a través de nuestro formulario de contacto.
-        </p>
-        <div class="signature">
-            CGPlay-Administracion
 
+<body>
+  <header class="app-header">
+    <div class="header-row">
+      <a class="brand" href="index.html">
+        <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/Logo.png" alt="Logo">
+        <div class="t">
+          <strong>CGPlay</strong>
+          <span>Términos y Condiciones</span>
         </div>
-    </main>
-    <footer>
-        <div class="footer-left">
-            <a href="Terminos.html">Términos y Condiciones</a>
+      </a>
+
+      <div class="top-actions">
+        <a class="btn" href="index.html">← Inicio</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="card">
+      <div class="card-header">
+        <h1>Términos y Condiciones</h1>
+        <p>
+          Bienvenido a CGPlay. Al acceder y utilizar nuestro sitio web, aceptas cumplir con estos términos y condiciones.
+          Están diseñados para asegurar una experiencia positiva y segura para todos.
+        </p>
+      </div>
+
+      <div class="card-body">
+        <div class="section">
+          <h2>1. Publicación de Juegos</h2>
+          <ul>
+            <li>Solo puedes publicar juegos que hayas creado tú mismo.</li>
+            <li>Prohibido subir juegos creados por otras personas o compañías conocidas.</li>
+            <li>No se permite contenido pornográfico o con contenido sexual explícito.</li>
+          </ul>
         </div>
-    </footer>
-    <script src="script.js"></script>
+
+        <div class="section">
+          <h2>2. Derechos de Autor y Propiedad Intelectual</h2>
+          <ul>
+            <li>Al subir un juego, confirmas que eres el creador y titular de los derechos necesarios.</li>
+            <li>No está permitido subir juegos que infrinjan derechos de terceros.</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h2>3. Comportamiento en la Comunidad</h2>
+          <ul>
+            <li>Los usuarios deben comportarse de manera respetuosa con otros miembros.</li>
+            <li>No se tolera acoso, discriminación o lenguaje ofensivo.</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h2>4. Sanciones por Incumplimiento</h2>
+          <ul>
+            <li>Las infracciones pueden resultar en sanciones, incluyendo baneo permanente.</li>
+            <li>Nos reservamos el derecho de eliminar contenido que viole estas normas.</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h2>5. Responsabilidad del Usuario</h2>
+          <ul>
+            <li>Eres responsable del contenido que publiques en CGPlay.</li>
+            <li>Podemos revisar y eliminar contenido que no cumpla con estas normas.</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h2>6. Modificaciones</h2>
+          <ul>
+            <li>Podemos modificar estos términos en cualquier momento.</li>
+            <li>Se notificará a los usuarios sobre cambios importantes.</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h2>7. Contacto</h2>
+          <p>
+            Si tienes preguntas o inquietudes sobre estos términos, contáctanos por el medio que CGPlay tenga habilitado.
+          </p>
+        </div>
+
+        <div class="signature">
+          <span class="pill">CGPlay • Administración</span>
+          <span>Última actualización: <strong>—</strong></span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    © <span id="year"></span> CGPlay · <a href="Terminos.html">Términos y Condiciones</a>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>

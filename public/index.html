@@ -1,149 +1,503 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CGPlay</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        .white-text {
-            color: white;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>CGPlay</title>
 
-        aside {
-            display: flex;
-            flex-direction: column;
-            height: 80vh;
-        }
+  <link rel="stylesheet" href="style.css">
 
-        .aside-content {
-            flex: 1;
-            overflow-y: auto;
-        }
+  <!-- Tipografía (opcional pero mejora mucho) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-        .terms-link {
-            margin-top: auto;
-            padding: 10px;
-            background-color: #333;
-            text-align: center;
-        }
+  <style>
+    :root{
+      --bg:#0b0f17;
+      --panel: rgba(255,255,255,0.03);
+      --panel2: rgba(255,255,255,0.045);
+      --border: rgba(255,255,255,0.10);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.65);
+      --shadow: 0 10px 26px rgba(0,0,0,0.35);
+      --radius: 14px;
+      --accent: #6ee7ff;
+      --danger: #ff5a7a;
+    }
 
-        .star {
-            cursor: pointer;
-            font-size: 24px;
-            color: black;
-            margin-left: 10px;
-        }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at 20% -10%, rgba(110,231,255,0.10), transparent 60%),
+        radial-gradient(900px 500px at 110% 20%, rgba(140,120,255,0.10), transparent 60%),
+        var(--bg);
+    }
 
-            .star.favorite {
-                color: yellow;
-            }
+    /* ====== Header tipo app ====== */
+    header.app-header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 10px 12px;
+      background: rgba(11,15,23,0.78);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-row{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      justify-content: space-between;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
 
-        .notification {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: #333;
-            color: #fff;
-            padding: 10px;
-            border-radius: 5px;
-            z-index: 1000;
-        }
-    </style>
+    .brand{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      text-decoration:none;
+      color: var(--text);
+      min-width: 160px;
+    }
+    .brand img{
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    }
+    .brand .t{
+      display:flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+    .brand .t strong{
+      font-weight: 900;
+      letter-spacing: 0.2px;
+    }
+    .brand .t span{
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .search{
+      flex: 1;
+      max-width: 720px;
+    }
+    .search input{
+      width:100%;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      outline:none;
+    }
+    .search input:focus{
+      border-color: rgba(110,231,255,0.35);
+      box-shadow: 0 0 0 4px rgba(110,231,255,0.08);
+    }
+
+    .top-actions{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .icon-link, .icon-btn{
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      color: var(--text);
+      text-decoration:none;
+      position: relative;
+    }
+    .icon-link:hover, .icon-btn:hover{ background: rgba(255,255,255,0.06); }
+
+    .icon-link img{
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+    }
+
+    #notificationCount{
+      position:absolute;
+      top:-6px;
+      right:-6px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: var(--danger);
+      color: #fff;
+      font-size: 12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border: 2px solid rgba(11,15,23,0.85);
+    }
+
+    /* dropdown notifs */
+    #notificationContainer{ position: relative; }
+    #notifications.notification-dropdown{
+      position:absolute;
+      right: 0;
+      top: 48px;
+      width: 320px;
+      max-width: 92vw;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(11,15,23,0.95);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      display:none;
+    }
+    #notificationContainer.open #notifications{ display:block; }
+
+    #clearNotificationsButton{
+      display:block;
+      padding: 10px 12px;
+      color: var(--danger);
+      text-align: center;
+      text-decoration:none;
+      border-bottom: 1px solid var(--border);
+      font-weight: 800;
+    }
+    #clearNotificationsButton:hover{ background: rgba(255,255,255,0.06); }
+
+    /* menu ⋮ */
+    .menu{ position: relative; }
+    .menu-button{
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      cursor:pointer;
+      font-size: 18px;
+    }
+    .menu-button:hover{ background: rgba(255,255,255,0.06); }
+
+    .menu-content{
+      position:absolute;
+      right:0;
+      top: 48px;
+      width: 190px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(11,15,23,0.95);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      display:none;
+    }
+    .menu.open .menu-content{ display:block; }
+    .menu-content a, .menu-content button{
+      display:block;
+      width:100%;
+      padding: 10px 12px;
+      text-align:left;
+      background: transparent;
+      border:none;
+      color: var(--text);
+      text-decoration:none;
+      cursor:pointer;
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .menu-content a:hover, .menu-content button:hover{
+      background: rgba(255,255,255,0.06);
+    }
+    #logoutButton{ color: var(--danger); }
+
+    /* ====== Layout ====== */
+    main.app{
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 12px;
+      display:grid;
+      grid-template-columns: 270px 1fr;
+      gap: 12px;
+    }
+
+    aside.filters{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      border-radius: var(--radius);
+      overflow:hidden;
+      display:flex;
+      flex-direction: column;
+      min-height: calc(100vh - 100px);
+    }
+    .filters .scroll{
+      padding: 12px;
+      overflow:auto;
+      flex:1;
+    }
+    .filters h3{
+      margin: 0 0 10px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+    }
+    .field{
+      display:flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .field span{
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .field select{
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      outline:none;
+    }
+    .field select:focus{
+      border-color: rgba(110,231,255,0.35);
+      box-shadow: 0 0 0 4px rgba(110,231,255,0.08);
+    }
+
+    a.terms-link{
+      margin-top: auto;
+      display:block;
+      padding: 12px;
+      text-align:center;
+      text-decoration:none;
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+      border-top: 1px solid var(--border);
+      font-weight: 800;
+    }
+    a.terms-link:hover{ background: rgba(255,255,255,0.06); }
+
+    section.games{
+      min-width: 0;
+    }
+    .games-head{
+      display:flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .games-head h2{
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0.2px;
+    }
+    .games-head p{
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* Aquí tu UL #games lo renderiza el script.js, ya le metimos grid ahí */
+    #gameList{
+      background: transparent;
+    }
+
+    footer{
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 14px 12px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    /* ====== Mobile como app ====== */
+    @media (max-width: 980px){
+      main.app{
+        grid-template-columns: 1fr;
+      }
+      aside.filters{
+        min-height: auto;
+      }
+      .brand .t span{ display:none; }
+    }
+
+    @media (max-width: 520px){
+      header.app-header{ padding: 10px 10px; }
+      .brand{ min-width: 44px; }
+      .brand .t{ display:none; } /* deja solo el logo en móvil */
+      .search input{ padding: 10px 10px; }
+      .icon-link, .icon-btn, .menu-button{ width: 38px; height: 38px; border-radius: 13px; }
+    }
+  </style>
 </head>
+
 <body>
-    <header>
-        <div class="main-nav">
-            <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/Logo.png" alt="Logo">
-            <h1>CGPlay</h1>
+  <header class="app-header">
+    <div class="header-row">
+      <a class="brand" href="index.html">
+        <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/Logo.png" alt="Logo">
+        <div class="t">
+          <strong>CGPlay</strong>
+          <span>Juegos de la comunidad</span>
         </div>
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Buscar juego por nombre o usuario...">
+      </a>
+
+      <div class="search">
+        <input type="text" id="searchInput" placeholder="Buscar juego por nombre o usuario...">
+      </div>
+
+      <div class="top-actions">
+        <a class="icon-link" href="https://gdscript-online.github.io/" title="GDScript">
+          <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/logo_vertical_monochrome_dark.png" alt="">
+        </a>
+        <a class="icon-link" href="https://www.mycompiler.io/es/new/csharp" title="C#">
+          <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/icon.png" alt="">
+        </a>
+
+        <div id="userMenuContainer"></div>
+
+        <div id="notificationContainer">
+          <button id="notificationButton" class="icon-btn" aria-label="Notificaciones">
+            🔔
+            <span id="notificationCount" style="display:none;"></span>
+          </button>
+
+          <div id="notifications" class="notification-dropdown">
+            <a id="clearNotificationsButton" href="#">Limpiar Notificaciones</a>
+          </div>
         </div>
-        <nav>
-            <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li><a href="https://gdscript-online.github.io/"><img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/logo_vertical_monochrome_dark.png" alt="GDscript"></a></li>
-                <li><a href="https://www.mycompiler.io/es/new/csharp"><img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/icon.png" alt="C#"></a></li>
-                <li id="userMenuContainer"></li>
-                <li id="notificationContainer" style="position: relative;">
-                    <button id="notificationButton" style="position: relative;">
-                        🔔
-                        <span id="notificationCount" style="display: none;"></span>
-                    </button>
-                    <div id="notifications" class="notification-dropdown">
-                        <a id="clearNotificationsButton" href="#" style="display: block; padding: 10px; color: red; text-align: center;">Limpiar Notificaciones</a>
-                    </div>
-                </li>
-                <div class="menu">
-                    <button class="menu-button">⋮</button>
-                    <div class="menu-content" id="menuContent">
-                        <a href="profile.html" id="profileLink">Perfil</a>
-                        <a href="upload.html" id="uploadLink">Subir Juego</a>
-                        <a href="UploadTuto.html" id="TutoLink">Como Subir Los Juegos</a>
-                        <button id="logoutButton">Logout</button>
-                    </div>
-                </div>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <aside>
-            <div class="aside-content">
-                <h3>Buscar por Género</h3>
-                <select id="genreFilter">
-                    <option value="">Todos los géneros</option>
-                    <option value="Terror">Terror</option>
-                    <option value="Acción">Acción</option>
-                    <option value="Aventura">Aventura</option>
-                    <option value="Puzzle">Puzzle</option>
-                    <option value="Estrategia">Estrategia</option>
-                    <option value="Deportes">Deportes</option>
-                    <option value="Simulación">Simulación</option>
-                    <option value="Carreras">Carreras</option>
-                    <option value="RPG">RPG</option>
-                </select>
-                <h3>Buscar por Plataforma</h3>
-                <select id="platformFilter">
-                    <option value="">Todas las plataformas</option>
-                    <option value="Windows">Windows</option>
-                    <option value="Linux">Linux</option>
-                    <option value="Web">Web</option>
-                    <option value="Android">Android</option>
-                    <option value="MacOS">MacOS</option>
-                </select>
-                <h3>Buscar por Motor</h3>
-                <select id="engineFilter">
-                    <option value="">Todos los motores</option>
-                    <option value="Unity">Unity</option>
-                    <option value="Godot">Godot</option>
-                    <option value="Unreal Engine">Unreal Engine</option>
-                    <option value="GameMaker">GameMaker</option>
-                    <option value="RPG Maker">RPG Maker</option>
-                    <option value="Construct">Construct</option>
-                    <option value="CryEngine">CryEngine</option>
-                </select>
-                <h3>Buscar por Relevancia</h3>
-                <select id="relevanceFilter">
-                    <option value="">Ninguno</option>
-                    <option value="mostPopular">Más Populares</option>
-                    <option value="leastPopular">Menos Populares</option>
-                    <option value="newest">Los Más Nuevos</option>
-                    <option value="favorites">Favoritos</option>
-                </select>
-            </div>
-            <a href="Terminos.html" class="white-text terms-link">Leer Términos Y Condiciones</a>
-        </aside>
-        <section id="gameList">
-            <h2>Juegos Disponibles</h2>
-            <ul id="games"></ul>
-        </section>
-    </main>
-    <footer>
-        <div class="footer-left"></div>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase.js"></script>
-    <script src="script.js"></script>
+
+        <div class="menu" id="menuWrap">
+          <button class="menu-button" id="menuBtn" aria-label="Menú">⋮</button>
+          <div class="menu-content" id="menuContent">
+            <a href="profile.html" id="profileLink">Perfil</a>
+            <a href="upload.html" id="uploadLink">Subir Juego</a>
+            <a href="UploadTuto.html" id="TutoLink">Cómo Subir Los Juegos</a>
+            <button id="logoutButton">Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="app">
+    <aside class="filters">
+      <div class="scroll">
+        <h3>Filtros</h3>
+
+        <label class="field">
+          <span>Género</span>
+          <select id="genreFilter">
+            <option value="">Todos los géneros</option>
+            <option value="Terror">Terror</option>
+            <option value="Acción">Acción</option>
+            <option value="Aventura">Aventura</option>
+            <option value="Puzzle">Puzzle</option>
+            <option value="Estrategia">Estrategia</option>
+            <option value="Deportes">Deportes</option>
+            <option value="Simulación">Simulación</option>
+            <option value="Carreras">Carreras</option>
+            <option value="RPG">RPG</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Plataforma</span>
+          <select id="platformFilter">
+            <option value="">Todas las plataformas</option>
+            <option value="Windows">Windows</option>
+            <option value="Linux">Linux</option>
+            <option value="Web">Web</option>
+            <option value="Android">Android</option>
+            <option value="MacOS">MacOS</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Motor</span>
+          <select id="engineFilter">
+            <option value="">Todos los motores</option>
+            <option value="Unity">Unity</option>
+            <option value="Godot">Godot</option>
+            <option value="Unreal Engine">Unreal Engine</option>
+            <option value="GameMaker">GameMaker</option>
+            <option value="RPG Maker">RPG Maker</option>
+            <option value="Construct">Construct</option>
+            <option value="CryEngine">CryEngine</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Orden</span>
+          <select id="relevanceFilter">
+            <option value="">Ninguno</option>
+            <option value="mostPopular">Más Populares</option>
+            <option value="leastPopular">Menos Populares</option>
+            <option value="newest">Los Más Nuevos</option>
+            <option value="favorites">Favoritos</option>
+          </select>
+        </label>
+      </div>
+
+      <a href="Terminos.html" class="terms-link">Leer Términos y Condiciones</a>
+    </aside>
+
+    <section id="gameList" class="games">
+      <div class="games-head">
+        <h2>Juegos</h2>
+        <p>Busca, filtra y guarda tus favoritos ⭐</p>
+      </div>
+      <ul id="games"></ul>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-left">© <span id="year"></span> CGPlay</div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Dropdown notifs
+    const notifWrap = document.getElementById("notificationContainer");
+    const notifBtn = document.getElementById("notificationButton");
+    notifBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      notifWrap.classList.toggle("open");
+      document.getElementById("menuWrap")?.classList.remove("open");
+    });
+
+    // Dropdown menú
+    const menuWrap = document.getElementById("menuWrap");
+    const menuBtn = document.getElementById("menuBtn");
+    menuBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      menuWrap.classList.toggle("open");
+      notifWrap?.classList.remove("open");
+    });
+
+    // cerrar al clicar fuera
+    document.addEventListener("click", () => {
+      notifWrap?.classList.remove("open");
+      menuWrap?.classList.remove("open");
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

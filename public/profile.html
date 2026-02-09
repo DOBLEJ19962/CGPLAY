@@ -1,56 +1,529 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil - CGCommunityPlay</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Perfil - CGPlay</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0b0f17;
+      --panel: rgba(255,255,255,0.03);
+      --panel2: rgba(255,255,255,0.045);
+      --border: rgba(255,255,255,0.10);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.65);
+      --shadow: 0 10px 26px rgba(0,0,0,0.35);
+      --radius: 14px;
+      --accent: #6ee7ff;
+      --danger: #ff5a7a;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at 20% -10%, rgba(110,231,255,0.10), transparent 60%),
+        radial-gradient(900px 500px at 110% 20%, rgba(140,120,255,0.10), transparent 60%),
+        var(--bg);
+    }
+
+    /* ===== Header tipo app ===== */
+    header.app-header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 12px 16px;
+      background: rgba(11,15,23,0.78);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-row{
+      display:flex;
+      gap: 12px;
+      align-items:center;
+      justify-content: space-between;
+      max-width: 1280px; /* ✅ más ancho para desktop */
+      margin: 0 auto;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap: 12px;
+      text-decoration:none;
+      color: var(--text);
+      min-width: 220px;
+    }
+    .brand img{
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    }
+    .brand .t{
+      display:flex;
+      flex-direction: column;
+      line-height: 1.05;
+    }
+    .brand .t strong{
+      font-weight: 900;
+      letter-spacing: 0.2px;
+      font-size: 14px;
+    }
+    .brand .t span{
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .top-actions{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      text-decoration:none;
+      font-weight: 900;
+      font-size: 13px;
+      cursor:pointer;
+      white-space: nowrap;
+    }
+    .btn:hover{ background: rgba(255,255,255,0.06); }
+    .btn.danger{
+      border-color: rgba(255,90,122,0.25);
+      background: rgba(255,90,122,0.10);
+      color: rgba(255,255,255,0.95);
+    }
+    .btn.danger:hover{ background: rgba(255,90,122,0.14); }
+
+    #userMenuContainer{ display: contents; }
+    #userMenuContainer li{ list-style:none; }
+    #userMenuContainer a{
+      display:inline-flex;
+      align-items:center;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      text-decoration:none;
+      font-weight: 900;
+      font-size: 13px;
+      max-width: 260px;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    #userMenuContainer a:hover{ background: rgba(255,255,255,0.06); }
+
+    /* menu ⋮ */
+    .menu{ position: relative; }
+    .menu-button{
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      cursor:pointer;
+      font-size: 18px;
+      line-height: 42px;
+    }
+    .menu-button:hover{ background: rgba(255,255,255,0.06); }
+    .menu-content{
+      position:absolute;
+      right:0;
+      top: 50px;
+      width: 200px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(11,15,23,0.95);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      display:none;
+      z-index: 99;
+    }
+    .menu.open .menu-content{ display:block; }
+    .menu-content a, .menu-content button{
+      display:block;
+      width:100%;
+      padding: 11px 12px;
+      text-align:left;
+      background: transparent;
+      border:none;
+      color: var(--text);
+      text-decoration:none;
+      cursor:pointer;
+      font-weight: 900;
+      font-size: 13px;
+    }
+    .menu-content a:hover, .menu-content button:hover{
+      background: rgba(255,255,255,0.06);
+    }
+    #logoutButton{ color: var(--danger); }
+
+    /* ===== Main ===== */
+    main{
+      max-width: 1280px;  /* ✅ desktop más ancho */
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* ✅ Desktop: 2 columnas reales */
+    .grid{
+      display:grid;
+      gap: 14px;
+      align-items: start;
+      grid-template-columns: 420px 1fr; /* ✅ más grande */
+    }
+
+    .card{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      min-width: 0;
+    }
+
+    .card-header{
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      display:flex;
+      gap: 14px;
+      align-items:center;
+    }
+
+    .avatar{
+      width: 78px;  /* ✅ más grande */
+      height: 78px;
+      border-radius: 20px;
+      object-fit: cover;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      flex: 0 0 auto;
+    }
+
+    .head{ min-width: 0; flex: 1; }
+
+    #username{
+      margin: 0;
+      font-size: 18px; /* ✅ más grande */
+      font-weight: 900;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+
+    .stats{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .stat{
+      display:inline-flex;
+      gap: 8px;
+      align-items:center;
+      padding: 8px 11px; /* ✅ */
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      font-size: 12px;
+      color: rgba(255,255,255,0.88);
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .stat b{ color: var(--muted); font-weight: 900; }
+
+    .card-body{
+      padding: 16px;
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .info-row{
+      display:flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.02);
+      border-radius: 12px;
+      color: rgba(255,255,255,0.88);
+      font-size: 13px;
+      align-items: center;
+    }
+    .info-row span:first-child{
+      color: var(--muted);
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+    .info-row span:last-child{
+      text-align:right;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .actions{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .danger-zone{
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      background: rgba(255,90,122,0.06);
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .danger-zone small{ color: rgba(255,255,255,0.72); }
+
+    /* ===== Mis juegos ===== */
+    .games-card .titlebar{
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      display:flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .games-card h3{
+      margin:0;
+      font-size: 18px; /* ✅ más grande */
+      font-weight: 900;
+      letter-spacing: 0.2px;
+    }
+    .games-card p{
+      margin: 6px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* ✅ más grande en PC */
+    #userGames{
+      list-style:none;
+      margin:0;
+      padding: 14px;
+      display:grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* ✅ */
+    }
+
+    #userGames > li{
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 12px;
+      overflow:hidden;
+      background: rgba(255,255,255,0.03);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.25);
+      transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+      position: relative;
+    }
+    #userGames > li:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.04);
+      border-color: rgba(110,231,255,0.18);
+    }
+    #userGames a{
+      display:block;
+      text-decoration:none;
+      color: var(--text);
+    }
+    #userGames img{
+      width:100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      display:block;
+      background: rgba(255,255,255,0.04);
+    }
+    #userGames h4, #userGames h3{
+      margin: 0;
+      padding: 12px;
+      font-size: 14px; /* ✅ */
+      font-weight: 900;
+      line-height: 1.2;
+
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ✅ NO activar “móvil” tan fácil en PC */
+    @media (max-width: 860px){
+      .grid{ grid-template-columns: 1fr; }
+      .header-row{ max-width: 980px; }
+    }
+
+    @media (max-width: 520px){
+      header.app-header{ padding: 10px 10px; }
+      .brand{ min-width: 44px; }
+      .brand .t{ display:none; }
+
+      .btn{ padding: 9px 10px; border-radius: 13px; }
+      .menu-button{ width: 38px; height: 38px; border-radius: 13px; }
+
+      .card-header{ padding: 12px; }
+      .card-body{ padding: 12px; }
+
+      .avatar{ width: 58px; height: 58px; border-radius: 16px; }
+
+      .info-row{
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .info-row span:last-child{
+        text-align:left;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+      }
+
+      #userGames{ grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    }
+  </style>
 </head>
+
 <body>
-    <header>
-        <div class="main-nav">
-            <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/Logo.png" alt="Logo">
-            <h1>CGPlay</h1>
+  <header class="app-header">
+    <div class="header-row">
+      <a class="brand" href="index.html">
+        <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/Logo.png" alt="Logo">
+        <div class="t">
+          <strong>CGPlay</strong>
+          <span>Perfil</span>
         </div>
-        <nav>
-            <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li id="userMenuContainer"></li>
-                <div class="menu">
-                    <button class="menu-button">⋮</button>
-                    <div class="menu-content" id="menuContent">
-                        <a href="profile.html" id="profileLink">Perfil</a>
-                        <a href="upload.html" id="uploadLink">Subir Juego</a>
-                        <button id="logoutButton">Logout</button>
-                    </div>
-                </div>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section class="profile-section">
-            <div class="profile-header">
-                <img id="profilePicture" src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="user">
-                <h2 id="username"></h2>
-                <div class="inline-container">
-                    <p><strong>Likes:</strong> <span id="likeCount">0</span></p>
-                    <p><strong>Vistas:</strong> <span id="viewCount">0</span></p>
-                    <p><strong>Comentarios:</strong> <span id="commentCount">0</span></p>
-                </div>
-                <button id="editProfileButton" style="display: none;">Editar Perfil</button>
+      </a>
+
+      <div class="top-actions">
+        <a class="btn" href="index.html">← Inicio</a>
+
+        <div id="userMenuContainer"></div>
+
+        <div class="menu" id="menuWrap">
+          <button class="menu-button" id="menuBtn" aria-label="Menú">⋮</button>
+          <div class="menu-content" id="menuContent">
+            <a href="profile.html" id="profileLink">Perfil</a>
+            <a href="upload.html" id="uploadLink">Subir Juego</a>
+            <button id="logoutButton">Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid">
+      <!-- Perfil -->
+      <section class="card">
+        <div class="card-header">
+          <img id="profilePicture"
+               class="avatar"
+               src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
+               alt="user">
+          <div class="head">
+            <h2 id="username"></h2>
+
+            <div class="stats">
+              <div class="stat"><b>Likes</b> <span id="likeCount">0</span></div>
+              <div class="stat"><b>Vistas</b> <span id="viewCount">0</span></div>
+              <div class="stat"><b>Comentarios</b> <span id="commentCount">0</span></div>
             </div>
-            <div class="profile-info">
-                <p><strong>Teléfono:</strong> <span id="phone"></span></p>
-                <p><strong>Correo:</strong> <span id="email"></span></p>
-                <p><strong>Descripción:</strong> <span id="description"></span></p>
-            </div>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="info-row">
+            <span>Teléfono</span>
+            <span id="phone"></span>
+          </div>
+
+          <div class="info-row">
+            <span>Correo</span>
+            <span id="email"></span>
+          </div>
+
+          <div class="info-row">
+            <span>Descripción</span>
+            <span id="description"></span>
+          </div>
+
+          <div class="actions">
+            <button id="editProfileButton" class="btn" style="display:none;">Editar Perfil</button>
+          </div>
+        </div>
+
+        <div class="danger-zone">
+          <small>Zona de peligro</small>
+          <button id="deleteAccountButton" class="btn danger" style="display:none;">Eliminar Cuenta</button>
+        </div>
+      </section>
+
+      <!-- Mis juegos -->
+      <section class="card games-card">
+        <div class="titlebar">
+          <div>
             <h3>Mis Juegos</h3>
-            <ul id="userGames" class="game-list"></ul>
-            <button id="deleteAccountButton" class="delete-button" style="display: none;">Eliminar Cuenta</button>
-        </section>
-    </main>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase.js"></script>
-    <script src="profile.js"></script>
+            <p>Los juegos que has subido</p>
+          </div>
+        </div>
+
+        <ul id="userGames" class="game-list"></ul>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const menuWrap = document.getElementById("menuWrap");
+    const menuBtn = document.getElementById("menuBtn");
+
+    menuBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      menuWrap.classList.toggle("open");
+    });
+
+    document.addEventListener("click", () => {
+      menuWrap?.classList.remove("open");
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="profile.js"></script>
 </body>
 </html>

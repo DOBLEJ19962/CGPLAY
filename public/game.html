@@ -1,4 +1,9 @@
-<!-- ✅ PÉGALO COMPLETO EN TU game.html (reemplaza tu archivo si quieres) -->
+<!-- ✅ game.html (FULL) — arreglado:
+1) ya NO bloquea el táctil/scroll de la página (quitado el preventDefault global)
+2) WSAD cambiado a FLECHAS (↑ ← ↓ →) en forma de teclado
+3) joystick de cámara más a la izquierda
+4) fullscreen móvil sin “congelar” la página (menos agresivo + botón salir) -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,13 +18,11 @@
   <style>
     :root{
       --bg:#0b0f17;
-      --panel: rgba(255,255,255,0.03);
       --border: rgba(255,255,255,0.10);
       --text: rgba(255,255,255,0.92);
       --muted: rgba(255,255,255,0.65);
       --shadow: 0 12px 34px rgba(0,0,0,0.45);
       --radius: 16px;
-      --accent: #6ee7ff;
       --danger: #ff5a7a;
       --ok: #34d399;
     }
@@ -218,14 +221,16 @@
     .btn-ok:hover{ background: rgba(52,211,153,0.16); }
 
     .stack > .card{ margin-bottom: 12px; }
+
     .play-wrap{
       border: 1px solid rgba(255,255,255,0.10);
       border-radius: 16px;
       overflow:hidden;
       background: rgba(0,0,0,0.25);
       box-shadow: 0 12px 34px rgba(0,0,0,0.35);
-      position: relative; /* ✅ para overlay */
+      position: relative;
     }
+
     #gameIframe{
       width: 100%;
       height: 520px;
@@ -252,10 +257,6 @@
       transition: transform .12s ease, border-color .12s ease;
       padding: 6px;
     }
-    #screenshotGallery img:hover{
-      transform: translateY(-2px);
-      border-color: rgba(110,231,255,0.18);
-    }
 
     /* =========================
        ✅ MOBILE CONTROLS OVERLAY
@@ -263,8 +264,8 @@
     .mobile-controls{
       position:absolute;
       inset: 0;
-      pointer-events: none; /* solo los botones reciben eventos */
       z-index: 5;
+      pointer-events: none; /* deja tocar el juego */
     }
     .mc-top{
       position:absolute;
@@ -289,6 +290,7 @@
       -webkit-user-select:none;
       touch-action: manipulation;
     }
+
     .mc-bottom{
       position:absolute;
       left: 10px; right: 10px; bottom: 10px;
@@ -298,13 +300,19 @@
       pointer-events: none;
       align-items:flex-end;
     }
-    .mc-move, .mc-actions{
+
+    /* Flechas tipo teclado (↑ encima, ← ↓ → abajo) */
+    .mc-dpad{
       pointer-events: none;
-      display:flex;
-      flex-direction: column;
+      display:grid;
+      grid-template-columns: 56px 56px 56px;
+      grid-template-rows: 56px 56px;
       gap: 8px;
+      align-items:center;
+      justify-items:center;
     }
-    .mc-row{ display:flex; gap: 8px; pointer-events:none; }
+    .mc-dpad .spacer{ width:56px; height:56px; }
+
     .mc-btn{
       pointer-events: auto;
       width: 56px;
@@ -314,25 +322,33 @@
       background: rgba(11,15,23,0.55);
       color: rgba(255,255,255,0.92);
       font-weight: 1000;
-      font-size: 14px;
+      font-size: 16px;
       backdrop-filter: blur(10px);
       cursor:pointer;
       user-select:none;
       -webkit-user-select:none;
-      touch-action: none; /* importante para no scrollear */
+      touch-action: none; /* importante */
       display:flex;
       align-items:center;
       justify-content:center;
     }
     .mc-btn:active{ transform: scale(0.98); }
-    .mc-wide{ width: 120px; }
-    .mc-space{ width: 140px; }
 
-    /* Joystick cámara */
+    .mc-actions{
+      pointer-events: none;
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items:flex-end;
+    }
+    .mc-wide{ width: 150px; }
+    .mc-space{ width: 170px; }
+
+    /* Joystick cámara MÁS a la izquierda */
     .mc-look{
       pointer-events: auto;
-      width: 150px;
-      height: 150px;
+      width: 145px;
+      height: 145px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.14);
       background: rgba(11,15,23,0.35);
@@ -342,6 +358,7 @@
       user-select:none;
       -webkit-user-select:none;
       overflow:hidden;
+      margin-left: -6px; /* lo pega un poco más a la izquierda */
     }
     .mc-stick{
       width: 54px;
@@ -364,7 +381,7 @@
       pointer-events:none;
     }
 
-    /* Modo fullscreen en móvil: la UI ocupa toda la pantalla */
+    /* Modo pseudo-fullscreen (no congela scroll fuera, solo cambia layout) */
     body.mobile-fullscreen header.app-header,
     body.mobile-fullscreen main.app > section.card{
       display:none;
@@ -389,6 +406,9 @@
       .brand .t{ display:none; }
       #screenshotGallery{ grid-template-columns: 1fr; }
       #gameIframe{ height: 52vh; }
+      .mc-wide{ width: 135px; }
+      .mc-space{ width: 155px; }
+      .mc-look{ width: 130px; height: 130px; }
     }
   </style>
 </head>
@@ -404,15 +424,13 @@
         </div>
       </a>
 
-      <div class="top-actions">
-        <div class="menu" id="menuWrap">
-          <button class="menu-button" id="menuBtn" aria-label="Menú">⋮</button>
-          <div class="menu-content" id="menuContent">
-            <div id="userMenuContainer"></div>
-            <a href="profile.html" id="profileLink">Perfil</a>
-            <a href="upload.html" id="uploadLink">Subir Juego</a>
-            <button id="logoutButton" type="button">Logout</button>
-          </div>
+      <div class="menu" id="menuWrap">
+        <button class="menu-button" id="menuBtn" aria-label="Menú">⋮</button>
+        <div class="menu-content" id="menuContent">
+          <div id="userMenuContainer"></div>
+          <a href="profile.html" id="profileLink">Perfil</a>
+          <a href="upload.html" id="uploadLink">Subir Juego</a>
+          <button id="logoutButton" type="button">Logout</button>
         </div>
       </div>
     </div>
@@ -465,7 +483,6 @@
 
           <button id="favoriteButton" class="btn" type="button">Añadir a Favoritos</button>
           <button id="reportButton" class="btn btn-danger" type="button">Reportar</button>
-
           <button id="deleteButton" class="btn btn-danger" type="button" style="display:none;">Eliminar</button>
         </div>
       </div>
@@ -490,29 +507,27 @@
               </div>
 
               <div class="mc-bottom">
-                <!-- Move pad -->
-                <div class="mc-move">
-                  <button class="mc-btn" data-key="KeyW" type="button">W</button>
-                  <div class="mc-row">
-                    <button class="mc-btn" data-key="KeyA" type="button">A</button>
-                    <button class="mc-btn" data-key="KeyS" type="button">S</button>
-                    <button class="mc-btn" data-key="KeyD" type="button">D</button>
-                  </div>
-                  <div class="mc-row">
-                    <button class="mc-btn mc-space" data-key="Space" type="button">⎵ Espacio</button>
-                    <button class="mc-btn mc-wide" data-key="ShiftLeft" type="button">⇧ Shift</button>
-                  </div>
+                <!-- D-PAD flechas -->
+                <div class="mc-dpad" id="mcDpad">
+                  <div class="spacer"></div>
+                  <button class="mc-btn" data-key="ArrowUp" type="button">↑</button>
+                  <div class="spacer"></div>
+
+                  <button class="mc-btn" data-key="ArrowLeft" type="button">←</button>
+                  <button class="mc-btn" data-key="ArrowDown" type="button">↓</button>
+                  <button class="mc-btn" data-key="ArrowRight" type="button">→</button>
                 </div>
 
-                <!-- Look joystick -->
+                <!-- Joystick cámara (más a la izquierda) -->
                 <div class="mc-look" id="mcLook">
                   <div class="mc-stick" id="mcStick"></div>
                   <div class="mc-label">Cámara</div>
                 </div>
 
-                <!-- Acciones extra (si luego quieres) -->
-                <div class="mc-actions" style="opacity:.0; pointer-events:none;">
-                  <!-- reservado -->
+                <!-- Acciones -->
+                <div class="mc-actions">
+                  <button class="mc-btn mc-space" data-key="Space" type="button">⎵ Saltar</button>
+                  <button class="mc-btn mc-wide" data-key="ShiftLeft" type="button">⇧ Correr</button>
                 </div>
               </div>
             </div>
@@ -566,10 +581,10 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
 
-  <!-- ✅ Tu lógica -->
+  <!-- ✅ Tu lógica (tu game.js original) -->
   <script src="game.js"></script>
 
-  <!-- ✅ MOBILE CONTROLS: Simula teclado + mouse hacia el iframe -->
+  <!-- ✅ MOBILE CONTROLS (FIXED) -->
   <script>
     (function(){
       const iframe = document.getElementById("gameIframe");
@@ -580,58 +595,76 @@
       const look = document.getElementById("mcLook");
       const stick = document.getElementById("mcStick");
 
-      // Heurística: móvil/tablet
       const isTouchDevice = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
       const isSmall = window.matchMedia("(max-width: 900px)").matches;
 
-      // Estado
       let enabled = true;
       const pressed = new Set();
 
-      // Para mouse look
       let lookPointerId = null;
       let lookCenter = null;
       let lookActive = false;
       let lastSentAt = 0;
 
+      function iframeVisible(){
+        return iframe && iframe.style.display !== "none" && iframe.src && iframe.src !== "";
+      }
+
       function showOverlayIfNeeded(){
-        // Solo mostrar si el iframe está visible y estamos en touch
-        const iframeVisible = iframe && iframe.style.display !== "none";
-        if (isTouchDevice && isSmall && iframeVisible) {
-          overlay.style.display = enabled ? "block" : "none";
-        } else {
-          overlay.style.display = "none";
-        }
+        if (isTouchDevice && isSmall && iframeVisible() && enabled) overlay.style.display = "block";
+        else overlay.style.display = "none";
       }
 
       function cw(){
         try { return iframe?.contentWindow || null; } catch(e){ return null; }
       }
 
+      function focusGame(){
+        const w = cw();
+        if (!w) return;
+        try { iframe.focus?.(); } catch(e){}
+        try { w.focus?.(); } catch(e){}
+      }
+
+      function keyForCode(code){
+        // Valores “key” reales (mejor compatibilidad)
+        if (code === "Space") return " ";
+        if (code === "ShiftLeft" || code === "ShiftRight") return "Shift";
+        if (code === "ArrowUp") return "ArrowUp";
+        if (code === "ArrowDown") return "ArrowDown";
+        if (code === "ArrowLeft") return "ArrowLeft";
+        if (code === "ArrowRight") return "ArrowRight";
+        return code;
+      }
+
       function sendKey(type, code){
         const w = cw();
         if (!w) return;
+        focusGame();
 
-        // Muchos WebGL escuchan window/document. Lanzamos en ambos.
         const evt = new KeyboardEvent(type, {
           code,
-          key: code === "Space" ? " " : code,
+          key: keyForCode(code),
           bubbles: true,
           cancelable: true
         });
 
-        try { w.document.dispatchEvent(evt); } catch(e){}
+        // Unity WebGL suele escuchar window/document/canvas
         try { w.dispatchEvent(evt); } catch(e){}
+        try { w.document.dispatchEvent(evt); } catch(e){}
+        try {
+          const canvas = w.document.querySelector("canvas");
+          canvas?.dispatchEvent(evt);
+        } catch(e){}
       }
 
-      // Mouse move (para cámara)
       function sendMouseMove(dx, dy){
         const w = cw();
         if (!w) return;
+        focusGame();
 
-        // Throttle para no spamear
         const now = performance.now();
-        if (now - lastSentAt < 16) return; // ~60fps
+        if (now - lastSentAt < 16) return;
         lastSentAt = now;
 
         const evt = new MouseEvent("mousemove", {
@@ -643,11 +676,14 @@
           clientY: 0
         });
 
-        try { w.document.dispatchEvent(evt); } catch(e){}
         try { w.dispatchEvent(evt); } catch(e){}
+        try { w.document.dispatchEvent(evt); } catch(e){}
+        try {
+          const canvas = w.document.querySelector("canvas");
+          canvas?.dispatchEvent(evt);
+        } catch(e){}
       }
 
-      // Botones WASD / Space / Shift (touch -> keydown/keyup)
       function bindKeyButtons(){
         const buttons = overlay.querySelectorAll("[data-key]");
         buttons.forEach((btn) => {
@@ -680,25 +716,15 @@
         });
       }
 
-      // Joystick cámara (pointer drag)
       function bindLookJoystick(){
         if (!look) return;
-
-        const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
-
-        function setStick(x, y){
-          stick.style.transform = `translate(${x}px, ${y}px)`;
-        }
-
-        function resetStick(){
-          stick.style.transform = "translate(-50%,-50%)";
-        }
 
         look.addEventListener("pointerdown", (e) => {
           if (!enabled) return;
           e.preventDefault();
           lookPointerId = e.pointerId;
           look.setPointerCapture(lookPointerId);
+
           const rect = look.getBoundingClientRect();
           lookCenter = { x: rect.left + rect.width/2, y: rect.top + rect.height/2, r: rect.width/2 - 28 };
           lookActive = true;
@@ -717,12 +743,10 @@
           const ndx = (mag > maxR) ? (dx / mag) * maxR : dx;
           const ndy = (mag > maxR) ? (dy / mag) * maxR : dy;
 
-          // mover stick visual
-          // usamos translate relativo al centro original
           stick.style.transform = `translate(calc(-50% + ${ndx}px), calc(-50% + ${ndy}px))`;
 
-          // sensibilidad: ajusta si quieres
-          const sensitivity = 0.22;
+          // Sensibilidad (sube/baja)
+          const sensitivity = 0.28;
           sendMouseMove(ndx * sensitivity, ndy * sensitivity);
         }, { passive:false });
 
@@ -732,7 +756,7 @@
           lookActive = false;
           lookPointerId = null;
           lookCenter = null;
-          resetStick();
+          stick.style.transform = "translate(-50%,-50%)";
         };
 
         look.addEventListener("pointerup", end, { passive:false });
@@ -740,7 +764,6 @@
         look.addEventListener("pointerleave", end, { passive:false });
       }
 
-      // Toggle overlay
       function bindToggle(){
         btnToggle?.addEventListener("click", (e) => {
           e.preventDefault();
@@ -757,22 +780,19 @@
         });
       }
 
-      // Fullscreen móvil real (con fallback iOS)
       async function requestFullscreenMobile(){
-        // 1) Fullscreen API si existe
+        // 1) Fullscreen real si se puede
         try{
           if (!document.fullscreenElement) {
             await (playWrap.requestFullscreen?.() || iframe.requestFullscreen?.());
           } else {
             await document.exitFullscreen?.();
           }
-        } catch(e){
-          // iOS Safari no siempre soporta fullscreen en div.
-        }
+        } catch(e){}
 
-        // 2) Modo “pseudo fullscreen” (si no hay Fullscreen API)
+        // 2) pseudo fullscreen (no congela la página, solo cambia layout)
         document.body.classList.toggle("mobile-fullscreen");
-        // asegurar visible iframe si entró a modo
+
         if (document.body.classList.contains("mobile-fullscreen")) {
           iframe.style.display = "block";
         }
@@ -785,32 +805,19 @@
           requestFullscreenMobile();
         });
 
-        // También reacciona a cambios de fullscreen nativo
-        document.addEventListener("fullscreenchange", () => {
-          showOverlayIfNeeded();
-        });
+        document.addEventListener("fullscreenchange", () => showOverlayIfNeeded());
       }
 
-      // Evitar scroll/zoom mientras se usa overlay
-      function preventGestures(){
-        // Bloquea scroll solo cuando overlay visible
-        document.addEventListener("touchmove", (e) => {
-          if (overlay.style.display !== "none") e.preventDefault();
-        }, { passive:false });
-      }
+      // MUY IMPORTANTE: NO BLOQUEAMOS SCROLL DE LA PÁGINA (ya no se “congela”)
+      // Solo los botones/joystick usan touch-action:none y preventDefault local.
 
-      // Ejecutar
       bindKeyButtons();
       bindLookJoystick();
       bindToggle();
       bindFullscreen();
-      preventGestures();
 
-      // Observa cambios de tamaño
       window.addEventListener("resize", showOverlayIfNeeded);
-
-      // Cada 300ms revisa si el iframe ya está visible (porque tu playButton lo muestra)
-      setInterval(showOverlayIfNeeded, 300);
+      setInterval(showOverlayIfNeeded, 250);
     })();
   </script>
 </body>

@@ -1,8 +1,8 @@
-<!-- ✅ game.html (FULL) — Controles ULTRA transparentes + slider de opacidad (guardado)
+<!-- ✅ game.html (FULL) — Controles ULTRA transparentes SIN BLUR (ni backdrop-filter)
 - Izq: Shift arriba + flechas abajo
 - Centro: Saltar
 - Derecha: Cámara
-- Transparencia ajustable con slider (solo móvil)
+- Slider de opacidad (real) sin blur y guardado en localStorage
 -->
 
 <!DOCTYPE html>
@@ -27,12 +27,10 @@
       --danger: #ff5a7a;
       --ok: #34d399;
 
-      /* ✅ Opacidad global de controles móviles (0.05 a 0.30 recomendado) */
-      --mc-alpha: 0.10;
-
-      /* ✅ Intensidad de borde/shine */
-      --mc-border-alpha: 0.10;
-      --mc-text-alpha: 0.88;
+      /* ✅ Opacidad REAL de controles (muy baja) */
+      --mc-alpha: 0.06;          /* fondo */
+      --mc-border-alpha: 0.08;   /* borde */
+      --mc-text-alpha: 0.85;     /* texto */
     }
 
     *{ box-sizing:border-box; }
@@ -53,6 +51,7 @@
       z-index: 50;
       padding: 10px 12px;
       background: rgba(11,15,23,0.78);
+      /* blur de header ok */
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
     }
@@ -222,13 +221,6 @@
       gap: 8px;
       white-space: nowrap;
     }
-    .btn:hover{ background: rgba(255,255,255,0.06); }
-    .btn-primary{ border-color: rgba(110,231,255,0.25); background: rgba(110,231,255,0.12); }
-    .btn-primary:hover{ background: rgba(110,231,255,0.16); }
-    .btn-danger{ border-color: rgba(255,90,122,0.25); background: rgba(255,90,122,0.10); }
-    .btn-danger:hover{ background: rgba(255,90,122,0.14); }
-    .btn-ok{ border-color: rgba(52,211,153,0.22); background: rgba(52,211,153,0.12); }
-    .btn-ok:hover{ background: rgba(52,211,153,0.16); }
 
     .stack > .card{ margin-bottom: 12px; }
 
@@ -249,26 +241,8 @@
       background: #000;
     }
 
-    #screenshotGallery{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-    #screenshotGallery img{
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      height: auto;
-      object-fit: contain;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.35);
-      cursor:pointer;
-      transition: transform .12s ease, border-color .12s ease;
-      padding: 6px;
-    }
-
     /* =========================
-       ✅ MOBILE CONTROLS OVERLAY
+       ✅ MOBILE CONTROLS (SIN BLUR)
        ========================= */
     .mobile-controls{
       position:absolute;
@@ -284,10 +258,9 @@
       justify-content: space-between;
       gap: 10px;
       pointer-events: none;
-      align-items: center;
+      align-items:center;
     }
 
-    /* ✅ slider container */
     .mc-opacity{
       pointer-events: auto;
       display:flex;
@@ -296,8 +269,7 @@
       padding: 8px 10px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,var(--mc-border-alpha));
-      background: rgba(11,15,23, calc(var(--mc-alpha) * 0.9));
-      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,var(--mc-alpha)); /* ✅ SIN BLUR */
     }
     .mc-opacity label{
       font-weight: 900;
@@ -315,13 +287,12 @@
     .mc-pill{
       pointer-events: auto;
       border: 1px solid rgba(255,255,255,var(--mc-border-alpha));
-      background: rgba(11,15,23, calc(var(--mc-alpha) * 0.9));
+      background: rgba(0,0,0,var(--mc-alpha)); /* ✅ SIN BLUR */
       color: rgba(255,255,255,0.90);
       padding: 9px 11px;
       border-radius: 999px;
       font-weight: 900;
       font-size: 12px;
-      backdrop-filter: blur(10px);
       cursor:pointer;
       user-select:none;
       -webkit-user-select:none;
@@ -345,14 +316,12 @@
       gap: 10px;
       align-items:flex-start;
     }
-
     .mc-center{
       pointer-events:none;
       display:flex;
       align-items:flex-end;
       justify-content:center;
     }
-
     .mc-right{
       pointer-events:none;
       display:flex;
@@ -371,18 +340,16 @@
     }
     .mc-dpad .spacer{ width:56px; height:56px; }
 
-    /* ✅ ULTRA transparente */
     .mc-btn{
       pointer-events: auto;
       width: 56px;
       height: 56px;
       border-radius: 16px;
       border: 1px solid rgba(255,255,255,var(--mc-border-alpha));
-      background: rgba(11,15,23, var(--mc-alpha));
+      background: rgba(0,0,0,var(--mc-alpha)); /* ✅ SIN BLUR */
       color: rgba(255,255,255,var(--mc-text-alpha));
       font-weight: 1000;
       font-size: 16px;
-      backdrop-filter: blur(10px);
       cursor:pointer;
       user-select:none;
       -webkit-user-select:none;
@@ -393,7 +360,7 @@
     }
     .mc-btn:active{
       transform: scale(0.98);
-      background: rgba(11,15,23, calc(var(--mc-alpha) + 0.06));
+      background: rgba(0,0,0, calc(var(--mc-alpha) + 0.06));
     }
 
     .mc-wide{ width: 160px; height: 50px; border-radius: 14px; font-size: 14px; }
@@ -405,8 +372,7 @@
       height: 145px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,var(--mc-border-alpha));
-      background: rgba(11,15,23, calc(var(--mc-alpha) * 0.85));
-      backdrop-filter: blur(10px);
+      background: rgba(0,0,0, calc(var(--mc-alpha) * 0.9)); /* ✅ SIN BLUR */
       position: relative;
       touch-action: none;
       user-select:none;
@@ -418,7 +384,7 @@
       height: 54px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255, calc(var(--mc-border-alpha) + 0.06));
-      background: rgba(255,255,255, calc(var(--mc-alpha) * 0.75));
+      background: rgba(255,255,255, calc(var(--mc-alpha) * 0.7)); /* ✅ SIN BLUR */
       position:absolute;
       left: 50%; top: 50%;
       transform: translate(-50%,-50%);
@@ -452,14 +418,11 @@
 
     @media (max-width: 1100px){
       main.app{ grid-template-columns: 1fr; }
-      #screenshotGallery{ grid-template-columns: repeat(2, 1fr); }
       #gameIframe{ height: 56vh; }
     }
     @media (max-width: 520px){
       .brand .t{ display:none; }
-      #screenshotGallery{ grid-template-columns: 1fr; }
       #gameIframe{ height: 52vh; }
-
       .mc-look{ width: 128px; height: 128px; }
       .mc-jump{ width: 170px; height: 60px; }
       .mc-wide{ width: 150px; height: 48px; }
@@ -495,7 +458,6 @@
   </header>
 
   <main class="app">
-    <!-- LEFT -->
     <section class="card">
       <div class="body">
         <div class="cover">
@@ -506,22 +468,10 @@
         <div class="desc" id="gameDescription">...</div>
 
         <div class="meta-grid">
-          <div class="meta">
-            <div class="k">Subido por</div>
-            <div class="v" id="uploadedBy">...</div>
-          </div>
-          <div class="meta">
-            <div class="k">Plataforma</div>
-            <div class="v" id="gamePlatform">...</div>
-          </div>
-          <div class="meta">
-            <div class="k">Género</div>
-            <div class="v" id="gameGenre">...</div>
-          </div>
-          <div class="meta">
-            <div class="k">Motor</div>
-            <div class="v" id="gameEngine">...</div>
-          </div>
+          <div class="meta"><div class="k">Subido por</div><div class="v" id="uploadedBy">...</div></div>
+          <div class="meta"><div class="k">Plataforma</div><div class="v" id="gamePlatform">...</div></div>
+          <div class="meta"><div class="k">Género</div><div class="v" id="gameGenre">...</div></div>
+          <div class="meta"><div class="k">Motor</div><div class="v" id="gameEngine">...</div></div>
         </div>
 
         <div class="stats">
@@ -533,12 +483,9 @@
         <div class="btn-row">
           <button id="playButton" class="btn btn-primary" style="display:none;" type="button">Jugar</button>
           <button id="fullScreenButton" class="btn" type="button">Pantalla completa</button>
-
-          <button id="likeButton" class="btn btn-ok" type="button">Like</button>
+          <button id="likeButton" class="btn" type="button">Like</button>
           <button id="dislikeButton" class="btn" type="button">Dislike</button>
-
           <a id="downloadLink" class="btn" href="#" target="_blank" rel="noopener">Descargar</a>
-
           <button id="favoriteButton" class="btn" type="button">Añadir a Favoritos</button>
           <button id="reportButton" class="btn btn-danger" type="button">Reportar</button>
           <button id="deleteButton" class="btn btn-danger" type="button" style="display:none;">Eliminar</button>
@@ -546,7 +493,6 @@
       </div>
     </section>
 
-    <!-- RIGHT -->
     <section class="stack">
       <div class="card">
         <div class="head">
@@ -557,22 +503,19 @@
           <div class="play-wrap" id="playWrap">
             <iframe id="gameIframe" allow="fullscreen; autoplay; gamepad *; clipboard-read; clipboard-write"></iframe>
 
-            <!-- ✅ CONTROLES MOVILES -->
             <div id="mobileControls" class="mobile-controls" style="display:none;">
               <div class="mc-top">
                 <button id="mcToggle" class="mc-pill" type="button">Controles móviles: ON</button>
 
-                <!-- ✅ Slider de opacidad -->
                 <div class="mc-opacity">
                   <label for="mcOpacity">Opacidad</label>
-                  <input id="mcOpacity" type="range" min="0.05" max="0.30" step="0.01" value="0.10" />
+                  <input id="mcOpacity" type="range" min="0.02" max="0.20" step="0.01" value="0.06" />
                 </div>
 
                 <button id="mcFs" class="mc-pill" type="button">Pantalla completa</button>
               </div>
 
               <div class="mc-bottom">
-                <!-- IZQUIERDA: Shift arriba + flechas abajo -->
                 <div class="mc-left">
                   <button class="mc-btn mc-wide" data-key="ShiftLeft" type="button">⇧ Correr</button>
 
@@ -587,12 +530,10 @@
                   </div>
                 </div>
 
-                <!-- CENTRO: Salto -->
                 <div class="mc-center">
                   <button class="mc-btn mc-jump" data-key="Space" type="button">⎵ Saltar</button>
                 </div>
 
-                <!-- DERECHA: Cámara -->
                 <div class="mc-right">
                   <div class="mc-look" id="mcLook">
                     <div class="mc-stick" id="mcStick"></div>
@@ -610,20 +551,12 @@
       </div>
 
       <div class="card">
-        <div class="head">
-          <strong>Screenshots</strong>
-          <span>Galería</span>
-        </div>
-        <div class="body">
-          <div id="screenshotGallery"></div>
-        </div>
+        <div class="head"><strong>Screenshots</strong><span>Galería</span></div>
+        <div class="body"><div id="screenshotGallery"></div></div>
       </div>
 
       <div class="card">
-        <div class="head">
-          <strong>Comentarios</strong>
-          <span>Tu comunidad</span>
-        </div>
+        <div class="head"><strong>Comentarios</strong><span>Tu comunidad</span></div>
         <div class="body">
           <div style="display:flex;gap:10px;align-items:flex-start;">
             <input id="commentInput" type="text" placeholder="Escribe un comentario..."
@@ -661,7 +594,6 @@
       const btnFs = document.getElementById("mcFs");
       const look = document.getElementById("mcLook");
       const stick = document.getElementById("mcStick");
-
       const opacitySlider = document.getElementById("mcOpacity");
 
       const isTouchDevice = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
@@ -675,22 +607,20 @@
       let lookActive = false;
       let lastSentAt = 0;
 
-      // ✅ carga opacidad guardada
-      const savedAlpha = parseFloat(localStorage.getItem("mc_alpha") || "0.10");
-      setAlpha(clamp(savedAlpha, 0.05, 0.30));
-      if (opacitySlider) opacitySlider.value = String(clamp(savedAlpha, 0.05, 0.30));
-
       function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+
+      // ✅ cargar opacidad guardada
+      const savedAlpha = parseFloat(localStorage.getItem("mc_alpha") || "0.06");
+      setAlpha(clamp(savedAlpha, 0.02, 0.20));
+      if (opacitySlider) opacitySlider.value = String(clamp(savedAlpha, 0.02, 0.20));
 
       function setAlpha(v){
         document.documentElement.style.setProperty("--mc-alpha", String(v));
-        // borde más suave cuando baja la opacidad
-        const borderAlpha = clamp(v + 0.02, 0.06, 0.16);
-        document.documentElement.style.setProperty("--mc-border-alpha", String(borderAlpha));
+        document.documentElement.style.setProperty("--mc-border-alpha", String(clamp(v + 0.03, 0.05, 0.18)));
       }
 
       opacitySlider?.addEventListener("input", () => {
-        const v = clamp(parseFloat(opacitySlider.value || "0.10"), 0.05, 0.30);
+        const v = clamp(parseFloat(opacitySlider.value || "0.06"), 0.02, 0.20);
         setAlpha(v);
         localStorage.setItem("mc_alpha", String(v));
       });
@@ -698,16 +628,12 @@
       function iframeVisible(){
         return iframe && iframe.style.display !== "none" && iframe.src && iframe.src !== "";
       }
-
       function showOverlayIfNeeded(){
         if (isTouchDevice && isSmall && iframeVisible() && enabled) overlay.style.display = "block";
         else overlay.style.display = "none";
       }
 
-      function cw(){
-        try { return iframe?.contentWindow || null; } catch(e){ return null; }
-      }
-
+      function cw(){ try { return iframe?.contentWindow || null; } catch(e){ return null; } }
       function focusGame(){
         const w = cw();
         if (!w) return;
@@ -726,44 +652,23 @@
         const w = cw();
         if (!w) return;
         focusGame();
-
-        const evt = new KeyboardEvent(type, {
-          code,
-          key: keyForCode(code),
-          bubbles: true,
-          cancelable: true
-        });
-
+        const evt = new KeyboardEvent(type, { code, key: keyForCode(code), bubbles: true, cancelable: true });
         try { w.dispatchEvent(evt); } catch(e){}
         try { w.document.dispatchEvent(evt); } catch(e){}
-        try {
-          const canvas = w.document.querySelector("canvas");
-          canvas?.dispatchEvent(evt);
-        } catch(e){}
+        try { w.document.querySelector("canvas")?.dispatchEvent(evt); } catch(e){}
       }
 
       function sendMouseMove(dx, dy){
         const w = cw();
         if (!w) return;
         focusGame();
-
         const now = performance.now();
         if (now - lastSentAt < 16) return;
         lastSentAt = now;
-
-        const evt = new MouseEvent("mousemove", {
-          bubbles: true,
-          cancelable: true,
-          movementX: dx,
-          movementY: dy
-        });
-
+        const evt = new MouseEvent("mousemove", { bubbles: true, cancelable: true, movementX: dx, movementY: dy });
         try { w.dispatchEvent(evt); } catch(e){}
         try { w.document.dispatchEvent(evt); } catch(e){}
-        try {
-          const canvas = w.document.querySelector("canvas");
-          canvas?.dispatchEvent(evt);
-        } catch(e){}
+        try { w.document.querySelector("canvas")?.dispatchEvent(evt); } catch(e){}
       }
 
       function bindKeyButtons(){
@@ -773,22 +678,17 @@
           if (!code) return;
 
           const down = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
+            e.preventDefault(); e.stopPropagation();
             if (!enabled) return;
             if (pressed.has(code)) return;
             pressed.add(code);
             sendKey("keydown", code);
-            btn.style.filter = "brightness(1.25)";
           };
-
           const up = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
+            e.preventDefault(); e.stopPropagation();
             if (!pressed.has(code)) return;
             pressed.delete(code);
             sendKey("keyup", code);
-            btn.style.filter = "";
           };
 
           btn.addEventListener("pointerdown", down, { passive:false });
@@ -806,7 +706,6 @@
           e.preventDefault();
           lookPointerId = e.pointerId;
           look.setPointerCapture(lookPointerId);
-
           const rect = look.getBoundingClientRect();
           lookCenter = { x: rect.left + rect.width/2, y: rect.top + rect.height/2, r: rect.width/2 - 28 };
           lookActive = true;
@@ -868,20 +767,13 @@
             await document.exitFullscreen?.();
           }
         } catch(e){}
-
         document.body.classList.toggle("mobile-fullscreen");
-
-        if (document.body.classList.contains("mobile-fullscreen")) {
-          iframe.style.display = "block";
-        }
+        if (document.body.classList.contains("mobile-fullscreen")) iframe.style.display = "block";
         showOverlayIfNeeded();
       }
 
       function bindFullscreen(){
-        btnFs?.addEventListener("click", (e) => {
-          e.preventDefault();
-          requestFullscreenMobile();
-        });
+        btnFs?.addEventListener("click", (e) => { e.preventDefault(); requestFullscreenMobile(); });
         document.addEventListener("fullscreenchange", () => showOverlayIfNeeded());
       }
 

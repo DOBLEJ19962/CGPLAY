@@ -25,6 +25,11 @@
       --danger: #ff5a7a;
       --ok: #34d399;
       --warn: #fbbf24;
+
+      /* ✅ Opacidad REAL controles móviles */
+      --mc-alpha: 0.06;
+      --mc-border-alpha: 0.09;
+      --mc-text-alpha: 0.90;
     }
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
@@ -308,6 +313,7 @@
       overflow:hidden;
       background: rgba(0,0,0,0.25);
       box-shadow: 0 12px 34px rgba(0,0,0,0.35);
+      position: relative; /* ✅ para overlay */
     }
     #gameIframe{
       width: 100%;
@@ -317,31 +323,177 @@
       background: #000;
     }
 
-    /* Screenshots (NO recorte, se ve completo) */
-#screenshotGallery{
-  display:grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
+    /* =========================
+       ✅ Screenshots PEQUEÑOS (premium + contain)
+       ========================= */
+    #screenshotGallery{
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+    }
+    #screenshotGallery img{
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      height: auto;
+      max-height: 96px;        /* ✅ pequeño SIEMPRE */
+      object-fit: contain;     /* ✅ NO recorta */
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.35);
+      cursor:pointer;
+      transition: transform .12s ease, border-color .12s ease;
+      padding: 6px;
+    }
+    #screenshotGallery img:hover{
+      transform: translateY(-2px);
+      border-color: rgba(110,231,255,0.18);
+    }
 
-#screenshotGallery img{
-  width: 100%;
-  aspect-ratio: 16 / 9;     /* ventana más grande */
-  height: auto;             /* importante */
-  object-fit: contain;      /* ✅ NO recorta */
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(0,0,0,0.35); /* “marco” oscuro para letterbox */
-  cursor:pointer;
-  transition: transform .12s ease, border-color .12s ease;
-  padding: 6px;             /* margen interno para que se vea premium */
-}
+    /* =========================
+       ✅ MOBILE CONTROLS (3 MODOS) — SIN BLUR
+       ========================= */
+    .mobile-controls{
+      position:absolute;
+      inset:0;
+      z-index: 5;
+      pointer-events:none;
+      display:none;
+    }
 
-#screenshotGallery img:hover{
-  transform: translateY(-2px);
-  border-color: rgba(110,231,255,0.18);
-}
+    .mc-look-anywhere{
+      position:absolute;
+      inset:0;
+      z-index:1;
+      background: transparent;
+      pointer-events: none; /* se activa solo en shooter */
+      touch-action: none;
+    }
+    .mc-look-anywhere.active{ pointer-events: auto; }
 
+    .mc-top{
+      position:absolute;
+      left: 10px; right: 10px; top: 10px;
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      justify-content: space-between;
+      pointer-events:none;
+      z-index: 3;
+    }
+    .mc-pill{
+      pointer-events:auto;
+      border: 1px solid rgba(255,255,255,var(--mc-border-alpha));
+      background: rgba(0,0,0,var(--mc-alpha));
+      color: rgba(255,255,255,0.92);
+      padding: 9px 11px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 12px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-user-select:none;
+      touch-action: manipulation;
+      white-space: nowrap;
+    }
+    .mc-opacity{
+      pointer-events:auto;
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,var(--mc-border-alpha));
+      background: rgba(0,0,0,var(--mc-alpha));
+      justify-content: space-between;
+      min-width: 180px;
+    }
+    .mc-opacity label{
+      font-weight: 900;
+      font-size: 11px;
+      color: rgba(255,255,255,0.85);
+      user-select:none;
+      -webkit-user-select:none;
+      white-space: nowrap;
+    }
+    .mc-opacity input[type="range"]{
+      width: 100px;
+      accent-color: rgba(255,255,255,0.9);
+    }
+
+    .mc-bottom{
+      position:absolute;
+      left: 10px; right: 10px; bottom: 10px;
+      display:flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items:flex-end;
+      pointer-events:none;
+      z-index: 3;
+    }
+    .mc-left, .mc-center, .mc-right{
+      pointer-events:none;
+      display:flex;
+      gap: 10px;
+      align-items:flex-end;
+    }
+    .mc-left{ flex-direction: column; align-items:flex-start; }
+    .mc-center{ justify-content:center; }
+    .mc-right{ justify-content:flex-end; }
+
+    .mc-btn{
+      pointer-events:auto;
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,var(--mc-border-alpha));
+      background: rgba(0,0,0,var(--mc-alpha));
+      color: rgba(255,255,255,var(--mc-text-alpha));
+      font-weight: 1000;
+      font-size: 16px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-user-select:none;
+      touch-action: none;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .mc-btn:active{
+      transform: scale(0.98);
+      background: rgba(0,0,0, calc(var(--mc-alpha) + 0.06));
+    }
+    .mc-wide{ width: 160px; height: 50px; border-radius: 14px; font-size: 14px; }
+    .mc-jump{ width: 190px; height: 64px; border-radius: 18px; font-size: 16px; }
+
+    .mc-dpad{
+      pointer-events:none;
+      display:grid;
+      grid-template-columns: 56px 56px 56px;
+      grid-template-rows: 56px 56px;
+      gap: 8px;
+      align-items:center;
+      justify-items:center;
+    }
+    .mc-dpad .spacer{ width:56px; height:56px; }
+
+    .mc-diamond{
+      pointer-events:none;
+      position: relative;
+      width: 180px;
+      height: 180px;
+    }
+    .mc-diamond .mc-btn{ position:absolute; }
+    .mc-diamond .up{ left: 62px; top: 4px; }
+    .mc-diamond .down{ left: 62px; top: 120px; }
+    .mc-diamond .left{ left: 4px; top: 62px; }
+    .mc-diamond .right{ left: 120px; top: 62px; }
+    .mc-diamond .center{
+      left: 62px; top: 62px;
+      opacity: .55;
+      pointer-events:none;
+      font-size: 12px;
+      border-radius: 18px;
+    }
 
     /* Comments */
     .comment-box{
@@ -426,13 +578,29 @@
 
     @media (max-width: 1100px){
       main.app{ grid-template-columns: 1fr; }
-      #screenshotGallery{ grid-template-columns: repeat(2, 1fr); }
       #gameIframe{ height: 56vh; }
     }
     @media (max-width: 520px){
       .brand .t{ display:none; }
-      #screenshotGallery{ grid-template-columns: 1fr; }
       #gameIframe{ height: 52vh; }
+      #screenshotGallery img{ max-height: 86px; }
+      .mc-jump{ width: 170px; height: 60px; }
+      .mc-wide{ width: 150px; height: 48px; }
+      .mc-btn{ width: 54px; height: 54px; }
+      .mc-dpad{
+        grid-template-columns: 54px 54px 54px;
+        grid-template-rows: 54px 54px;
+        gap: 7px;
+      }
+      .mc-dpad .spacer{ width:54px; height:54px; }
+      .mc-diamond{ width: 170px; height: 170px; }
+      .mc-diamond .up{ left: 58px; top: 2px; }
+      .mc-diamond .down{ left: 58px; top: 114px; }
+      .mc-diamond .left{ left: 2px; top: 58px; }
+      .mc-diamond .right{ left: 114px; top: 58px; }
+      .mc-diamond .center{ left: 58px; top: 58px; }
+      .mc-opacity{ min-width: 165px; }
+      .mc-opacity input[type="range"]{ width: 88px; }
     }
   </style>
 </head>
@@ -449,7 +617,6 @@
       </a>
 
       <div class="top-actions">
-        <!-- Menu (IDs compatibles con tu game.js) -->
         <div class="menu" id="menuWrap">
           <button class="menu-button" id="menuBtn" aria-label="Menú">⋮</button>
           <div class="menu-content" id="menuContent">
@@ -464,7 +631,6 @@
   </header>
 
   <main class="app">
-    <!-- LEFT: tarjeta del juego -->
     <section class="card">
       <div class="body">
         <div class="cover">
@@ -510,14 +676,11 @@
 
           <button id="favoriteButton" class="btn" type="button">Añadir a Favoritos</button>
           <button id="reportButton" class="btn btn-danger" type="button">Reportar</button>
-
-          <!-- delete button debe existir para tu JS -->
           <button id="deleteButton" class="btn btn-danger" type="button" style="display:none;">Eliminar</button>
         </div>
       </div>
     </section>
 
-    <!-- RIGHT: play / screenshots / comments -->
     <section class="stack">
       <div class="card">
         <div class="head">
@@ -525,9 +688,33 @@
           <span>Web embed</span>
         </div>
         <div class="body">
-          <div class="play-wrap">
+          <div class="play-wrap" id="playWrap">
             <iframe id="gameIframe" allow="fullscreen; autoplay; gamepad *; clipboard-read; clipboard-write"></iframe>
+
+            <!-- ✅ Mobile Controls Overlay -->
+            <div id="mobileControls" class="mobile-controls">
+              <div id="mcLookAnywhere" class="mc-look-anywhere"></div>
+
+              <div class="mc-top">
+                <button id="mcToggle" class="mc-pill" type="button">Controles: ON</button>
+                <button id="mcModeBtn" class="mc-pill" type="button">Modo: Shooter</button>
+
+                <div class="mc-opacity">
+                  <label for="mcOpacity">Opacidad</label>
+                  <input id="mcOpacity" type="range" min="0.02" max="0.20" step="0.01" value="0.06" />
+                </div>
+
+                <button id="mcFs" class="mc-pill" type="button">Fullscreen</button>
+              </div>
+
+              <div class="mc-bottom">
+                <div class="mc-left" id="mcLeft"></div>
+                <div class="mc-center" id="mcCenter"></div>
+                <div class="mc-right" id="mcRight"></div>
+              </div>
+            </div>
           </div>
+
           <div style="margin-top:10px;color:var(--muted);font-size:12px;line-height:1.4;">
             Tip: si el juego no carga, prueba en “Descargar” o revisa permisos del navegador.
           </div>
@@ -565,10 +752,29 @@
     <div class="footer-left">© <span id="year"></span> CGPlay</div>
   </footer>
 
+  <!-- ✅ Modal Screenshots (tap para ver grande) -->
+  <div id="shotModal" style="
+    position:fixed; inset:0; z-index:9999; display:none;
+    background: rgba(0,0,0,0.75);
+    align-items:center; justify-content:center;
+    padding: 18px;
+  ">
+    <img id="shotModalImg" alt="Screenshot" style="
+      max-width: min(920px, 95vw);
+      max-height: 85vh;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.55);
+      object-fit: contain;
+      background: rgba(0,0,0,0.25);
+      padding: 10px;
+    ">
+  </div>
+
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // Menú (igual que index)
+    // Menú
     const menuWrap = document.getElementById("menuWrap");
     const menuBtn = document.getElementById("menuBtn");
     menuBtn?.addEventListener("click", (e) => {
@@ -580,28 +786,19 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
-
-  <!-- Tu lógica -->
   <script src="game.js"></script>
 
-  <!-- ✅ pequeño parche visual SOLO para comments (no rompe lógica)
-       Convierte lo que game.js imprime en "cards bonitas" sin tocar tu fetch.
-  -->
+  <!-- ✅ Comentarios visual (sin romper tu lógica) -->
   <script>
-    // Observa cambios en commentList y re-envuelve los items existentes con el look pro
     const commentList = document.getElementById("commentList");
     if (commentList) {
       const obs = new MutationObserver(() => {
-        // si ya tiene .comment-item no rehacer
         const kids = Array.from(commentList.children);
         kids.forEach((node) => {
-          if (node.classList && node.classList.contains("comment-item")) return;
-          // si node es un texto/loader, no tocar
           if (!(node instanceof HTMLElement)) return;
-          // "Sin comentarios..." lo dejamos simple
+          if (node.classList.contains("comment-item")) return;
           if ((node.textContent || "").toLowerCase().includes("sin comentarios")) return;
 
-          // transform
           const raw = node.innerHTML;
           const tmp = document.createElement("div");
           tmp.innerHTML = raw;
@@ -628,6 +825,390 @@
       });
       obs.observe(commentList, { childList: true, subtree: false });
     }
+  </script>
+
+  <!-- ✅ Modal Screenshots -->
+  <script>
+    (function(){
+      const modal = document.getElementById("shotModal");
+      const modalImg = document.getElementById("shotModalImg");
+
+      document.addEventListener("click", (e) => {
+        const img = e.target.closest?.("#screenshotGallery img");
+        if (!img) return;
+        modalImg.src = img.src;
+        modal.style.display = "flex";
+      });
+
+      modal.addEventListener("click", () => {
+        modal.style.display = "none";
+        modalImg.src = "";
+      });
+    })();
+  </script>
+
+  <!-- ✅ Mobile Controls: 3 Modos + Opacidad + Shooter look-anywhere -->
+  <script>
+    (function(){
+      const iframe = document.getElementById("gameIframe");
+      const playWrap = document.getElementById("playWrap");
+
+      const overlay = document.getElementById("mobileControls");
+      const btnToggle = document.getElementById("mcToggle");
+      const btnFs = document.getElementById("mcFs");
+      const btnMode = document.getElementById("mcModeBtn");
+
+      const mcLeft = document.getElementById("mcLeft");
+      const mcCenter = document.getElementById("mcCenter");
+      const mcRight = document.getElementById("mcRight");
+      const lookAnywhere = document.getElementById("mcLookAnywhere");
+
+      const opacitySlider = document.getElementById("mcOpacity");
+
+      const isTouchDevice = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
+      const mqSmall = window.matchMedia("(max-width: 900px)");
+
+      let enabled = true;
+      const pressed = new Set();
+
+      function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+
+      function cw(){ try { return iframe?.contentWindow || null; } catch(e){ return null; } }
+      function focusGame(){
+        const w = cw();
+        if (!w) return;
+        try { iframe.focus?.(); } catch(e){}
+        try { w.focus?.(); } catch(e){}
+      }
+
+      function sendKey(type, code){
+        const w = cw();
+        if (!w) return;
+        focusGame();
+
+        const key =
+          code === "Space" ? " " :
+          (code === "ShiftLeft" || code === "ShiftRight") ? "Shift" :
+          code.startsWith("Arrow") ? code :
+          code;
+
+        const evt = new KeyboardEvent(type, { code, key, bubbles: true, cancelable: true });
+        try { w.dispatchEvent(evt); } catch(e){}
+        try { w.document.dispatchEvent(evt); } catch(e){}
+        try { w.document.querySelector("canvas")?.dispatchEvent(evt); } catch(e){}
+      }
+
+      function sendMouse(type){
+        const w = cw();
+        if (!w) return;
+        focusGame();
+        const evt = new MouseEvent(type, { bubbles: true, cancelable: true });
+        try { w.dispatchEvent(evt); } catch(e){}
+        try { w.document.dispatchEvent(evt); } catch(e){}
+        try { w.document.querySelector("canvas")?.dispatchEvent(evt); } catch(e){}
+      }
+
+      let lastMoveAt = 0;
+      function sendMouseMove(dx, dy){
+        const w = cw();
+        if (!w) return;
+        focusGame();
+        const now = performance.now();
+        if (now - lastMoveAt < 16) return;
+        lastMoveAt = now;
+        const evt = new MouseEvent("mousemove", { bubbles: true, cancelable: true, movementX: dx, movementY: dy });
+        try { w.dispatchEvent(evt); } catch(e){}
+        try { w.document.dispatchEvent(evt); } catch(e){}
+        try { w.document.querySelector("canvas")?.dispatchEvent(evt); } catch(e){}
+      }
+
+      // ✅ Opacidad guardada
+      function setAlpha(v){
+        document.documentElement.style.setProperty("--mc-alpha", String(v));
+        document.documentElement.style.setProperty("--mc-border-alpha", String(clamp(v + 0.03, 0.06, 0.18)));
+      }
+      const savedAlpha = parseFloat(localStorage.getItem("mc_alpha") || "0.06");
+      setAlpha(clamp(savedAlpha, 0.02, 0.20));
+      if (opacitySlider) opacitySlider.value = String(clamp(savedAlpha, 0.02, 0.20));
+      opacitySlider?.addEventListener("input", () => {
+        const v = clamp(parseFloat(opacitySlider.value || "0.06"), 0.02, 0.20);
+        setAlpha(v);
+        localStorage.setItem("mc_alpha", String(v));
+      });
+
+      // ✅ Modos
+      const MODES = ["shooter","platform","adventure"];
+      const LABEL = { shooter:"Shooter", platform:"Plataforma", adventure:"Aventura" };
+
+      function getMode(){
+        const m = (localStorage.getItem("mc_mode") || "shooter").toLowerCase();
+        return MODES.includes(m) ? m : "shooter";
+      }
+      function setMode(mode){
+        localStorage.setItem("mc_mode", mode);
+        btnMode.textContent = "Modo: " + LABEL[mode];
+        buildUI(mode);
+        applyLookAnywhere(mode);
+      }
+
+      function clearNode(n){ while(n.firstChild) n.removeChild(n.firstChild); }
+
+      function makeBtn(text, code, opts={}){
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "mc-btn" + (opts.wide ? " mc-wide" : "") + (opts.jump ? " mc-jump" : "");
+        b.textContent = text;
+        b.dataset.key = code;
+
+        const down = (e) => {
+          e.preventDefault(); e.stopPropagation();
+          if (!enabled) return;
+          if (pressed.has(code)) return;
+          pressed.add(code);
+
+          if (code === "MouseLeft") sendMouse("mousedown");
+          else if (code === "MouseRight") { sendMouse("contextmenu"); sendMouse("mousedown"); }
+          else sendKey("keydown", code);
+        };
+
+        const up = (e) => {
+          e.preventDefault(); e.stopPropagation();
+          if (!pressed.has(code)) return;
+          pressed.delete(code);
+
+          if (code === "MouseLeft") sendMouse("mouseup");
+          else if (code === "MouseRight") sendMouse("mouseup");
+          else sendKey("keyup", code);
+        };
+
+        b.addEventListener("pointerdown", down, { passive:false });
+        b.addEventListener("pointerup", up, { passive:false });
+        b.addEventListener("pointercancel", up, { passive:false });
+        b.addEventListener("pointerleave", up, { passive:false });
+
+        return b;
+      }
+
+      function makeDpadNormal(){
+        const wrap = document.createElement("div");
+        wrap.className = "mc-dpad";
+        const spacer = () => {
+          const s = document.createElement("div");
+          s.className = "spacer";
+          return s;
+        };
+        wrap.appendChild(spacer());
+        wrap.appendChild(makeBtn("↑","ArrowUp"));
+        wrap.appendChild(spacer());
+        wrap.appendChild(makeBtn("←","ArrowLeft"));
+        wrap.appendChild(makeBtn("↓","ArrowDown"));
+        wrap.appendChild(makeBtn("→","ArrowRight"));
+        return wrap;
+      }
+
+      function makeDpadDiamond(){
+        const wrap = document.createElement("div");
+        wrap.className = "mc-diamond";
+
+        const up = makeBtn("↑","ArrowUp"); up.classList.add("up");
+        const down = makeBtn("↓","ArrowDown"); down.classList.add("down");
+        const left = makeBtn("←","ArrowLeft"); left.classList.add("left");
+        const right = makeBtn("→","ArrowRight"); right.classList.add("right");
+
+        const center = document.createElement("div");
+        center.className = "mc-btn center";
+        center.textContent = "MOVE";
+
+        wrap.appendChild(up);
+        wrap.appendChild(down);
+        wrap.appendChild(left);
+        wrap.appendChild(right);
+        wrap.appendChild(center);
+        return wrap;
+      }
+
+      function buildUI(mode){
+        clearNode(mcLeft);
+        clearNode(mcCenter);
+        clearNode(mcRight);
+
+        if (mode === "shooter"){
+          mcLeft.appendChild(makeBtn("⇧ Correr","ShiftLeft",{wide:true}));
+          mcLeft.appendChild(makeDpadDiamond());
+
+          mcCenter.appendChild(makeBtn("⎵ Saltar","Space",{jump:true}));
+
+          const col = document.createElement("div");
+          col.style.display = "flex";
+          col.style.flexDirection = "column";
+          col.style.gap = "10px";
+          col.style.pointerEvents = "none";
+
+          const L = makeBtn("🖱️ L","MouseLeft",{wide:true});
+          const R = makeBtn("🖱️ R","MouseRight",{wide:true});
+          L.style.pointerEvents = "auto";
+          R.style.pointerEvents = "auto";
+
+          col.appendChild(L);
+          col.appendChild(R);
+          mcRight.appendChild(col);
+        }
+
+        if (mode === "platform"){
+          mcLeft.appendChild(makeDpadNormal());
+
+          const col = document.createElement("div");
+          col.style.display = "flex";
+          col.style.flexDirection = "column";
+          col.style.gap = "10px";
+          col.style.pointerEvents = "none";
+
+          const jump = makeBtn("⎵ Saltar","Space",{jump:true});
+          const L = makeBtn("🖱️ L","MouseLeft",{wide:true});
+          jump.style.pointerEvents = "auto";
+          L.style.pointerEvents = "auto";
+
+          col.appendChild(jump);
+          col.appendChild(L);
+          mcRight.appendChild(col);
+        }
+
+        if (mode === "adventure"){
+          mcLeft.appendChild(makeDpadNormal());
+
+          const col = document.createElement("div");
+          col.style.display = "flex";
+          col.style.flexDirection = "column";
+          col.style.gap = "10px";
+          col.style.pointerEvents = "none";
+
+          const jump = makeBtn("⎵ Saltar","Space",{jump:true});
+          const L = makeBtn("🖱️ L","MouseLeft",{wide:true});
+          const run = makeBtn("⇧ Correr","ShiftLeft",{wide:true});
+          jump.style.pointerEvents = "auto";
+          L.style.pointerEvents = "auto";
+          run.style.pointerEvents = "auto";
+
+          col.appendChild(jump);
+          col.appendChild(L);
+          col.appendChild(run);
+          mcRight.appendChild(col);
+        }
+      }
+
+      // ✅ Shooter: cámara touch-anywhere
+      let lookPointerId = null;
+      let lastX = 0, lastY = 0;
+      let dragging = false;
+
+      function applyLookAnywhere(mode){
+        if (!lookAnywhere) return;
+        if (enabled && mode === "shooter") lookAnywhere.classList.add("active");
+        else lookAnywhere.classList.remove("active");
+      }
+
+      function isOnControl(el){
+        return !!el.closest?.(".mc-btn, .mc-pill, .mc-opacity, .btn, a, .menu");
+      }
+
+      lookAnywhere?.addEventListener("pointerdown", (e) => {
+        if (!enabled) return;
+        if (getMode() !== "shooter") return;
+        if (isOnControl(e.target)) return;
+
+        e.preventDefault();
+        lookPointerId = e.pointerId;
+        lookAnywhere.setPointerCapture(lookPointerId);
+        lastX = e.clientX;
+        lastY = e.clientY;
+        dragging = true;
+      }, { passive:false });
+
+      lookAnywhere?.addEventListener("pointermove", (e) => {
+        if (!enabled) return;
+        if (getMode() !== "shooter") return;
+        if (!dragging || e.pointerId !== lookPointerId) return;
+
+        e.preventDefault();
+        const dx = e.clientX - lastX;
+        const dy = e.clientY - lastY;
+        lastX = e.clientX;
+        lastY = e.clientY;
+
+        const sensitivity = 1.2;
+        sendMouseMove(dx * sensitivity, dy * sensitivity);
+      }, { passive:false });
+
+      const endLook = (e) => {
+        if (e.pointerId !== lookPointerId) return;
+        e.preventDefault();
+        dragging = false;
+        lookPointerId = null;
+      };
+      lookAnywhere?.addEventListener("pointerup", endLook, { passive:false });
+      lookAnywhere?.addEventListener("pointercancel", endLook, { passive:false });
+      lookAnywhere?.addEventListener("pointerleave", endLook, { passive:false });
+
+      // Mostrar overlay solo cuando tiene sentido
+      function iframeVisible(){
+        return iframe && iframe.style.display !== "none" && iframe.src && iframe.src !== "";
+      }
+      function showOverlayIfNeeded(){
+        const isSmall = mqSmall.matches;
+        if (isTouchDevice && isSmall && iframeVisible() && enabled) overlay.style.display = "block";
+        else overlay.style.display = "none";
+      }
+
+      // Toggle
+      btnToggle?.addEventListener("click", (e) => {
+        e.preventDefault();
+        enabled = !enabled;
+
+        if (!enabled) {
+          pressed.forEach((code) => {
+            if (code === "MouseLeft" || code === "MouseRight") sendMouse("mouseup");
+            else sendKey("keyup", code);
+          });
+          pressed.clear();
+        }
+
+        btnToggle.textContent = enabled ? "Controles: ON" : "Controles: OFF";
+        showOverlayIfNeeded();
+        applyLookAnywhere(getMode());
+      });
+
+      // Modo cycle
+      btnMode?.addEventListener("click", (e) => {
+        e.preventDefault();
+        const cur = getMode();
+        const idx = MODES.indexOf(cur);
+        const next = MODES[(idx + 1) % MODES.length];
+        setMode(next);
+      });
+
+      // Fullscreen
+      async function requestFullscreenMobile(){
+        try{
+          if (!document.fullscreenElement) {
+            await (playWrap.requestFullscreen?.() || iframe.requestFullscreen?.());
+          } else {
+            await document.exitFullscreen?.();
+          }
+        } catch(e){}
+      }
+      btnFs?.addEventListener("click", (e) => { e.preventDefault(); requestFullscreenMobile(); });
+      document.addEventListener("fullscreenchange", () => showOverlayIfNeeded());
+
+      // Init
+      const startMode = getMode();
+      btnMode.textContent = "Modo: " + LABEL[startMode];
+      buildUI(startMode);
+      applyLookAnywhere(startMode);
+
+      window.addEventListener("resize", showOverlayIfNeeded);
+      setInterval(showOverlayIfNeeded, 250);
+      showOverlayIfNeeded();
+    })();
   </script>
 
 </body>

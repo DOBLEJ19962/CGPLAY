@@ -1,8 +1,10 @@
-<!-- ✅ game.html (FULL) — arreglado:
-1) ya NO bloquea el táctil/scroll de la página (quitado el preventDefault global)
-2) WSAD cambiado a FLECHAS (↑ ← ↓ →) en forma de teclado
-3) joystick de cámara más a la izquierda
-4) fullscreen móvil sin “congelar” la página (menos agresivo + botón salir) -->
+<!-- ✅ game.html (FULL) — Mismo que te gusta, SOLO cambia el layout:
+- Flechas abajo izquierda
+- Encima de flechas: Correr (Shift)
+- En el medio: Saltar (Space)
+- Derecha: Joystick cámara
+- Todo MÁS TRANSPARENTE para ver el juego
+- No bloquea scroll/táctil global -->
 
 <!DOCTYPE html>
 <html lang="es">
@@ -259,7 +261,7 @@
     }
 
     /* =========================
-       ✅ MOBILE CONTROLS OVERLAY
+       ✅ MOBILE CONTROLS OVERLAY (más transparente)
        ========================= */
     .mobile-controls{
       position:absolute;
@@ -277,10 +279,10 @@
     }
     .mc-pill{
       pointer-events: auto;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(11,15,23,0.55);
-      color: rgba(255,255,255,0.92);
-      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(11,15,23,0.30); /* ✅ más transparente */
+      color: rgba(255,255,255,0.90);
+      padding: 9px 11px;
       border-radius: 999px;
       font-weight: 900;
       font-size: 12px;
@@ -301,7 +303,34 @@
       align-items:flex-end;
     }
 
-    /* Flechas tipo teclado (↑ encima, ← ↓ → abajo) */
+    /* ✅ NUEVO layout:
+       izquierda: shift + flechas (columna)
+       centro: salto
+       derecha: cámara
+    */
+    .mc-left{
+      pointer-events:none;
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items:flex-start;
+    }
+
+    .mc-center{
+      pointer-events:none;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+    }
+
+    .mc-right{
+      pointer-events:none;
+      display:flex;
+      align-items:flex-end;
+      justify-content:flex-end;
+    }
+
+    /* Flechas */
     .mc-dpad{
       pointer-events: none;
       display:grid;
@@ -318,8 +347,8 @@
       width: 56px;
       height: 56px;
       border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(11,15,23,0.55);
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(11,15,23,0.22); /* ✅ MUY transparente */
       color: rgba(255,255,255,0.92);
       font-weight: 1000;
       font-size: 16px;
@@ -327,45 +356,37 @@
       cursor:pointer;
       user-select:none;
       -webkit-user-select:none;
-      touch-action: none; /* importante */
+      touch-action: none;
       display:flex;
       align-items:center;
       justify-content:center;
     }
-    .mc-btn:active{ transform: scale(0.98); }
+    .mc-btn:active{ transform: scale(0.98); background: rgba(11,15,23,0.30); }
 
-    .mc-actions{
-      pointer-events: none;
-      display:flex;
-      flex-direction: column;
-      gap: 10px;
-      align-items:flex-end;
-    }
-    .mc-wide{ width: 150px; }
-    .mc-space{ width: 170px; }
+    .mc-wide{ width: 160px; height: 50px; border-radius: 14px; font-size: 14px; }
+    .mc-jump{ width: 190px; height: 64px; border-radius: 18px; font-size: 16px; }
 
-    /* Joystick cámara MÁS a la izquierda */
+    /* Cámara derecha */
     .mc-look{
       pointer-events: auto;
       width: 145px;
       height: 145px;
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(11,15,23,0.35);
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(11,15,23,0.16); /* ✅ muy transparente */
       backdrop-filter: blur(10px);
       position: relative;
       touch-action: none;
       user-select:none;
       -webkit-user-select:none;
       overflow:hidden;
-      margin-left: -6px; /* lo pega un poco más a la izquierda */
     }
     .mc-stick{
       width: 54px;
       height: 54px;
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.08);
       position:absolute;
       left: 50%; top: 50%;
       transform: translate(-50%,-50%);
@@ -376,12 +397,12 @@
       left: 0; right: 0;
       text-align:center;
       font-size: 11px;
-      color: rgba(255,255,255,0.75);
+      color: rgba(255,255,255,0.70);
       font-weight: 900;
       pointer-events:none;
     }
 
-    /* Modo pseudo-fullscreen (no congela scroll fuera, solo cambia layout) */
+    /* Pseudo fullscreen */
     body.mobile-fullscreen header.app-header,
     body.mobile-fullscreen main.app > section.card{
       display:none;
@@ -406,9 +427,13 @@
       .brand .t{ display:none; }
       #screenshotGallery{ grid-template-columns: 1fr; }
       #gameIframe{ height: 52vh; }
-      .mc-wide{ width: 135px; }
-      .mc-space{ width: 155px; }
-      .mc-look{ width: 130px; height: 130px; }
+
+      .mc-look{ width: 128px; height: 128px; }
+      .mc-jump{ width: 170px; height: 60px; }
+      .mc-wide{ width: 150px; height: 48px; }
+      .mc-btn{ width: 54px; height: 54px; }
+      .mc-dpad{ grid-template-columns: 54px 54px 54px; grid-template-rows: 54px 54px; gap: 7px; }
+      .mc-dpad .spacer{ width:54px; height:54px; }
     }
   </style>
 </head>
@@ -507,27 +532,32 @@
               </div>
 
               <div class="mc-bottom">
-                <!-- D-PAD flechas -->
-                <div class="mc-dpad" id="mcDpad">
-                  <div class="spacer"></div>
-                  <button class="mc-btn" data-key="ArrowUp" type="button">↑</button>
-                  <div class="spacer"></div>
-
-                  <button class="mc-btn" data-key="ArrowLeft" type="button">←</button>
-                  <button class="mc-btn" data-key="ArrowDown" type="button">↓</button>
-                  <button class="mc-btn" data-key="ArrowRight" type="button">→</button>
-                </div>
-
-                <!-- Joystick cámara (más a la izquierda) -->
-                <div class="mc-look" id="mcLook">
-                  <div class="mc-stick" id="mcStick"></div>
-                  <div class="mc-label">Cámara</div>
-                </div>
-
-                <!-- Acciones -->
-                <div class="mc-actions">
-                  <button class="mc-btn mc-space" data-key="Space" type="button">⎵ Saltar</button>
+                <!-- IZQUIERDA: Shift arriba + flechas abajo -->
+                <div class="mc-left">
                   <button class="mc-btn mc-wide" data-key="ShiftLeft" type="button">⇧ Correr</button>
+
+                  <div class="mc-dpad" id="mcDpad">
+                    <div class="spacer"></div>
+                    <button class="mc-btn" data-key="ArrowUp" type="button">↑</button>
+                    <div class="spacer"></div>
+
+                    <button class="mc-btn" data-key="ArrowLeft" type="button">←</button>
+                    <button class="mc-btn" data-key="ArrowDown" type="button">↓</button>
+                    <button class="mc-btn" data-key="ArrowRight" type="button">→</button>
+                  </div>
+                </div>
+
+                <!-- CENTRO: Salto -->
+                <div class="mc-center">
+                  <button class="mc-btn mc-jump" data-key="Space" type="button">⎵ Saltar</button>
+                </div>
+
+                <!-- DERECHA: Cámara -->
+                <div class="mc-right">
+                  <div class="mc-look" id="mcLook">
+                    <div class="mc-stick" id="mcStick"></div>
+                    <div class="mc-label">Cámara</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -581,10 +611,10 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
 
-  <!-- ✅ Tu lógica (tu game.js original) -->
+  <!-- ✅ Tu lógica -->
   <script src="game.js"></script>
 
-  <!-- ✅ MOBILE CONTROLS (FIXED) -->
+  <!-- ✅ MOBILE CONTROLS (misma lógica, solo layout cambiado) -->
   <script>
     (function(){
       const iframe = document.getElementById("gameIframe");
@@ -627,13 +657,9 @@
       }
 
       function keyForCode(code){
-        // Valores “key” reales (mejor compatibilidad)
         if (code === "Space") return " ";
         if (code === "ShiftLeft" || code === "ShiftRight") return "Shift";
-        if (code === "ArrowUp") return "ArrowUp";
-        if (code === "ArrowDown") return "ArrowDown";
-        if (code === "ArrowLeft") return "ArrowLeft";
-        if (code === "ArrowRight") return "ArrowRight";
+        if (code.startsWith("Arrow")) return code;
         return code;
       }
 
@@ -649,7 +675,6 @@
           cancelable: true
         });
 
-        // Unity WebGL suele escuchar window/document/canvas
         try { w.dispatchEvent(evt); } catch(e){}
         try { w.document.dispatchEvent(evt); } catch(e){}
         try {
@@ -671,9 +696,7 @@
           bubbles: true,
           cancelable: true,
           movementX: dx,
-          movementY: dy,
-          clientX: 0,
-          clientY: 0
+          movementY: dy
         });
 
         try { w.dispatchEvent(evt); } catch(e){}
@@ -745,7 +768,6 @@
 
           stick.style.transform = `translate(calc(-50% + ${ndx}px), calc(-50% + ${ndy}px))`;
 
-          // Sensibilidad (sube/baja)
           const sensitivity = 0.28;
           sendMouseMove(ndx * sensitivity, ndy * sensitivity);
         }, { passive:false });
@@ -769,7 +791,6 @@
           e.preventDefault();
           enabled = !enabled;
 
-          // soltar teclas si apagamos
           if (!enabled) {
             pressed.forEach((code) => sendKey("keyup", code));
             pressed.clear();
@@ -781,7 +802,6 @@
       }
 
       async function requestFullscreenMobile(){
-        // 1) Fullscreen real si se puede
         try{
           if (!document.fullscreenElement) {
             await (playWrap.requestFullscreen?.() || iframe.requestFullscreen?.());
@@ -790,7 +810,6 @@
           }
         } catch(e){}
 
-        // 2) pseudo fullscreen (no congela la página, solo cambia layout)
         document.body.classList.toggle("mobile-fullscreen");
 
         if (document.body.classList.contains("mobile-fullscreen")) {
@@ -807,9 +826,6 @@
 
         document.addEventListener("fullscreenchange", () => showOverlayIfNeeded());
       }
-
-      // MUY IMPORTANTE: NO BLOQUEAMOS SCROLL DE LA PÁGINA (ya no se “congela”)
-      // Solo los botones/joystick usan touch-action:none y preventDefault local.
 
       bindKeyButtons();
       bindLookJoystick();

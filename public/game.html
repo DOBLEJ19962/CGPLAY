@@ -1,8 +1,7 @@
-<!-- ✅ game.html (FULL) — arreglado:
-1) ya NO bloquea el táctil/scroll de la página (quitado el preventDefault global)
-2) WSAD cambiado a FLECHAS (↑ ← ↓ →) en forma de teclado
-3) joystick de cámara más a la izquierda
-4) fullscreen móvil sin “congelar” la página (menos agresivo + botón salir) -->
+<!-- ✅ game.html (FULL) — Controles ABAJO en “zona negra” (transparente) debajo del juego
+     - El juego queda arriba
+     - Debajo: una barra negra semi-transparente con flechas + cámara + saltar/shift
+     - Sigue teniendo: toggle ON/OFF + fullscreen móvil + no bloquea navegación de la página -->
 
 <!DOCTYPE html>
 <html lang="es">
@@ -182,7 +181,6 @@
     }
     .meta .k{ font-size: 11px; color: var(--muted); font-weight: 900; text-transform: uppercase; }
     .meta .v{ margin-top: 5px; font-size: 13px; font-weight: 800; word-break: break-word; }
-
     #uploadedBy a{ color: rgba(110,231,255,0.95); text-decoration:none; font-weight: 900; }
     #uploadedBy a:hover{ text-decoration: underline; }
 
@@ -195,6 +193,7 @@
       background: rgba(255,255,255,0.03);
       font-size: 12px; font-weight: 900;
     }
+
     .btn-row{ display:flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
     .btn{
       border: 1px solid rgba(255,255,255,0.12);
@@ -222,6 +221,9 @@
 
     .stack > .card{ margin-bottom: 12px; }
 
+    /* =========================
+       ✅ JUEGO ARRIBA + CONTROLES ABAJO
+       ========================= */
     .play-wrap{
       border: 1px solid rgba(255,255,255,0.10);
       border-radius: 16px;
@@ -231,13 +233,171 @@
       position: relative;
     }
 
+    /* contenedor vertical */
+    .play-column{
+      display:flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
     #gameIframe{
       width: 100%;
       height: 520px;
       border: 0;
       display:none;
       background: #000;
+      flex: 1 1 auto;
     }
+
+    /* Barra inferior (zona negra transparente) */
+    .control-bar{
+      display:none; /* se enciende en móvil cuando hay juego */
+      width: 100%;
+      padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
+      background: rgba(0,0,0,0.55); /* zona negra */
+      backdrop-filter: blur(8px);
+      border-top: 1px solid rgba(255,255,255,0.10);
+    }
+
+    /* Top mini dentro de la barra */
+    .cb-top{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .cb-pill{
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.90);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 12px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-user-select:none;
+      touch-action: manipulation;
+    }
+
+    /* Layout controles */
+    .cb-controls{
+      display:flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items:flex-end;
+    }
+
+    /* Flechas */
+    .cb-dpad{
+      display:grid;
+      grid-template-columns: 54px 54px 54px;
+      grid-template-rows: 54px 54px;
+      gap: 8px;
+      align-items:center;
+      justify-items:center;
+    }
+    .cb-dpad .spacer{ width:54px; height:54px; }
+
+    /* Botones transparentes (ver juego) */
+    .cb-btn{
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08); /* más transparente */
+      color: rgba(255,255,255,0.92);
+      font-weight: 1000;
+      font-size: 16px;
+      backdrop-filter: blur(8px);
+      cursor:pointer;
+      user-select:none;
+      -webkit-user-select:none;
+      touch-action: none;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .cb-btn:active{ transform: scale(0.98); background: rgba(255,255,255,0.12); }
+
+    /* Acciones derecha */
+    .cb-actions{
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items:flex-end;
+    }
+    .cb-wide{ width: 140px; }
+    .cb-space{ width: 160px; }
+
+    /* Joystick cámara (en la barra, al centro) */
+    .cb-look{
+      width: 120px;
+      height: 120px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(8px);
+      position: relative;
+      touch-action: none;
+      user-select:none;
+      -webkit-user-select:none;
+      overflow:hidden;
+    }
+    .cb-stick{
+      width: 46px;
+      height: 46px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.10);
+      position:absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+    }
+    .cb-label{
+      position:absolute;
+      bottom: 7px;
+      left: 0; right: 0;
+      text-align:center;
+      font-size: 11px;
+      color: rgba(255,255,255,0.75);
+      font-weight: 900;
+      pointer-events:none;
+    }
+
+    /* Fullscreen móvil: solo muestra el panel de juego */
+    body.mobile-fullscreen header.app-header,
+    body.mobile-fullscreen main.app > section.card,
+    body.mobile-fullscreen footer{
+      display:none;
+    }
+    body.mobile-fullscreen main.app{
+      grid-template-columns: 1fr;
+      padding: 0;
+      margin: 0;
+      max-width: none;
+    }
+    body.mobile-fullscreen .stack{ margin:0; }
+    body.mobile-fullscreen .stack > .card{
+      margin:0;
+      border-radius: 0;
+      border:0;
+      box-shadow:none;
+    }
+    body.mobile-fullscreen .play-wrap{
+      border-radius: 0;
+      border:0;
+      height: 100vh;
+    }
+    body.mobile-fullscreen .play-column{ height: 100vh; }
+    body.mobile-fullscreen #gameIframe{
+      height: calc(100vh - 170px) !important; /* deja espacio a barra */
+      display:block;
+    }
+    body.mobile-fullscreen .control-bar{ display:block; }
 
     /* Screenshots */
     #screenshotGallery{
@@ -258,145 +418,6 @@
       padding: 6px;
     }
 
-    /* =========================
-       ✅ MOBILE CONTROLS OVERLAY
-       ========================= */
-    .mobile-controls{
-      position:absolute;
-      inset: 0;
-      z-index: 5;
-      pointer-events: none; /* deja tocar el juego */
-    }
-    .mc-top{
-      position:absolute;
-      left: 10px; right: 10px; top: 10px;
-      display:flex;
-      justify-content: space-between;
-      gap: 10px;
-      pointer-events: none;
-    }
-    .mc-pill{
-      pointer-events: auto;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(11,15,23,0.55);
-      color: rgba(255,255,255,0.92);
-      padding: 10px 12px;
-      border-radius: 999px;
-      font-weight: 900;
-      font-size: 12px;
-      backdrop-filter: blur(10px);
-      cursor:pointer;
-      user-select:none;
-      -webkit-user-select:none;
-      touch-action: manipulation;
-    }
-
-    .mc-bottom{
-      position:absolute;
-      left: 10px; right: 10px; bottom: 10px;
-      display:flex;
-      justify-content: space-between;
-      gap: 12px;
-      pointer-events: none;
-      align-items:flex-end;
-    }
-
-    /* Flechas tipo teclado (↑ encima, ← ↓ → abajo) */
-    .mc-dpad{
-      pointer-events: none;
-      display:grid;
-      grid-template-columns: 56px 56px 56px;
-      grid-template-rows: 56px 56px;
-      gap: 8px;
-      align-items:center;
-      justify-items:center;
-    }
-    .mc-dpad .spacer{ width:56px; height:56px; }
-
-    .mc-btn{
-      pointer-events: auto;
-      width: 56px;
-      height: 56px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(11,15,23,0.55);
-      color: rgba(255,255,255,0.92);
-      font-weight: 1000;
-      font-size: 16px;
-      backdrop-filter: blur(10px);
-      cursor:pointer;
-      user-select:none;
-      -webkit-user-select:none;
-      touch-action: none; /* importante */
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-    .mc-btn:active{ transform: scale(0.98); }
-
-    .mc-actions{
-      pointer-events: none;
-      display:flex;
-      flex-direction: column;
-      gap: 10px;
-      align-items:flex-end;
-    }
-    .mc-wide{ width: 150px; }
-    .mc-space{ width: 170px; }
-
-    /* Joystick cámara MÁS a la izquierda */
-    .mc-look{
-      pointer-events: auto;
-      width: 145px;
-      height: 145px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(11,15,23,0.35);
-      backdrop-filter: blur(10px);
-      position: relative;
-      touch-action: none;
-      user-select:none;
-      -webkit-user-select:none;
-      overflow:hidden;
-      margin-left: -6px; /* lo pega un poco más a la izquierda */
-    }
-    .mc-stick{
-      width: 54px;
-      height: 54px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.10);
-      position:absolute;
-      left: 50%; top: 50%;
-      transform: translate(-50%,-50%);
-    }
-    .mc-label{
-      position:absolute;
-      bottom: 8px;
-      left: 0; right: 0;
-      text-align:center;
-      font-size: 11px;
-      color: rgba(255,255,255,0.75);
-      font-weight: 900;
-      pointer-events:none;
-    }
-
-    /* Modo pseudo-fullscreen (no congela scroll fuera, solo cambia layout) */
-    body.mobile-fullscreen header.app-header,
-    body.mobile-fullscreen main.app > section.card{
-      display:none;
-    }
-    body.mobile-fullscreen main.app{
-      grid-template-columns: 1fr;
-      padding: 0;
-      margin: 0;
-      max-width: none;
-    }
-    body.mobile-fullscreen .stack{ margin:0; }
-    body.mobile-fullscreen .stack > .card{ margin:0; border-radius: 0; border:0; box-shadow:none; }
-    body.mobile-fullscreen .play-wrap{ border-radius: 0; border:0; height: 100vh; }
-    body.mobile-fullscreen #gameIframe{ height: 100vh !important; display:block; }
-
     @media (max-width: 1100px){
       main.app{ grid-template-columns: 1fr; }
       #screenshotGallery{ grid-template-columns: repeat(2, 1fr); }
@@ -406,9 +427,9 @@
       .brand .t{ display:none; }
       #screenshotGallery{ grid-template-columns: 1fr; }
       #gameIframe{ height: 52vh; }
-      .mc-wide{ width: 135px; }
-      .mc-space{ width: 155px; }
-      .mc-look{ width: 130px; height: 130px; }
+      .cb-look{ width: 108px; height: 108px; }
+      .cb-space{ width: 150px; }
+      .cb-wide{ width: 130px; }
     }
   </style>
 </head>
@@ -497,37 +518,40 @@
         </div>
         <div class="body">
           <div class="play-wrap" id="playWrap">
-            <iframe id="gameIframe" allow="fullscreen; autoplay; gamepad *; clipboard-read; clipboard-write"></iframe>
+            <div class="play-column">
+              <!-- Juego -->
+              <iframe id="gameIframe" allow="fullscreen; autoplay; gamepad *; clipboard-read; clipboard-write"></iframe>
 
-            <!-- ✅ CONTROLES MOVILES -->
-            <div id="mobileControls" class="mobile-controls" style="display:none;">
-              <div class="mc-top">
-                <button id="mcToggle" class="mc-pill" type="button">Controles móviles: ON</button>
-                <button id="mcFs" class="mc-pill" type="button">Pantalla completa</button>
-              </div>
-
-              <div class="mc-bottom">
-                <!-- D-PAD flechas -->
-                <div class="mc-dpad" id="mcDpad">
-                  <div class="spacer"></div>
-                  <button class="mc-btn" data-key="ArrowUp" type="button">↑</button>
-                  <div class="spacer"></div>
-
-                  <button class="mc-btn" data-key="ArrowLeft" type="button">←</button>
-                  <button class="mc-btn" data-key="ArrowDown" type="button">↓</button>
-                  <button class="mc-btn" data-key="ArrowRight" type="button">→</button>
+              <!-- ✅ Barra inferior de controles -->
+              <div id="controlBar" class="control-bar">
+                <div class="cb-top">
+                  <button id="cbToggle" class="cb-pill" type="button">Controles: ON</button>
+                  <button id="cbFs" class="cb-pill" type="button">Pantalla completa</button>
                 </div>
 
-                <!-- Joystick cámara (más a la izquierda) -->
-                <div class="mc-look" id="mcLook">
-                  <div class="mc-stick" id="mcStick"></div>
-                  <div class="mc-label">Cámara</div>
-                </div>
+                <div class="cb-controls">
+                  <!-- Flechas -->
+                  <div class="cb-dpad">
+                    <div class="spacer"></div>
+                    <button class="cb-btn" data-key="ArrowUp" type="button">↑</button>
+                    <div class="spacer"></div>
 
-                <!-- Acciones -->
-                <div class="mc-actions">
-                  <button class="mc-btn mc-space" data-key="Space" type="button">⎵ Saltar</button>
-                  <button class="mc-btn mc-wide" data-key="ShiftLeft" type="button">⇧ Correr</button>
+                    <button class="cb-btn" data-key="ArrowLeft" type="button">←</button>
+                    <button class="cb-btn" data-key="ArrowDown" type="button">↓</button>
+                    <button class="cb-btn" data-key="ArrowRight" type="button">→</button>
+                  </div>
+
+                  <!-- Cámara -->
+                  <div class="cb-look" id="cbLook">
+                    <div class="cb-stick" id="cbStick"></div>
+                    <div class="cb-label">Cámara</div>
+                  </div>
+
+                  <!-- Acciones -->
+                  <div class="cb-actions">
+                    <button class="cb-btn cb-space" data-key="Space" type="button">⎵ Saltar</button>
+                    <button class="cb-btn cb-wide" data-key="ShiftLeft" type="button">⇧ Correr</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -581,19 +605,21 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
 
-  <!-- ✅ Tu lógica (tu game.js original) -->
+  <!-- ✅ Tu lógica -->
   <script src="game.js"></script>
 
-  <!-- ✅ MOBILE CONTROLS (FIXED) -->
+  <!-- ✅ Control Bar: teclado + mouse a iframe -->
   <script>
     (function(){
       const iframe = document.getElementById("gameIframe");
       const playWrap = document.getElementById("playWrap");
-      const overlay = document.getElementById("mobileControls");
-      const btnToggle = document.getElementById("mcToggle");
-      const btnFs = document.getElementById("mcFs");
-      const look = document.getElementById("mcLook");
-      const stick = document.getElementById("mcStick");
+
+      const bar = document.getElementById("controlBar");
+      const btnToggle = document.getElementById("cbToggle");
+      const btnFs = document.getElementById("cbFs");
+
+      const look = document.getElementById("cbLook");
+      const stick = document.getElementById("cbStick");
 
       const isTouchDevice = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
       const isSmall = window.matchMedia("(max-width: 900px)").matches;
@@ -610,9 +636,9 @@
         return iframe && iframe.style.display !== "none" && iframe.src && iframe.src !== "";
       }
 
-      function showOverlayIfNeeded(){
-        if (isTouchDevice && isSmall && iframeVisible() && enabled) overlay.style.display = "block";
-        else overlay.style.display = "none";
+      function showBarIfNeeded(){
+        if (isTouchDevice && isSmall && iframeVisible() && enabled) bar.style.display = "block";
+        else bar.style.display = "none";
       }
 
       function cw(){
@@ -627,14 +653,9 @@
       }
 
       function keyForCode(code){
-        // Valores “key” reales (mejor compatibilidad)
         if (code === "Space") return " ";
         if (code === "ShiftLeft" || code === "ShiftRight") return "Shift";
-        if (code === "ArrowUp") return "ArrowUp";
-        if (code === "ArrowDown") return "ArrowDown";
-        if (code === "ArrowLeft") return "ArrowLeft";
-        if (code === "ArrowRight") return "ArrowRight";
-        return code;
+        return code; // ArrowUp etc.
       }
 
       function sendKey(type, code){
@@ -649,7 +670,6 @@
           cancelable: true
         });
 
-        // Unity WebGL suele escuchar window/document/canvas
         try { w.dispatchEvent(evt); } catch(e){}
         try { w.document.dispatchEvent(evt); } catch(e){}
         try {
@@ -671,9 +691,7 @@
           bubbles: true,
           cancelable: true,
           movementX: dx,
-          movementY: dy,
-          clientX: 0,
-          clientY: 0
+          movementY: dy
         });
 
         try { w.dispatchEvent(evt); } catch(e){}
@@ -685,7 +703,7 @@
       }
 
       function bindKeyButtons(){
-        const buttons = overlay.querySelectorAll("[data-key]");
+        const buttons = bar.querySelectorAll("[data-key]");
         buttons.forEach((btn) => {
           const code = btn.getAttribute("data-key");
           if (!code) return;
@@ -722,11 +740,12 @@
         look.addEventListener("pointerdown", (e) => {
           if (!enabled) return;
           e.preventDefault();
+
           lookPointerId = e.pointerId;
           look.setPointerCapture(lookPointerId);
 
           const rect = look.getBoundingClientRect();
-          lookCenter = { x: rect.left + rect.width/2, y: rect.top + rect.height/2, r: rect.width/2 - 28 };
+          lookCenter = { x: rect.left + rect.width/2, y: rect.top + rect.height/2, r: rect.width/2 - 24 };
           lookActive = true;
         }, { passive:false });
 
@@ -745,8 +764,7 @@
 
           stick.style.transform = `translate(calc(-50% + ${ndx}px), calc(-50% + ${ndy}px))`;
 
-          // Sensibilidad (sube/baja)
-          const sensitivity = 0.28;
+          const sensitivity = 0.30;
           sendMouseMove(ndx * sensitivity, ndy * sensitivity);
         }, { passive:false });
 
@@ -769,19 +787,17 @@
           e.preventDefault();
           enabled = !enabled;
 
-          // soltar teclas si apagamos
           if (!enabled) {
             pressed.forEach((code) => sendKey("keyup", code));
             pressed.clear();
           }
 
-          btnToggle.textContent = enabled ? "Controles móviles: ON" : "Controles móviles: OFF";
-          showOverlayIfNeeded();
+          btnToggle.textContent = enabled ? "Controles: ON" : "Controles: OFF";
+          showBarIfNeeded();
         });
       }
 
       async function requestFullscreenMobile(){
-        // 1) Fullscreen real si se puede
         try{
           if (!document.fullscreenElement) {
             await (playWrap.requestFullscreen?.() || iframe.requestFullscreen?.());
@@ -790,13 +806,11 @@
           }
         } catch(e){}
 
-        // 2) pseudo fullscreen (no congela la página, solo cambia layout)
         document.body.classList.toggle("mobile-fullscreen");
-
         if (document.body.classList.contains("mobile-fullscreen")) {
           iframe.style.display = "block";
         }
-        showOverlayIfNeeded();
+        showBarIfNeeded();
       }
 
       function bindFullscreen(){
@@ -804,20 +818,16 @@
           e.preventDefault();
           requestFullscreenMobile();
         });
-
-        document.addEventListener("fullscreenchange", () => showOverlayIfNeeded());
+        document.addEventListener("fullscreenchange", () => showBarIfNeeded());
       }
-
-      // MUY IMPORTANTE: NO BLOQUEAMOS SCROLL DE LA PÁGINA (ya no se “congela”)
-      // Solo los botones/joystick usan touch-action:none y preventDefault local.
 
       bindKeyButtons();
       bindLookJoystick();
       bindToggle();
       bindFullscreen();
 
-      window.addEventListener("resize", showOverlayIfNeeded);
-      setInterval(showOverlayIfNeeded, 250);
+      window.addEventListener("resize", showBarIfNeeded);
+      setInterval(showBarIfNeeded, 250);
     })();
   </script>
 </body>

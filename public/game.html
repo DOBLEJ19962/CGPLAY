@@ -1,10 +1,4 @@
-<!-- ✅ game.html (FULL) — Controles ULTRA transparentes SIN BLUR (ni backdrop-filter)
-- Izq: Shift arriba + flechas abajo
-- Centro: Saltar
-- Derecha: Cámara
-- Slider de opacidad (real) sin blur y guardado en localStorage
--->
-
+<!-- ✅ game.html (FULL) — Controles ULTRA transparentes SIN BLUR + 3 presets + galería fix -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -14,7 +8,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root{
@@ -27,10 +21,10 @@
       --danger: #ff5a7a;
       --ok: #34d399;
 
-      /* ✅ Opacidad REAL de controles (muy baja) */
-      --mc-alpha: 0.06;          /* fondo */
-      --mc-border-alpha: 0.08;   /* borde */
-      --mc-text-alpha: 0.85;     /* texto */
+      /* ✅ Opacidad REAL controles */
+      --mc-alpha: 0.06;
+      --mc-border-alpha: 0.08;
+      --mc-text-alpha: 0.85;
     }
 
     *{ box-sizing:border-box; }
@@ -51,8 +45,7 @@
       z-index: 50;
       padding: 10px 12px;
       background: rgba(11,15,23,0.78);
-      /* blur de header ok */
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px); /* ok */
       border-bottom: 1px solid var(--border);
     }
     .header-row{
@@ -190,7 +183,6 @@
     }
     .meta .k{ font-size: 11px; color: var(--muted); font-weight: 900; text-transform: uppercase; }
     .meta .v{ margin-top: 5px; font-size: 13px; font-weight: 800; word-break: break-word; }
-
     #uploadedBy a{ color: rgba(110,231,255,0.95); text-decoration:none; font-weight: 900; }
     #uploadedBy a:hover{ text-decoration: underline; }
 
@@ -249,6 +241,20 @@
       inset: 0;
       z-index: 5;
       pointer-events: none;
+      display:none;
+    }
+
+    /* capa para "touch anywhere" (solo shooter) */
+    .mc-look-anywhere{
+      position:absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: auto;  /* se activa/desactiva por JS */
+      touch-action: none;
+      background: transparent;
+    }
+    .mc-look-anywhere.disabled{
+      pointer-events: none;
     }
 
     .mc-top{
@@ -259,6 +265,23 @@
       gap: 10px;
       pointer-events: none;
       align-items:center;
+      z-index: 3;
+    }
+
+    .mc-pill{
+      pointer-events: auto;
+      border: 1px solid rgba(255,255,255,var(--mc-border-alpha));
+      background: rgba(0,0,0,var(--mc-alpha));
+      color: rgba(255,255,255,0.90);
+      padding: 9px 11px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 12px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-user-select:none;
+      touch-action: manipulation;
+      white-space: nowrap;
     }
 
     .mc-opacity{
@@ -269,7 +292,9 @@
       padding: 8px 10px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,var(--mc-border-alpha));
-      background: rgba(0,0,0,var(--mc-alpha)); /* ✅ SIN BLUR */
+      background: rgba(0,0,0,var(--mc-alpha));
+      min-width: 190px;
+      justify-content: space-between;
     }
     .mc-opacity label{
       font-weight: 900;
@@ -280,23 +305,8 @@
       white-space: nowrap;
     }
     .mc-opacity input[type="range"]{
-      width: 120px;
+      width: 110px;
       accent-color: rgba(255,255,255,0.9);
-    }
-
-    .mc-pill{
-      pointer-events: auto;
-      border: 1px solid rgba(255,255,255,var(--mc-border-alpha));
-      background: rgba(0,0,0,var(--mc-alpha)); /* ✅ SIN BLUR */
-      color: rgba(255,255,255,0.90);
-      padding: 9px 11px;
-      border-radius: 999px;
-      font-weight: 900;
-      font-size: 12px;
-      cursor:pointer;
-      user-select:none;
-      -webkit-user-select:none;
-      touch-action: manipulation;
     }
 
     .mc-bottom{
@@ -307,38 +317,18 @@
       gap: 12px;
       pointer-events: none;
       align-items:flex-end;
+      z-index: 3;
     }
 
-    .mc-left{
+    .mc-left, .mc-center, .mc-right{
       pointer-events:none;
       display:flex;
-      flex-direction: column;
       gap: 10px;
-      align-items:flex-start;
-    }
-    .mc-center{
-      pointer-events:none;
-      display:flex;
       align-items:flex-end;
-      justify-content:center;
     }
-    .mc-right{
-      pointer-events:none;
-      display:flex;
-      align-items:flex-end;
-      justify-content:flex-end;
-    }
-
-    .mc-dpad{
-      pointer-events: none;
-      display:grid;
-      grid-template-columns: 56px 56px 56px;
-      grid-template-rows: 56px 56px;
-      gap: 8px;
-      align-items:center;
-      justify-items:center;
-    }
-    .mc-dpad .spacer{ width:56px; height:56px; }
+    .mc-left{ flex-direction: column; align-items:flex-start; }
+    .mc-center{ justify-content:center; }
+    .mc-right{ justify-content:flex-end; }
 
     .mc-btn{
       pointer-events: auto;
@@ -346,7 +336,7 @@
       height: 56px;
       border-radius: 16px;
       border: 1px solid rgba(255,255,255,var(--mc-border-alpha));
-      background: rgba(0,0,0,var(--mc-alpha)); /* ✅ SIN BLUR */
+      background: rgba(0,0,0,var(--mc-alpha));
       color: rgba(255,255,255,var(--mc-text-alpha));
       font-weight: 1000;
       font-size: 16px;
@@ -366,38 +356,74 @@
     .mc-wide{ width: 160px; height: 50px; border-radius: 14px; font-size: 14px; }
     .mc-jump{ width: 190px; height: 64px; border-radius: 18px; font-size: 16px; }
 
-    .mc-look{
-      pointer-events: auto;
-      width: 145px;
-      height: 145px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,var(--mc-border-alpha));
-      background: rgba(0,0,0, calc(var(--mc-alpha) * 0.9)); /* ✅ SIN BLUR */
+    /* ✅ D-Pad normal (plataforma/aventura) */
+    .mc-dpad{
+      pointer-events: none;
+      display:grid;
+      grid-template-columns: 56px 56px 56px;
+      grid-template-rows: 56px 56px;
+      gap: 8px;
+      align-items:center;
+      justify-items:center;
+    }
+    .mc-dpad .spacer{ width:56px; height:56px; }
+
+    /* ✅ D-Pad diamante (shooter) */
+    .mc-diamond{
+      pointer-events: none;
       position: relative;
-      touch-action: none;
-      user-select:none;
-      -webkit-user-select:none;
-      overflow:hidden;
+      width: 180px;
+      height: 180px;
     }
-    .mc-stick{
-      width: 54px;
-      height: 54px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255, calc(var(--mc-border-alpha) + 0.06));
-      background: rgba(255,255,255, calc(var(--mc-alpha) * 0.7)); /* ✅ SIN BLUR */
+    .mc-diamond .mc-btn{
       position:absolute;
-      left: 50%; top: 50%;
-      transform: translate(-50%,-50%);
+      width: 56px; height: 56px;
     }
-    .mc-label{
-      position:absolute;
-      bottom: 8px;
-      left: 0; right: 0;
-      text-align:center;
+    .mc-diamond .up{ left: 62px; top: 4px; }
+    .mc-diamond .down{ left: 62px; top: 120px; }
+    .mc-diamond .left{ left: 4px; top: 62px; }
+    .mc-diamond .right{ left: 120px; top: 62px; }
+    .mc-diamond .center{
+      left: 62px; top: 62px;
+      width: 56px; height: 56px;
+      border-radius: 18px;
+      font-size: 14px;
+      opacity: 0.65;
+    }
+
+    /* =========================
+       ✅ Screenshots Gallery (FIX inmensas)
+       ========================= */
+    #screenshotGallery{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    @media (max-width: 900px){
+      #screenshotGallery{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 520px){
+      #screenshotGallery{ grid-template-columns: 1fr; }
+    }
+    .shot{
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.02);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.28);
+    }
+    .shot img{
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      display:block;
+    }
+    .shot .cap{
+      padding: 8px 10px;
       font-size: 11px;
       color: rgba(255,255,255,0.70);
-      font-weight: 900;
-      pointer-events:none;
+      font-weight: 800;
+      border-top: 1px solid rgba(255,255,255,0.06);
     }
 
     /* Pseudo fullscreen */
@@ -423,13 +449,23 @@
     @media (max-width: 520px){
       .brand .t{ display:none; }
       #gameIframe{ height: 52vh; }
-      .mc-look{ width: 128px; height: 128px; }
       .mc-jump{ width: 170px; height: 60px; }
       .mc-wide{ width: 150px; height: 48px; }
       .mc-btn{ width: 54px; height: 54px; }
-      .mc-dpad{ grid-template-columns: 54px 54px 54px; grid-template-rows: 54px 54px; gap: 7px; }
+      .mc-dpad{
+        grid-template-columns: 54px 54px 54px;
+        grid-template-rows: 54px 54px;
+        gap: 7px;
+      }
       .mc-dpad .spacer{ width:54px; height:54px; }
-      .mc-opacity input[type="range"]{ width: 100px; }
+      .mc-diamond{ width: 170px; height: 170px; }
+      .mc-diamond .up{ left: 58px; top: 2px; }
+      .mc-diamond .down{ left: 58px; top: 114px; }
+      .mc-diamond .left{ left: 2px; top: 58px; }
+      .mc-diamond .right{ left: 114px; top: 58px; }
+      .mc-diamond .center{ left: 58px; top: 58px; }
+      .mc-opacity{ min-width: 170px; }
+      .mc-opacity input[type="range"]{ width: 90px; }
     }
   </style>
 </head>
@@ -503,9 +539,16 @@
           <div class="play-wrap" id="playWrap">
             <iframe id="gameIframe" allow="fullscreen; autoplay; gamepad *; clipboard-read; clipboard-write"></iframe>
 
-            <div id="mobileControls" class="mobile-controls" style="display:none;">
+            <!-- ✅ Controles móviles -->
+            <div id="mobileControls" class="mobile-controls">
+              <!-- ✅ capa touch-anywhere para cámara (solo shooter) -->
+              <div id="mcLookAnywhere" class="mc-look-anywhere disabled" aria-hidden="true"></div>
+
               <div class="mc-top">
                 <button id="mcToggle" class="mc-pill" type="button">Controles móviles: ON</button>
+
+                <!-- ✅ selector preset -->
+                <button id="mcModeBtn" class="mc-pill" type="button">Modo: Shooter</button>
 
                 <div class="mc-opacity">
                   <label for="mcOpacity">Opacidad</label>
@@ -516,30 +559,9 @@
               </div>
 
               <div class="mc-bottom">
-                <div class="mc-left">
-                  <button class="mc-btn mc-wide" data-key="ShiftLeft" type="button">⇧ Correr</button>
-
-                  <div class="mc-dpad" id="mcDpad">
-                    <div class="spacer"></div>
-                    <button class="mc-btn" data-key="ArrowUp" type="button">↑</button>
-                    <div class="spacer"></div>
-
-                    <button class="mc-btn" data-key="ArrowLeft" type="button">←</button>
-                    <button class="mc-btn" data-key="ArrowDown" type="button">↓</button>
-                    <button class="mc-btn" data-key="ArrowRight" type="button">→</button>
-                  </div>
-                </div>
-
-                <div class="mc-center">
-                  <button class="mc-btn mc-jump" data-key="Space" type="button">⎵ Saltar</button>
-                </div>
-
-                <div class="mc-right">
-                  <div class="mc-look" id="mcLook">
-                    <div class="mc-stick" id="mcStick"></div>
-                    <div class="mc-label">Cámara</div>
-                  </div>
-                </div>
+                <div class="mc-left" id="mcLeft"></div>
+                <div class="mc-center" id="mcCenter"></div>
+                <div class="mc-right" id="mcRight"></div>
               </div>
             </div>
           </div>
@@ -585,15 +607,22 @@
   <script src="js/supabase.js"></script>
   <script src="game.js"></script>
 
+  <!-- ✅ FULL JS CONTROLES + PRESETS + GALERÍA FIX -->
   <script>
     (function(){
       const iframe = document.getElementById("gameIframe");
       const playWrap = document.getElementById("playWrap");
+
       const overlay = document.getElementById("mobileControls");
       const btnToggle = document.getElementById("mcToggle");
       const btnFs = document.getElementById("mcFs");
-      const look = document.getElementById("mcLook");
-      const stick = document.getElementById("mcStick");
+      const btnMode = document.getElementById("mcModeBtn");
+
+      const mcLeft = document.getElementById("mcLeft");
+      const mcCenter = document.getElementById("mcCenter");
+      const mcRight = document.getElementById("mcRight");
+      const lookAnywhere = document.getElementById("mcLookAnywhere");
+
       const opacitySlider = document.getElementById("mcOpacity");
 
       const isTouchDevice = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
@@ -602,29 +631,94 @@
       let enabled = true;
       const pressed = new Set();
 
-      let lookPointerId = null;
-      let lookCenter = null;
-      let lookActive = false;
-      let lastSentAt = 0;
-
+      // ========= helpers =========
       function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+      function cw(){ try { return iframe?.contentWindow || null; } catch(e){ return null; } }
+      function focusGame(){
+        const w = cw();
+        if (!w) return;
+        try { iframe.focus?.(); } catch(e){}
+        try { w.focus?.(); } catch(e){}
+      }
+      function keyForCode(code){
+        if (code === "Space") return " ";
+        if (code === "ShiftLeft" || code === "ShiftRight") return "Shift";
+        if (code.startsWith("Arrow")) return code;
+        if (code === "MouseLeft") return "MouseLeft";
+        if (code === "MouseRight") return "MouseRight";
+        return code;
+      }
+      function sendKey(type, code){
+        const w = cw();
+        if (!w) return;
+        focusGame();
 
-      // ✅ cargar opacidad guardada
-      const savedAlpha = parseFloat(localStorage.getItem("mc_alpha") || "0.06");
-      setAlpha(clamp(savedAlpha, 0.02, 0.20));
-      if (opacitySlider) opacitySlider.value = String(clamp(savedAlpha, 0.02, 0.20));
+        // Simular clicks como teclas (por compatibilidad)
+        // Si tu juego escucha mouse, usa sendMouseDown/Up también (más abajo)
+        const evt = new KeyboardEvent(type, { code, key: keyForCode(code), bubbles: true, cancelable: true });
+        try { w.dispatchEvent(evt); } catch(e){}
+        try { w.document.dispatchEvent(evt); } catch(e){}
+        try { w.document.querySelector("canvas")?.dispatchEvent(evt); } catch(e){}
+      }
 
+      function sendMouse(type){
+        const w = cw();
+        if (!w) return;
+        focusGame();
+        const evt = new MouseEvent(type, { bubbles: true, cancelable: true });
+        try { w.dispatchEvent(evt); } catch(e){}
+        try { w.document.dispatchEvent(evt); } catch(e){}
+        try { w.document.querySelector("canvas")?.dispatchEvent(evt); } catch(e){}
+      }
+
+      let lastMoveAt = 0;
+      function sendMouseMove(dx, dy){
+        const w = cw();
+        if (!w) return;
+        focusGame();
+        const now = performance.now();
+        if (now - lastMoveAt < 16) return;
+        lastMoveAt = now;
+        const evt = new MouseEvent("mousemove", { bubbles: true, cancelable: true, movementX: dx, movementY: dy });
+        try { w.dispatchEvent(evt); } catch(e){}
+        try { w.document.dispatchEvent(evt); } catch(e){}
+        try { w.document.querySelector("canvas")?.dispatchEvent(evt); } catch(e){}
+      }
+
+      // ========= Opacity (guardada) =========
       function setAlpha(v){
         document.documentElement.style.setProperty("--mc-alpha", String(v));
         document.documentElement.style.setProperty("--mc-border-alpha", String(clamp(v + 0.03, 0.05, 0.18)));
       }
-
+      const savedAlpha = parseFloat(localStorage.getItem("mc_alpha") || "0.06");
+      setAlpha(clamp(savedAlpha, 0.02, 0.20));
+      if (opacitySlider) opacitySlider.value = String(clamp(savedAlpha, 0.02, 0.20));
       opacitySlider?.addEventListener("input", () => {
         const v = clamp(parseFloat(opacitySlider.value || "0.06"), 0.02, 0.20);
         setAlpha(v);
         localStorage.setItem("mc_alpha", String(v));
       });
 
+      // ========= Presets =========
+      const MODES = ["shooter", "platform", "adventure"];
+      const MODE_LABEL = {
+        shooter: "Shooter",
+        platform: "Plataforma",
+        adventure: "Aventura"
+      };
+
+      function getMode(){
+        const saved = (localStorage.getItem("mc_mode") || "shooter").toLowerCase();
+        return MODES.includes(saved) ? saved : "shooter";
+      }
+      function setMode(mode){
+        localStorage.setItem("mc_mode", mode);
+        btnMode.textContent = "Modo: " + MODE_LABEL[mode];
+        buildUI(mode);
+        applyLookAnywhere(mode);
+      }
+
+      // ========= Overlay show/hide =========
       function iframeVisible(){
         return iframe && iframe.style.display !== "none" && iframe.src && iframe.src !== "";
       }
@@ -633,129 +727,254 @@
         else overlay.style.display = "none";
       }
 
-      function cw(){ try { return iframe?.contentWindow || null; } catch(e){ return null; } }
-      function focusGame(){
-        const w = cw();
-        if (!w) return;
-        try { iframe.focus?.(); } catch(e){}
-        try { w.focus?.(); } catch(e){}
-      }
+      // ========= Button builder =========
+      function clearNode(n){ while(n.firstChild) n.removeChild(n.firstChild); }
 
-      function keyForCode(code){
-        if (code === "Space") return " ";
-        if (code === "ShiftLeft" || code === "ShiftRight") return "Shift";
-        if (code.startsWith("Arrow")) return code;
-        return code;
-      }
+      function makeBtn(text, code, opts={}){
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "mc-btn" + (opts.wide ? " mc-wide" : "") + (opts.jump ? " mc-jump" : "");
+        b.textContent = text;
+        b.dataset.key = code;
 
-      function sendKey(type, code){
-        const w = cw();
-        if (!w) return;
-        focusGame();
-        const evt = new KeyboardEvent(type, { code, key: keyForCode(code), bubbles: true, cancelable: true });
-        try { w.dispatchEvent(evt); } catch(e){}
-        try { w.document.dispatchEvent(evt); } catch(e){}
-        try { w.document.querySelector("canvas")?.dispatchEvent(evt); } catch(e){}
-      }
-
-      function sendMouseMove(dx, dy){
-        const w = cw();
-        if (!w) return;
-        focusGame();
-        const now = performance.now();
-        if (now - lastSentAt < 16) return;
-        lastSentAt = now;
-        const evt = new MouseEvent("mousemove", { bubbles: true, cancelable: true, movementX: dx, movementY: dy });
-        try { w.dispatchEvent(evt); } catch(e){}
-        try { w.document.dispatchEvent(evt); } catch(e){}
-        try { w.document.querySelector("canvas")?.dispatchEvent(evt); } catch(e){}
-      }
-
-      function bindKeyButtons(){
-        const buttons = overlay.querySelectorAll("[data-key]");
-        buttons.forEach((btn) => {
-          const code = btn.getAttribute("data-key");
-          if (!code) return;
-
-          const down = (e) => {
-            e.preventDefault(); e.stopPropagation();
-            if (!enabled) return;
-            if (pressed.has(code)) return;
-            pressed.add(code);
-            sendKey("keydown", code);
-          };
-          const up = (e) => {
-            e.preventDefault(); e.stopPropagation();
-            if (!pressed.has(code)) return;
-            pressed.delete(code);
-            sendKey("keyup", code);
-          };
-
-          btn.addEventListener("pointerdown", down, { passive:false });
-          btn.addEventListener("pointerup", up, { passive:false });
-          btn.addEventListener("pointercancel", up, { passive:false });
-          btn.addEventListener("pointerleave", up, { passive:false });
-        });
-      }
-
-      function bindLookJoystick(){
-        if (!look) return;
-
-        look.addEventListener("pointerdown", (e) => {
+        const down = (e) => {
+          e.preventDefault(); e.stopPropagation();
           if (!enabled) return;
+          if (pressed.has(code)) return;
+          pressed.add(code);
+
+          // mouse buttons
+          if (code === "MouseLeft") sendMouse("mousedown");
+          else if (code === "MouseRight") sendMouse("contextmenu"), sendMouse("mousedown");
+          else sendKey("keydown", code);
+        };
+        const up = (e) => {
+          e.preventDefault(); e.stopPropagation();
+          if (!pressed.has(code)) return;
+          pressed.delete(code);
+
+          if (code === "MouseLeft") sendMouse("mouseup");
+          else if (code === "MouseRight") sendMouse("mouseup");
+          else sendKey("keyup", code);
+        };
+
+        b.addEventListener("pointerdown", down, { passive:false });
+        b.addEventListener("pointerup", up, { passive:false });
+        b.addEventListener("pointercancel", up, { passive:false });
+        b.addEventListener("pointerleave", up, { passive:false });
+
+        return b;
+      }
+
+      function makeDpadNormal(){
+        const wrap = document.createElement("div");
+        wrap.className = "mc-dpad";
+
+        const spacer = () => {
+          const s = document.createElement("div");
+          s.className = "spacer";
+          return s;
+        };
+
+        wrap.appendChild(spacer());
+        wrap.appendChild(makeBtn("↑","ArrowUp"));
+        wrap.appendChild(spacer());
+
+        wrap.appendChild(makeBtn("←","ArrowLeft"));
+        wrap.appendChild(makeBtn("↓","ArrowDown"));
+        wrap.appendChild(makeBtn("→","ArrowRight"));
+
+        return wrap;
+      }
+
+      function makeDpadDiamond(){
+        const wrap = document.createElement("div");
+        wrap.className = "mc-diamond";
+
+        const up = makeBtn("↑","ArrowUp"); up.classList.add("up");
+        const down = makeBtn("↓","ArrowDown"); down.classList.add("down");
+        const left = makeBtn("←","ArrowLeft"); left.classList.add("left");
+        const right = makeBtn("→","ArrowRight"); right.classList.add("right");
+
+        const center = document.createElement("div");
+        center.className = "mc-btn center";
+        center.textContent = "MOVE";
+        center.style.pointerEvents = "none";
+
+        wrap.appendChild(up);
+        wrap.appendChild(down);
+        wrap.appendChild(left);
+        wrap.appendChild(right);
+        wrap.appendChild(center);
+
+        return wrap;
+      }
+
+      function buildUI(mode){
+        clearNode(mcLeft);
+        clearNode(mcCenter);
+        clearNode(mcRight);
+
+        if (mode === "shooter"){
+          // IZQ: diamond + correr + (click izq/der)
+          mcLeft.appendChild(makeBtn("⇧ Correr","ShiftLeft",{wide:true}));
+          mcLeft.appendChild(makeDpadDiamond());
+
+          // CENTRO: saltar
+          mcCenter.appendChild(makeBtn("⎵ Saltar","Space",{jump:true}));
+
+          // DERECHA: Click Izq / Click Der
+          const col = document.createElement("div");
+          col.style.display = "flex";
+          col.style.flexDirection = "column";
+          col.style.gap = "10px";
+          col.style.pointerEvents = "none";
+
+          const a = makeBtn("🖱️ L","MouseLeft",{wide:true});
+          const b = makeBtn("🖱️ R","MouseRight",{wide:true});
+          a.style.pointerEvents = "auto";
+          b.style.pointerEvents = "auto";
+
+          const wrapA = document.createElement("div"); wrapA.style.pointerEvents="none"; wrapA.appendChild(a);
+          const wrapB = document.createElement("div"); wrapB.style.pointerEvents="none"; wrapB.appendChild(b);
+
+          col.appendChild(a);
+          col.appendChild(b);
+          col.style.pointerEvents = "none"; // no captura, solo botones
+          mcRight.appendChild(col);
+          // activar pointer en botones
+          a.style.pointerEvents = "auto";
+          b.style.pointerEvents = "auto";
+        }
+
+        if (mode === "platform"){
+          // IZQ: dpad normal
+          mcLeft.appendChild(makeDpadNormal());
+
+          // DERECHA: jump + click izq
+          const col = document.createElement("div");
+          col.style.display = "flex";
+          col.style.flexDirection = "column";
+          col.style.gap = "10px";
+          col.style.pointerEvents = "none";
+
+          const jump = makeBtn("⎵ Saltar","Space",{jump:true});
+          const l = makeBtn("🖱️ L","MouseLeft",{wide:true});
+          jump.style.pointerEvents="auto";
+          l.style.pointerEvents="auto";
+
+          col.appendChild(jump);
+          col.appendChild(l);
+          mcRight.appendChild(col);
+        }
+
+        if (mode === "adventure"){
+          // IZQ: dpad normal
+          mcLeft.appendChild(makeDpadNormal());
+
+          // DERECHA: jump + click izq + correr
+          const col = document.createElement("div");
+          col.style.display = "flex";
+          col.style.flexDirection = "column";
+          col.style.gap = "10px";
+          col.style.pointerEvents = "none";
+
+          const jump = makeBtn("⎵ Saltar","Space",{jump:true});
+          const l = makeBtn("🖱️ L","MouseLeft",{wide:true});
+          const run = makeBtn("⇧ Correr","ShiftLeft",{wide:true});
+          jump.style.pointerEvents="auto";
+          l.style.pointerEvents="auto";
+          run.style.pointerEvents="auto";
+
+          col.appendChild(jump);
+          col.appendChild(l);
+          col.appendChild(run);
+          mcRight.appendChild(col);
+        }
+      }
+
+      // ========= Shooter: cámara touch-anywhere =========
+      let lookPointerId = null;
+      let lastX = 0, lastY = 0;
+      let dragging = false;
+
+      function isInsideButton(el){
+        return !!el.closest?.(".mc-btn, .mc-pill, .mc-opacity, .menu-button, .btn, a");
+      }
+
+      function applyLookAnywhere(mode){
+        if (!lookAnywhere) return;
+        if (mode === "shooter" && enabled){
+          lookAnywhere.classList.remove("disabled");
+        } else {
+          lookAnywhere.classList.add("disabled");
+          dragging = false;
+          lookPointerId = null;
+        }
+      }
+
+      function bindLookAnywhere(){
+        if (!lookAnywhere) return;
+
+        lookAnywhere.addEventListener("pointerdown", (e) => {
+          if (!enabled) return;
+          if (getMode() !== "shooter") return;
+
+          // si tocó un botón/panel, NO es cámara
+          if (isInsideButton(e.target)) return;
+
           e.preventDefault();
           lookPointerId = e.pointerId;
-          look.setPointerCapture(lookPointerId);
-          const rect = look.getBoundingClientRect();
-          lookCenter = { x: rect.left + rect.width/2, y: rect.top + rect.height/2, r: rect.width/2 - 28 };
-          lookActive = true;
+          lookAnywhere.setPointerCapture(lookPointerId);
+          lastX = e.clientX;
+          lastY = e.clientY;
+          dragging = true;
         }, { passive:false });
 
-        look.addEventListener("pointermove", (e) => {
-          if (!enabled || !lookActive || e.pointerId !== lookPointerId || !lookCenter) return;
+        lookAnywhere.addEventListener("pointermove", (e) => {
+          if (!enabled) return;
+          if (getMode() !== "shooter") return;
+          if (!dragging || e.pointerId !== lookPointerId) return;
           e.preventDefault();
 
-          const dx = e.clientX - lookCenter.x;
-          const dy = e.clientY - lookCenter.y;
+          const dx = e.clientX - lastX;
+          const dy = e.clientY - lastY;
+          lastX = e.clientX;
+          lastY = e.clientY;
 
-          const mag = Math.hypot(dx, dy) || 1;
-          const maxR = lookCenter.r;
-
-          const ndx = (mag > maxR) ? (dx / mag) * maxR : dx;
-          const ndy = (mag > maxR) ? (dy / mag) * maxR : dy;
-
-          stick.style.transform = `translate(calc(-50% + ${ndx}px), calc(-50% + ${ndy}px))`;
-
-          const sensitivity = 0.28;
-          sendMouseMove(ndx * sensitivity, ndy * sensitivity);
+          const sensitivity = 1.2; // AJUSTA si quieres más/menos
+          sendMouseMove(dx * sensitivity, dy * sensitivity);
         }, { passive:false });
 
         const end = (e) => {
           if (e.pointerId !== lookPointerId) return;
           e.preventDefault();
-          lookActive = false;
+          dragging = false;
           lookPointerId = null;
-          lookCenter = null;
-          stick.style.transform = "translate(-50%,-50%)";
         };
 
-        look.addEventListener("pointerup", end, { passive:false });
-        look.addEventListener("pointercancel", end, { passive:false });
-        look.addEventListener("pointerleave", end, { passive:false });
+        lookAnywhere.addEventListener("pointerup", end, { passive:false });
+        lookAnywhere.addEventListener("pointercancel", end, { passive:false });
+        lookAnywhere.addEventListener("pointerleave", end, { passive:false });
       }
 
+      // ========= Toggle + Fullscreen =========
       function bindToggle(){
         btnToggle?.addEventListener("click", (e) => {
           e.preventDefault();
           enabled = !enabled;
 
           if (!enabled) {
-            pressed.forEach((code) => sendKey("keyup", code));
+            pressed.forEach((code) => {
+              if (code === "MouseLeft" || code === "MouseRight") sendMouse("mouseup");
+              else sendKey("keyup", code);
+            });
             pressed.clear();
           }
 
           btnToggle.textContent = enabled ? "Controles móviles: ON" : "Controles móviles: OFF";
           showOverlayIfNeeded();
+          applyLookAnywhere(getMode());
         });
       }
 
@@ -777,13 +996,51 @@
         document.addEventListener("fullscreenchange", () => showOverlayIfNeeded());
       }
 
-      bindKeyButtons();
-      bindLookJoystick();
+      // ========= Mode button cycle =========
+      function bindMode(){
+        btnMode?.addEventListener("click", (e) => {
+          e.preventDefault();
+          const current = getMode();
+          const idx = MODES.indexOf(current);
+          const next = MODES[(idx + 1) % MODES.length];
+          setMode(next);
+        });
+      }
+
+      // ========= init =========
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      const startMode = getMode();
+      btnMode.textContent = "Modo: " + MODE_LABEL[startMode];
+      buildUI(startMode);
+      bindLookAnywhere();
       bindToggle();
       bindFullscreen();
+      bindMode();
 
+      // update overlay vis
       window.addEventListener("resize", showOverlayIfNeeded);
       setInterval(showOverlayIfNeeded, 250);
+      showOverlayIfNeeded();
+      applyLookAnywhere(startMode);
+
+      // ======= BONUS: helper para galería si tu game.js no lo hace =======
+      // Si game.js ya renderiza, ignora esto.
+      window.CGPlayRenderGallery = function(urls){
+        const g = document.getElementById("screenshotGallery");
+        if (!g) return;
+        g.innerHTML = "";
+        (urls || []).forEach((url, i) => {
+          const div = document.createElement("div");
+          div.className = "shot";
+          div.innerHTML = `
+            <img src="${url}" alt="Screenshot ${i+1}" loading="lazy">
+            <div class="cap">Screenshot ${i+1}</div>
+          `;
+          g.appendChild(div);
+        });
+      };
+
     })();
   </script>
 </body>

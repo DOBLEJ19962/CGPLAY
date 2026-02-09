@@ -1,76 +1,175 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Perfil - CGCommunityPlay</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Editar Perfil - CGCommunityPlay</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <header>
-        <div class="main-nav">
-            <img src="https://cdn.glitch.global/e5a5cdd1-5c78-4bd8-8fd5-7b2ee58c8459/Logo.png?v=1720826870070" alt="Logo">
-            <h1>CGCommunityPlay</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="index.html">Inicio</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section class="profile-section">
-            <h2>Editar Perfil</h2>
-            <form id="editProfileForm" action="/edit_profile" method="post" enctype="multipart/form-data">
-                <label for="name">Nombre:</label>
-                <input type="text" id="name" name="name">
-                <label for="phone">Tel�fono:</label>
-                <input type="tel" id="phone" name="phone">
-                <label for="email">Correo:</label>
-                <input type="email" id="email" name="email">
-                <label for="description">Descripci�n:</label>
-                <textarea id="description" name="description"></textarea>
-                <label for="profilePicture">Foto de perfil:</label>
-                <input type="file" id="profilePicture" name="profilePicture" accept="image/*">
-                <button type="submit">Guardar Cambios</button>
-            </form>
-        </section>
-    </main>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const sessionUser = localStorage.getItem('username');
+  <header>
+    <div class="main-nav">
+      <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/Logo.png" alt="Logo">
+      <h1>CGCommunityPlay</h1>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="profile.html">Perfil</a></li>
+      </ul>
+    </nav>
+  </header>
 
-            if (!sessionUser) {
-                window.location.href = 'login.html';
-                return;
+  <main>
+    <section class="profile-section">
+      <h2>Editar Perfil</h2>
+
+      <!-- YA NO usamos action="/edit_profile" -->
+      <form id="editProfileForm" enctype="multipart/form-data">
+        <label for="name">Username:</label>
+        <input type="text" id="name" name="name" />
+
+        <label for="phone">Teléfono:</label>
+        <input type="tel" id="phone" name="phone" />
+
+        <label for="email">Correo (solo lectura):</label>
+        <input type="email" id="email" name="email" disabled />
+
+        <label for="description">Descripción:</label>
+        <textarea id="description" name="description"></textarea>
+
+        <label for="profilePicture">Foto de perfil:</label>
+        <input type="file" id="profilePicture" name="profilePicture" accept="image/*" />
+
+        <button type="submit">Guardar Cambios</button>
+      </form>
+    </section>
+  </main>
+
+  <!-- Supabase + tu cliente global -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        // 0) Asegurar Supabase
+        if (!window.sb) {
+          alert("Falta Supabase en el front. Incluye js/supabase.js");
+          return;
+        }
+
+        // 1) Bloquear guest (si lo usas)
+        const guest = localStorage.getItem("guest");
+        if (guest) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        // 2) Obtener usuario logueado (email sale de aquí SIEMPRE)
+        const { data: uData, error: uErr } = await window.sb.auth.getUser();
+        const me = uData?.user || null;
+
+        if (!me) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        // Email siempre desde Auth
+        document.getElementById("email").value = me.email || "";
+
+        // 3) Traer perfil desde tu tabla profiles
+        const { data: profile, error: pErr } = await window.sb
+          .from("profiles")
+          .select("id, username, phone, description, profile_picture")
+          .eq("id", me.id)
+          .single();
+
+        if (pErr || !profile) {
+          console.error("profiles select error:", pErr);
+          alert("No pude leer tu perfil en profiles (RLS o no existe fila). Mira la consola (F12).");
+          return;
+        }
+
+        // 4) Rellenar campos
+        // TU HTML usa id="name", pero en DB el campo es username
+        document.getElementById("name").value = profile.username || "";
+        document.getElementById("phone").value = profile.phone || "";
+        document.getElementById("description").value = profile.description || "";
+
+        // 5) Guardar cambios
+        document.getElementById("editProfileForm").addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const usernameRaw = (document.getElementById("name").value || "").trim();
+          const phone = (document.getElementById("phone").value || "").trim();
+          const description = (document.getElementById("description").value || "").trim();
+          const file = document.getElementById("profilePicture").files?.[0] || null;
+
+          if (!usernameRaw) {
+            alert("Username requerido.");
+            return;
+          }
+
+          // Normaliza username
+          const username = usernameRaw.replace(/\s+/g, "_");
+
+          let profile_picture = profile.profile_picture || null;
+
+          // 5.1) Si eligió foto -> subir a Storage cgpbucket: avatars/<uid>/profile.ext
+          if (file) {
+            const ext = (file.name.split(".").pop() || "png").toLowerCase();
+            const objectPath = `avatars/${me.id}/profile.${ext}`;
+
+            const { error: upErr } = await window.sb.storage
+              .from("cgpbucket")
+              .upload(objectPath, file, {
+                upsert: true,
+                contentType: file.type || "image/png",
+                cacheControl: "3600",
+              });
+
+            if (upErr) {
+              console.error("avatar upload error:", upErr);
+              alert("Error subiendo foto (policies de Storage). Mira la consola (F12).");
+              return;
             }
 
-            fetch(`/profile/${sessionUser}`)
-                .then(response => response.json())
-                .then(user => {
-                    document.getElementById('name').value = user.name;
-                    document.getElementById('phone').value = user.phone;
-                    document.getElementById('email').value = user.email;
-                    document.getElementById('description').value = user.description;
-                });
+            const { data: pub } = window.sb.storage.from("cgpbucket").getPublicUrl(objectPath);
+            profile_picture = pub?.publicUrl || profile_picture;
+          }
 
-            document.getElementById('editProfileForm').addEventListener('submit', (event) => {
-                event.preventDefault();
-                const formData = new FormData(event.target);
+          // 5.2) Update profiles
+          const { error: updErr } = await window.sb
+            .from("profiles")
+            .update({
+              username,
+              phone: phone || null,
+              description: description || null,
+              profile_picture: profile_picture || null,
+              email: me.email || null
+            })
+            .eq("id", me.id);
 
-                fetch('/edit_profile', {
-                    method: 'POST',
-                    body: formData
-                }).then(response => {
-                    if (response.ok) {
-                        alert('Perfil actualizado exitosamente.');
-                        window.location.href = 'profile.html';
-                    } else {
-                        alert('Error al actualizar el perfil.');
-                    }
-                });
-            });
+          if (updErr) {
+            console.error("profiles update error:", updErr);
+            if ((updErr.message || "").toLowerCase().includes("duplicate")) {
+              alert("Ese username ya existe. Elige otro.");
+            } else {
+              alert("No se pudo guardar (RLS/policies). Mira la consola (F12).");
+            }
+            return;
+          }
+
+          alert("Perfil actualizado exitosamente.");
+          window.location.href = `profile.html?user=${encodeURIComponent(username)}`;
         });
-    </script>
+
+      } catch (err) {
+        console.error("edit profile fatal:", err);
+        alert("Error inesperado. Abre consola (F12).");
+      }
+    });
+  </script>
 </body>
 </html>

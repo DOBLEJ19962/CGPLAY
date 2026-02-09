@@ -394,17 +394,48 @@
     /* =========================
        ✅ Screenshots Gallery (FIX inmensas)
        ========================= */
-    #screenshotGallery{
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-    }
-    @media (max-width: 900px){
-      #screenshotGallery{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-    @media (max-width: 520px){
-      #screenshotGallery{ grid-template-columns: 1fr; }
-    }
+    /* ✅ Screenshots: thumbnails pequeños SIEMPRE */
+#screenshotGallery{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+
+.shot{
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.02);
+  cursor: pointer;
+}
+
+/* 🔥 tamaño FIJO pequeño */
+.shot img{
+  width: 100%;
+  height: 92px;        /* ✅ pequeño */
+  object-fit: cover;   /* ✅ recorte */
+  display:block;
+}
+
+/* caption mini */
+.shot .cap{
+  padding: 6px 8px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.70);
+  font-weight: 800;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* en móvil aún más pequeños */
+@media (max-width: 520px){
+  #screenshotGallery{ grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); }
+  .shot img{ height: 80px; }
+}
+
     .shot{
       border-radius: 14px;
       overflow: hidden;

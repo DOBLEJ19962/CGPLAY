@@ -1,182 +1,263 @@
+Ôªø// public/profile.js
 document.addEventListener("DOMContentLoaded", async () => {
-  // =========================
-  // 0) Elementos
-  // =========================
-  const profileLink = document.getElementById("profileLink");
-  const uploadLink = document.getElementById("uploadLink");
-  const logoutButton = document.getElementById("logoutButton");
-  const userMenuContainer = document.getElementById("userMenuContainer");
-  const editProfileButton = document.getElementById("editProfileButton");
-  const deleteAccountButton = document.getElementById("deleteAccountButton");
+  const sessionUser = localStorage.getItem("username");
+  const guest = localStorage.getItem("guest");
 
-  const profilePictureElement = document.getElementById("profilePicture");
-  const defaultProfilePicture =
+  const $ = (id) => document.getElementById(id);
+
+  // ===== DEFAULT AVATAR (internet) =====
+  const DEFAULT_AVATAR =
     "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
 
-  // =========================
-  // 1) Validar Supabase
-  // =========================
-  if (!window.sb) {
-    alert("Falta Supabase en el front. Incluye js/supabase.js antes de profile.js");
-    return;
+  function esc(str) {
+    return String(str ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
   }
 
-  // Guest? (si t˙ quieres permitir ver perfiles siendo guest, quita esto)
-  const guest = localStorage.getItem("guest");
-  if (guest) {
-    window.location.href = "login.html";
-    return;
+  function setText(id, value) {
+    const el = $(id);
+    if (el) el.textContent = value ?? "";
   }
 
-  // =========================
-  // 2) SesiÛn usuario
-  // =========================
-  const { data: uData, error: uErr } = await window.sb.auth.getUser();
-  const me = uData?.user || null;
+  // ===== Resolve profile user =====
+  const params = new URLSearchParams(window.location.search);
+  const profileUser = (params.get("user") || sessionUser || "").trim();
 
-  if (!me) {
-    window.location.href = "login.html";
-    return;
-  }
-
-  // =========================
-  // 3) Traer mi perfil (para el men˙ y comparaciones)
-  // =========================
-  const { data: myProfile, error: myPErr } = await window.sb
-    .from("profiles")
-    .select("id, username, phone, description, profile_picture")
-    .eq("id", me.id)
-    .single();
-
-  if (myPErr || !myProfile) {
-    alert("No existe tu perfil en 'profiles'. (Te falta crear la fila al registrarte)");
-    window.location.href = "login.html";
-    return;
-  }
-
-  // =========================
-  // 4) Pintar men˙ (tu username arriba)
-  // =========================
-  userMenuContainer.innerHTML = "";
-
-  const userProfileLink = document.createElement("a");
-  userProfileLink.href = `profile.html?user=${encodeURIComponent(myProfile.username)}`;
-  userProfileLink.textContent = myProfile.username;
-
-  const li = document.createElement("li");
-  li.appendChild(userProfileLink);
-  userMenuContainer.appendChild(li);
-
-  profileLink.style.display = "block";
-  uploadLink.style.display = "block";
-  logoutButton.style.display = "block";
-
-  logoutButton.addEventListener("click", async () => {
-    await window.sb.auth.signOut();
-    localStorage.removeItem("guest");
-    localStorage.removeItem("username"); // por si quedÛ viejo
-    window.location.href = "login.html";
-  });
-
-  // =========================
-  // 5) Determinar quÈ perfil ver (por URL ?user=)
-  // =========================
-  const urlParams = new URLSearchParams(window.location.search);
-  const usernameToView = urlParams.get("user") || myProfile.username;
-
-  // Buscar perfil p˙blico por username
-  const { data: profile, error: pErr } = await window.sb
-    .from("profiles")
-    .select("id, username, phone, description, profile_picture")
-    .eq("username", usernameToView)
-    .single();
-
-  if (pErr || !profile) {
-    alert("Usuario no encontrado.");
+  if (!profileUser) {
     window.location.href = "index.html";
     return;
   }
 
-  // =========================
-  // 6) Pintar perfil
-  // =========================
-  profilePictureElement.src = profile.profile_picture || defaultProfilePicture;
-  profilePictureElement.onerror = function () {
-    this.src = defaultProfilePicture;
-  };
+  // ===== Header menu =====
+  const profileLink = $("profileLink");
+  const uploadLink = $("uploadLink");
+  const logoutButton = $("logoutButton");
+  const userMenuContainer = $("userMenuContainer");
 
-  document.getElementById("username").textContent = profile.username;
-  document.getElementById("phone").textContent = profile.phone || "No disponible";
-  document.getElementById("description").textContent = profile.description || "No disponible";
+  if (userMenuContainer) userMenuContainer.innerHTML = "";
 
-  // Email: solo si es tu propio perfil
-  document.getElementById("email").textContent =
-    profile.id === me.id ? (me.email || "No disponible") : "Privado";
+  if (sessionUser) {
+    const a = document.createElement("a");
+    a.href = `profile.html?user=${encodeURIComponent(sessionUser)}`;
+    a.textContent = sessionUser;
 
-  // Stats: por ahora (si no tienes tabla de likes/comments)
-  document.getElementById("likeCount").textContent = "0";
-  document.getElementById("viewCount").textContent = "0";
-  document.getElementById("commentCount").textContent = "0";
+    const li = document.createElement("li");
+    li.appendChild(a);
+    userMenuContainer.appendChild(li);
 
-  // =========================
-  // 7) Cargar juegos de ese usuario (por owner_id)
-  // =========================
-  const { data: games, error: gErr } = await window.sb
-    .from("games")
-    .select("dir, name")
-    .eq("owner_id", profile.id)
-    .order("created_at", { ascending: false });
+    if (logoutButton) {
+      logoutButton.style.display = "block";
+      logoutButton.onclick = async () => {
+        try {
+          if (window.sb) await window.sb.auth.signOut();
+        } catch (e) {}
+        localStorage.removeItem("username");
+        localStorage.removeItem("guest");
+        window.location.href = "login.html";
+      };
+    }
 
-  if (gErr) console.warn("Games error:", gErr);
+    if (profileLink) profileLink.style.display = "block";
+    if (uploadLink) uploadLink.style.display = "block";
+  } else {
+    if (profileLink) profileLink.style.display = "none";
+    if (uploadLink) uploadLink.style.display = "none";
+    if (logoutButton) logoutButton.style.display = "none";
+  }
 
-  const userGames = document.getElementById("userGames");
-  userGames.innerHTML = "";
+  // ===== Own profile? =====
+  const isOwnProfile =
+    !!sessionUser && sessionUser.toLowerCase() === profileUser.toLowerCase();
 
-  (games || []).forEach((game) => {
-    const gameItem = document.createElement("li");
-    gameItem.innerHTML = `<a href="game.html?dir=${encodeURIComponent(game.dir)}">${game.name}</a>`;
-    userGames.appendChild(gameItem);
+  const editBtn = $("editProfileButton");
+  const deleteBtn = $("deleteAccountButton");
+
+  if (editBtn) editBtn.style.display = isOwnProfile ? "inline-flex" : "none";
+  if (deleteBtn) deleteBtn.style.display = isOwnProfile ? "inline-flex" : "none";
+
+  // ===== Load profile from Supabase =====
+  async function loadProfileFromSupabase(username) {
+    try {
+      if (!window.sb) return null;
+
+      const { data, error } = await window.sb
+        .from("profiles")
+        .select("username, phone, description, profile_picture, email")
+        .eq("username", username)
+        .single();
+
+      if (error) return null;
+      return data || null;
+    } catch (e) {
+      console.warn("loadProfileFromSupabase error:", e);
+      return null;
+    }
+  }
+
+  const prof = await loadProfileFromSupabase(profileUser);
+
+  // ===== Paint profile data =====
+  setText("username", profileUser);
+  setText("phone", prof?.phone || "");
+  setText("email", prof?.email || "");
+  setText("description", prof?.description || "");
+
+  // ===== Avatar fallback (IMPORTANT) =====
+  const pic = $("profilePicture");
+  if (pic) {
+    const url = (prof?.profile_picture || "").trim();
+
+    // si est√° vac√≠o => default
+    pic.src = url ? url : DEFAULT_AVATAR;
+
+    // si la url falla => default
+    pic.onerror = () => {
+      pic.onerror = null;
+      pic.src = DEFAULT_AVATAR;
+    };
+  }
+
+  // ===== Load games from your server =====
+  async function loadAllGames() {
+    try {
+      const r = await fetch("/games");
+      const j = await r.json();
+      return Array.isArray(j) ? j : [];
+    } catch (e) {
+      console.error("loadAllGames error:", e);
+      return [];
+    }
+  }
+
+  const allGames = await loadAllGames();
+  const userGames = allGames.filter((g) => {
+    const owner = (g.owner_username || "").toString().trim();
+    return owner.toLowerCase() === profileUser.toLowerCase();
   });
 
-  // =========================
-  // 8) Botones solo si es tu propio perfil
-  // =========================
-  if (profile.id === me.id) {
-    editProfileButton.style.display = "block";
-    deleteAccountButton.style.display = "block";
+  // ===== Sum likes/dislikes/views =====
+  const totalLikes = userGames.reduce((a, g) => a + (Number(g.likes) || 0), 0);
+  const totalDislikes = userGames.reduce(
+    (a, g) => a + (Number(g.dislikes) || 0),
+    0
+  );
+  const totalViews = userGames.reduce((a, g) => a + (Number(g.views) || 0), 0);
 
-    editProfileButton.onclick = () => (window.location.href = "edit_profile.html");
+  setText("likeCount", totalLikes);
+  setText("dislikeCount", totalDislikes);
+  setText("viewCount", totalViews);
 
-    deleteAccountButton.onclick = async () => {
-      if (!confirm("øSeguro que quieres eliminar tu cuenta COMPLETA?")) return;
+  // ===== Count comments for user's games =====
+  async function countCommentsForDirs(dirs) {
+    try {
+      if (!dirs.length) return 0;
+      if (!window.sb) return 0;
 
-      // Necesitamos token para Authorization
-      const { data: sData } = await window.sb.auth.getSession();
-      const token = sData?.session?.access_token;
+      const { count, error } = await window.sb
+        .from("comments")
+        .select("id", { count: "exact", head: true })
+        .in("game_dir", dirs);
 
-      if (!token) {
-        alert("No hay sesiÛn/token. Vuelve a loguearte.");
-        return;
-      }
+      if (error) return 0;
+      return Number(count) || 0;
+    } catch (e) {
+      console.warn("countCommentsForDirs error:", e);
+      return 0;
+    }
+  }
 
-      const r = await fetch("/delete_me", {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
+  const dirs = userGames.map((g) => g.dir).filter(Boolean);
+  const totalComments = await countCommentsForDirs(dirs);
+  setText("commentCount", totalComments);
+
+  // ===== Render user games list =====
+  const ul = $("userGames");
+  if (ul) {
+    ul.innerHTML = "";
+
+    if (!userGames.length) {
+      ul.innerHTML = `<li style="padding:12px;opacity:.7;border:1px solid rgba(255,255,255,0.10);border-radius:12px;background:rgba(255,255,255,0.02);">
+        Este usuario no tiene juegos publicados todav√≠a.
+      </li>`;
+    } else {
+      userGames.forEach((g) => {
+        const li = document.createElement("li");
+        const dir = g.dir || "";
+        const name = g.name || "Sin nombre";
+        const cover = (g.cover_url || "").trim();
+
+        li.innerHTML = `
+          <a href="game.html?dir=${encodeURIComponent(dir)}">
+            ${
+              cover
+                ? `<img src="${esc(cover)}" alt="" style="width:100%;height:130px;object-fit:cover;display:block;border-bottom:1px solid rgba(255,255,255,0.08);" onerror="this.style.display='none'">`
+                : ""
+            }
+            <h4>${esc(name)}</h4>
+            <div style="padding:0 12px 12px;opacity:.75;font-size:12px;display:flex;gap:10px;flex-wrap:wrap;">
+              <span>üëç ${Number(g.likes) || 0}</span>
+              <span>üëé ${Number(g.dislikes) || 0}</span>
+              <span>üëÅÔ∏è ${Number(g.views) || 0}</span>
+            </div>
+          </a>
+        `;
+        ul.appendChild(li);
       });
+    }
+  }
 
-      const j = await r.json().catch(() => ({}));
-
-      if (!r.ok) {
-        alert(j.message || "Error eliminando cuenta.");
-        return;
-      }
-
-      await window.sb.auth.signOut();
-      alert("Cuenta eliminada.");
-      window.location.href = "login.html";
+  // ===== Edit profile (NO ALERT / NO placeholder) =====
+  if (editBtn && isOwnProfile) {
+    editBtn.onclick = () => {
+      // ‚úÖ CAMBIA ESTE NOMBRE SI TU EDITOR SE LLAMA DIFERENTE:
+      window.location.href = "edit_profile.html";
+      // Ej: "EditProfile.html" o "edit_profile.html" etc.
     };
-  } else {
-    editProfileButton.style.display = "none";
-    deleteAccountButton.style.display = "none";
+  }
+
+  // ===== Delete account =====
+  if (deleteBtn && isOwnProfile) {
+    deleteBtn.onclick = async () => {
+      if (!confirm("¬øSeguro que quieres eliminar tu cuenta y todo tu contenido?"))
+        return;
+
+      try {
+        if (!window.sb) {
+          alert("Falta Supabase en el front.");
+          return;
+        }
+
+        const { data } = await window.sb.auth.getSession();
+        const token = data?.session?.access_token;
+
+        if (!token) {
+          alert("No hay sesi√≥n/token. Vuelve a loguearte.");
+          return;
+        }
+
+        const r = await fetch("/delete_me", {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          alert(j.message || "Error eliminando tu cuenta");
+          return;
+        }
+
+        alert("Cuenta eliminada.");
+        localStorage.removeItem("username");
+        localStorage.removeItem("guest");
+        window.location.href = "index.html";
+      } catch (e) {
+        console.error(e);
+        alert("Error eliminando tu cuenta");
+      }
+    };
   }
 });

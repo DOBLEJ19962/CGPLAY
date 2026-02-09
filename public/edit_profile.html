@@ -2,72 +2,486 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Editar Perfil - CGCommunityPlay</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Editar Perfil - CGPlay</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0b0f17;
+      --panel: rgba(255,255,255,0.03);
+      --panel2: rgba(255,255,255,0.045);
+      --border: rgba(255,255,255,0.10);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.65);
+      --shadow: 0 10px 26px rgba(0,0,0,0.35);
+      --radius: 14px;
+      --accent: #6ee7ff;
+      --danger: #ff5a7a;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at 20% -10%, rgba(110,231,255,0.10), transparent 60%),
+        radial-gradient(900px 500px at 110% 20%, rgba(140,120,255,0.10), transparent 60%),
+        var(--bg);
+    }
+
+    header.app-header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 10px 12px;
+      background: rgba(11,15,23,0.78);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-row{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      justify-content: space-between;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      text-decoration:none;
+      color: var(--text);
+      min-width: 160px;
+    }
+    .brand img{
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    }
+    .brand .t{
+      display:flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+    .brand .t strong{
+      font-weight: 900;
+      letter-spacing: 0.2px;
+    }
+    .brand .t span{
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .top-actions{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+
+    .icon-link, .icon-btn{
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      color: var(--text);
+      text-decoration:none;
+      position: relative;
+    }
+    .icon-link:hover, .icon-btn:hover{ background: rgba(255,255,255,0.06); }
+
+    .icon-link img{
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+    }
+
+    .menu{ position: relative; }
+    .menu-button{
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      cursor:pointer;
+      font-size: 18px;
+    }
+    .menu-button:hover{ background: rgba(255,255,255,0.06); }
+
+    .menu-content{
+      position:absolute;
+      right:0;
+      top: 48px;
+      width: 190px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(11,15,23,0.95);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      display:none;
+    }
+    .menu.open .menu-content{ display:block; }
+    .menu-content a, .menu-content button{
+      display:block;
+      width:100%;
+      padding: 10px 12px;
+      text-align:left;
+      background: transparent;
+      border:none;
+      color: var(--text);
+      text-decoration:none;
+      cursor:pointer;
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .menu-content a:hover, .menu-content button:hover{
+      background: rgba(255,255,255,0.06);
+    }
+    #logoutButton{ color: var(--danger); }
+
+    main.app{
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 12px;
+      display:grid;
+      grid-template-columns: 270px 1fr;
+      gap: 12px;
+    }
+
+    aside.side{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      border-radius: var(--radius);
+      overflow:hidden;
+      display:flex;
+      flex-direction: column;
+      min-height: calc(100vh - 100px);
+    }
+    .side .scroll{
+      padding: 12px;
+      overflow:auto;
+      flex:1;
+    }
+    .side h3{
+      margin: 0 0 10px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+    }
+
+    .nav-link{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      text-decoration:none;
+      color: var(--text);
+      font-weight: 900;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+    .nav-link:hover{
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(110,231,255,0.18);
+    }
+
+    a.terms-link{
+      margin-top: auto;
+      display:block;
+      padding: 12px;
+      text-align:center;
+      text-decoration:none;
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+      border-top: 1px solid var(--border);
+      font-weight: 800;
+    }
+    a.terms-link:hover{ background: rgba(255,255,255,0.06); }
+
+    section.content{ min-width: 0; }
+
+    .page-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .page-head h2{ margin: 0; font-size: 18px; letter-spacing: 0.2px; }
+    .page-head p{ margin: 0; color: var(--muted); font-size: 13px; }
+
+    .card{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .card-inner{ padding: 14px; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field{
+      display:flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .field label{
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"],
+    textarea{
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      outline:none;
+      font-family: inherit;
+    }
+    textarea{ min-height: 110px; resize: vertical; }
+
+    input:focus, textarea:focus{
+      border-color: rgba(110,231,255,0.35);
+      box-shadow: 0 0 0 4px rgba(110,231,255,0.08);
+    }
+    input:disabled, input[readonly]{
+      opacity: 0.75;
+      cursor:not-allowed;
+    }
+
+    .file-wrap{
+      border: 1px dashed rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.02);
+      border-radius: 14px;
+      padding: 12px;
+      display:flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .file-wrap small{ color: var(--muted); font-size: 12px; }
+
+    .actions{
+      display:flex;
+      gap: 10px;
+      justify-content:flex-end;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .btn{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-weight: 900;
+      font-size: 13px;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap: 8px;
+    }
+    .btn:hover{ background: rgba(255,255,255,0.06); }
+
+    .btn-primary{
+      border-color: rgba(110,231,255,0.25);
+      background: rgba(110,231,255,0.12);
+    }
+    .btn-primary:hover{ background: rgba(110,231,255,0.16); }
+
+    .btn-ghost{ background: transparent; }
+
+    footer{
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 14px 12px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 980px){
+      main.app{ grid-template-columns: 1fr; }
+      aside.side{ min-height:auto; }
+      .brand .t span{ display:none; }
+      .grid{ grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px){
+      header.app-header{ padding: 10px 10px; }
+      .brand{ min-width: 44px; }
+      .brand .t{ display:none; }
+      .icon-link, .icon-btn, .menu-button{ width: 38px; height: 38px; border-radius: 13px; }
+    }
+  </style>
 </head>
+
 <body>
-  <header>
-    <div class="main-nav">
-      <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/Logo.png" alt="Logo">
-      <h1>CGCommunityPlay</h1>
+
+  <header class="app-header">
+    <div class="header-row">
+      <a class="brand" href="index.html">
+        <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/Logo.png" alt="Logo">
+        <div class="t">
+          <strong>CGPlay</strong>
+          <span>Juegos de la comunidad</span>
+        </div>
+      </a>
+
+      <div class="top-actions">
+        <a class="icon-link" href="https://gdscript-online.github.io/" title="GDScript">
+          <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/logo_vertical_monochrome_dark.png" alt="">
+        </a>
+        <a class="icon-link" href="https://www.mycompiler.io/es/new/csharp" title="C#">
+          <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/icon.png" alt="">
+        </a>
+
+        <div class="menu" id="menuWrap">
+          <button class="menu-button" id="menuBtn" aria-label="Menú">⋮</button>
+          <div class="menu-content" id="menuContent">
+            <a href="index.html">Inicio</a>
+            <a href="profile.html" id="profileLink">Perfil</a>
+            <a href="upload.html" id="uploadLink">Subir Juego</a>
+            <a href="UploadTuto.html" id="TutoLink">Cómo Subir Los Juegos</a>
+            <button id="logoutButton" type="button">Logout</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <nav>
-      <ul>
-        <li><a href="index.html">Inicio</a></li>
-        <li><a href="profile.html">Perfil</a></li>
-      </ul>
-    </nav>
   </header>
 
-  <main>
-    <section class="profile-section">
-      <h2>Editar Perfil</h2>
+  <main class="app">
+    <aside class="side">
+      <div class="scroll">
+        <h3>Cuenta</h3>
+        <a class="nav-link" href="profile.html">Ver perfil <span>›</span></a>
+        <a class="nav-link" href="index.html">Volver a juegos <span>›</span></a>
+        <a class="nav-link" href="upload.html">Subir juego <span>›</span></a>
+      </div>
+      <a href="Terminos.html" class="terms-link">Leer Términos y Condiciones</a>
+    </aside>
 
-      <!-- YA NO usamos action="/edit_profile" -->
-      <form id="editProfileForm" enctype="multipart/form-data">
-        <label for="name">Username:</label>
-        <input type="text" id="name" name="name" />
+    <section class="content">
+      <div class="page-head">
+        <div>
+          <h2>Editar Perfil</h2>
+          <p>Actualiza tu descripción, teléfono y foto 👤</p>
+        </div>
+      </div>
 
-        <label for="phone">Teléfono:</label>
-        <input type="tel" id="phone" name="phone" />
+      <div class="card">
+        <div class="card-inner">
+          <form id="editProfileForm" enctype="multipart/form-data">
+            <div class="grid">
+              <div class="field">
+                <label for="name">Username (solo lectura)</label>
+                <!-- ✅ Solo lectura (no rompe tu JS porque sigue existiendo #name) -->
+                <input type="text" id="name" name="name" readonly />
+              </div>
 
-        <label for="email">Correo (solo lectura):</label>
-        <input type="email" id="email" name="email" disabled />
+              <div class="field">
+                <label for="phone">Teléfono</label>
+                <input type="tel" id="phone" name="phone" placeholder="+1 ..." />
+              </div>
 
-        <label for="description">Descripción:</label>
-        <textarea id="description" name="description"></textarea>
+              <div class="field">
+                <label for="email">Correo (solo lectura)</label>
+                <input type="email" id="email" name="email" disabled />
+              </div>
 
-        <label for="profilePicture">Foto de perfil:</label>
-        <input type="file" id="profilePicture" name="profilePicture" accept="image/*" />
+              <div class="field" style="grid-column: 1 / -1;">
+                <label for="description">Descripción</label>
+                <textarea id="description" name="description" placeholder="Cuéntanos de ti..."></textarea>
+              </div>
 
-        <button type="submit">Guardar Cambios</button>
-      </form>
+              <div class="field" style="grid-column: 1 / -1;">
+                <label for="profilePicture">Foto de perfil</label>
+                <div class="file-wrap">
+                  <input type="file" id="profilePicture" name="profilePicture" accept="image/*" />
+                  <small>Recomendado: cuadrada, .png o .jpg</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <a class="btn btn-ghost" href="profile.html">Cancelar</a>
+              <button class="btn btn-primary" type="submit">Guardar Cambios</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </section>
   </main>
 
-  <!-- Supabase + tu cliente global -->
+  <footer>
+    <div class="footer-left">© <span id="year"></span> CGPlay</div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const menuWrap = document.getElementById("menuWrap");
+    const menuBtn = document.getElementById("menuBtn");
+    menuBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      menuWrap.classList.toggle("open");
+    });
+    document.addEventListener("click", () => menuWrap?.classList.remove("open"));
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
 
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       try {
-        // 0) Asegurar Supabase
         if (!window.sb) {
           alert("Falta Supabase en el front. Incluye js/supabase.js");
           return;
         }
 
-        // 1) Bloquear guest (si lo usas)
         const guest = localStorage.getItem("guest");
         if (guest) {
           window.location.href = "login.html";
           return;
         }
 
-        // 2) Obtener usuario logueado (email sale de aquí SIEMPRE)
-        const { data: uData, error: uErr } = await window.sb.auth.getUser();
+        const { data: uData } = await window.sb.auth.getUser();
         const me = uData?.user || null;
 
         if (!me) {
@@ -75,10 +489,8 @@
           return;
         }
 
-        // Email siempre desde Auth
         document.getElementById("email").value = me.email || "";
 
-        // 3) Traer perfil desde tu tabla profiles
         const { data: profile, error: pErr } = await window.sb
           .from("profiles")
           .select("id, username, phone, description, profile_picture")
@@ -91,32 +503,27 @@
           return;
         }
 
-        // 4) Rellenar campos
-        // TU HTML usa id="name", pero en DB el campo es username
+        // ✅ Rellenar campos (username solo lectura)
         document.getElementById("name").value = profile.username || "";
         document.getElementById("phone").value = profile.phone || "";
         document.getElementById("description").value = profile.description || "";
 
-        // 5) Guardar cambios
         document.getElementById("editProfileForm").addEventListener("submit", async (event) => {
           event.preventDefault();
 
-          const usernameRaw = (document.getElementById("name").value || "").trim();
+          // ✅ Username NO se edita: lo tomamos del profile (no del input)
+          const username = (profile.username || "").trim();
           const phone = (document.getElementById("phone").value || "").trim();
           const description = (document.getElementById("description").value || "").trim();
           const file = document.getElementById("profilePicture").files?.[0] || null;
 
-          if (!usernameRaw) {
-            alert("Username requerido.");
+          if (!username) {
+            alert("Tu perfil no tiene username. (profiles.username vacío).");
             return;
           }
 
-          // Normaliza username
-          const username = usernameRaw.replace(/\s+/g, "_");
-
           let profile_picture = profile.profile_picture || null;
 
-          // 5.1) Si eligió foto -> subir a Storage cgpbucket: avatars/<uid>/profile.ext
           if (file) {
             const ext = (file.name.split(".").pop() || "png").toLowerCase();
             const objectPath = `avatars/${me.id}/profile.${ext}`;
@@ -139,11 +546,10 @@
             profile_picture = pub?.publicUrl || profile_picture;
           }
 
-          // 5.2) Update profiles
           const { error: updErr } = await window.sb
             .from("profiles")
             .update({
-              username,
+              // ✅ NO tocamos username
               phone: phone || null,
               description: description || null,
               profile_picture: profile_picture || null,
@@ -153,15 +559,12 @@
 
           if (updErr) {
             console.error("profiles update error:", updErr);
-            if ((updErr.message || "").toLowerCase().includes("duplicate")) {
-              alert("Ese username ya existe. Elige otro.");
-            } else {
-              alert("No se pudo guardar (RLS/policies). Mira la consola (F12).");
-            }
+            alert("No se pudo guardar (RLS/policies). Mira la consola (F12).");
             return;
           }
 
           alert("Perfil actualizado exitosamente.");
+          // ✅ Redirige usando el mismo username existente
           window.location.href = `profile.html?user=${encodeURIComponent(username)}`;
         });
 

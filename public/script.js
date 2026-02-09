@@ -1,153 +1,170 @@
 document.addEventListener("DOMContentLoaded", async () => {
   // =========================
-  // 0) CSS Inyectado (MISMO SCRIPT) - MÁS CHIQUITO + MÁS BONITO
+  // 0) CSS Inyectado (MISMO SCRIPT) - PRO + BONITO
   // =========================
   const css = `
   :root{
     --bg:#0b0f17;
-    --panel: rgba(255,255,255,0.028);
-    --border: rgba(255,255,255,0.09);
+    --panel: rgba(255,255,255,0.03);
+    --panel2: rgba(255,255,255,0.045);
+    --border: rgba(255,255,255,0.10);
     --text: rgba(255,255,255,0.92);
     --muted: rgba(255,255,255,0.68);
-    --shadow: 0 8px 22px rgba(0,0,0,0.30);
-    --radius: 12px;
+    --shadow: 0 12px 34px rgba(0,0,0,0.45);
+    --radius: 16px;
     --accent: #6ee7ff;
     --danger: #ff5a7a;
   }
 
-  /* Grid compacto */
+  /* GRID tarjetas */
   #games{
     list-style:none;
     padding: 0;
     margin: 0;
-
     display:grid;
-    gap: 10px;
-
-    /* más chiquito */
-    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     align-items: stretch;
   }
 
-  /* Card compacto */
+  /* CARD */
   #games > li{
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255,255,255,0.10);
     border-radius: var(--radius);
     overflow:hidden;
-    background: var(--panel);
+    background: rgba(255,255,255,0.03);
     box-shadow: var(--shadow);
     position: relative;
-    transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+    min-width: 0;
+    transition: transform 140ms ease, border-color 140ms ease, background 140ms ease, box-shadow 140ms ease;
   }
   #games > li:hover{
-    transform: translateY(-1px);
-    background: rgba(255,255,255,0.04);
+    transform: translateY(-3px);
     border-color: rgba(110,231,255,0.18);
+    background: rgba(255,255,255,0.04);
+    box-shadow: 0 18px 46px rgba(0,0,0,0.55);
   }
 
-  /* Link */
   #games .game-info{
     display:block;
     text-decoration:none;
     color: var(--text);
   }
 
-  /* Imagen fija y más baja */
   #games .screenshot{
     width:100%;
-    aspect-ratio: 16 / 10;   /* más bajita que 16:9 */
+    aspect-ratio: 16 / 10;
     object-fit: cover;
     display:block;
     background: rgba(255,255,255,0.04);
+    transform: scale(1);
+    transition: transform 220ms ease;
   }
+  #games > li::before{
+    content:"";
+    position:absolute;
+    left:0; right:0;
+    top:0;
+    height: 62%;
+    pointer-events:none;
+    background:
+      linear-gradient(to bottom,
+        rgba(11,15,23,0.00) 0%,
+        rgba(11,15,23,0.10) 45%,
+        rgba(11,15,23,0.65) 100%
+      );
+    opacity: 0.92;
+    z-index: 1;
+  }
+  #games > li:hover .screenshot{ transform: scale(1.03); }
 
-  /* Contenido compacto */
   #games .game-body{
-    padding: 10px;
+    position: relative;
+    z-index: 2;
+    padding: 12px 12px 12px;
     display:flex;
     flex-direction: column;
-    gap: 8px;
-    min-height: 120px;
+    gap: 10px;
+    min-height: 150px;
   }
 
   #games h3{
     margin:0;
-    font-size: 13px;
-    font-weight: 800;
-    line-height: 1.22;
-
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1.25;
+    letter-spacing: 0.2px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
-  /* Tags mini */
   #games .meta{
     display:flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 7px;
   }
   #games .tag{
-    font-size: 10px;
-    padding: 4px 7px;
+    font-size: 11px;
+    padding: 5px 9px;
     border-radius: 999px;
-    background: rgba(255,255,255,0.055);
-    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.045);
+    border: 1px solid rgba(255,255,255,0.08);
     color: rgba(255,255,255,0.78);
     white-space: nowrap;
   }
   #games .tag.accent{
-    border-color: rgba(110,231,255,0.20);
-    background: rgba(110,231,255,0.075);
+    border-color: rgba(110,231,255,0.24);
+    background: rgba(110,231,255,0.09);
+    color: rgba(255,255,255,0.90);
   }
 
-  /* Uploader más limpio (menos texto) */
   #games .uploader{
-    font-size: 11px;
+    font-size: 12px;
     color: var(--muted);
   }
   #games .uploader a{
-    color: rgba(255,255,255,0.9);
-    text-decoration: none;
-    font-weight: 700;
+    color: rgba(255,255,255,0.92);
+    text-decoration:none;
+    font-weight: 900;
   }
-  #games .uploader a:hover{ text-decoration: underline; }
+  #games .uploader a:hover{
+    text-decoration: underline;
+    color: rgba(110,231,255,0.95);
+  }
 
-  /* Footer mini */
   #games .card-footer{
     margin-top: auto;
     display:flex;
     justify-content: space-between;
     align-items:center;
-    gap: 8px;
+    gap: 10px;
   }
-
   #games .open-btn{
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    padding: 8px 10px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: rgba(255,255,255,0.04);
-    color: var(--text);
-    font-weight: 800;
+    padding: 9px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(110,231,255,0.22);
+    background: rgba(110,231,255,0.10);
+    color: rgba(255,255,255,0.92);
+    font-weight: 900;
     font-size: 12px;
     text-decoration:none;
   }
-  #games .open-btn:hover{
-    background: rgba(255,255,255,0.06);
+  #games > li:hover .open-btn{
+    background: rgba(110,231,255,0.14);
   }
 
-  /* Estrella más pequeña y discreta */
   #games .star{
     position:absolute;
-    top: 8px;
-    right: 8px;
-    width: 30px;
-    height: 30px;
-    border-radius: 10px;
+    top: 10px;
+    right: 10px;
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -155,34 +172,43 @@ document.addEventListener("DOMContentLoaded", async () => {
     border: 1px solid rgba(255,255,255,0.12);
     cursor:pointer;
     user-select:none;
-    font-size: 16px;
+    font-size: 17px;
     color: rgba(255,255,255,0.72);
-    z-index: 2;
-    backdrop-filter: blur(6px);
+    z-index: 3;
+    backdrop-filter: blur(10px);
+    transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
   }
-  #games .star.favorite{ color: #ffd54a; }
+  #games .star:hover{
+    transform: translateY(-1px) scale(1.02);
+    background: rgba(11,15,23,0.72);
+    border-color: rgba(110,231,255,0.18);
+  }
+  #games .star.favorite{
+    color: #ffd54a;
+    border-color: rgba(255,213,74,0.35);
+    background: rgba(255,213,74,0.10);
+    box-shadow: 0 10px 20px rgba(255,213,74,0.06);
+  }
 
-  /* Notificación más bonita */
   .notification{
     position: fixed;
     top: 12px;
     right: 12px;
-    background: rgba(11,15,23,0.92);
+    background: rgba(11,15,23,0.94);
     color: #fff;
     padding: 10px 12px;
-    border-radius: 12px;
+    border-radius: 14px;
     border: 1px solid rgba(255,255,255,0.12);
     box-shadow: var(--shadow);
     z-index: 9999;
   }
 
-  /* Responsive */
+  @media (max-width: 980px){
+    #games{ grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+  }
   @media (max-width: 520px){
-    #games{
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 8px;
-    }
-    #games .game-body{ padding: 9px; }
+    #games{ grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+    #games .game-body{ padding: 11px; min-height: 140px; }
   }
   `;
   const styleTag = document.createElement("style");
@@ -204,17 +230,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const favorites = localStorage.getItem("favorites");
     return favorites ? JSON.parse(favorites) : [];
   }
-
   function saveFavorites(favorites) {
     localStorage.setItem("favorites", JSON.stringify(favorites));
   }
-
   function addFavorite(gameDir) {
     const favorites = loadFavorites();
     if (!favorites.includes(gameDir)) favorites.push(gameDir);
     saveFavorites(favorites);
   }
-
   function removeFavorite(gameDir) {
     let favorites = loadFavorites();
     favorites = favorites.filter((fav) => fav !== gameDir);
@@ -248,6 +271,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       .replaceAll("'", "&#039;");
   }
 
+  function getInitials(name) {
+    const s = String(name || "").trim().replace(/^@/, "");
+    if (!s) return "U";
+    return s.slice(0, 2).toUpperCase();
+  }
+  function normalizeText(s) {
+    return String(s || "").toLowerCase();
+  }
+
   // =========================
   // 2) UI Elements
   // =========================
@@ -258,9 +290,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const logoutButton = document.getElementById("logoutButton");
   const userMenuContainer = document.getElementById("userMenuContainer");
 
-  const notificationButton = document.getElementById("notificationButton");
   const notificationCount = document.getElementById("notificationCount");
-  const notifications = document.getElementById("notifications");
 
   // =========================
   // 3) Session: Supabase user (si no es guest)
@@ -270,7 +300,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (!guest) {
     if (!window.sb) {
-      console.error("❌ Falta window.sb. Asegúrate de incluir /js/supabase.js antes de script.js");
+      console.error("❌ Falta window.sb. Incluye js/supabase.js antes de script.js");
     } else {
       const { data: userData } = await window.sb.auth.getUser();
       user = userData?.user || null;
@@ -287,7 +317,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         .single();
 
       if (pErr || !prof) {
-        console.error("❌ No existe profile para este user.");
+        console.error("❌ No existe profile para este user.", pErr);
         alert("No se encontró tu perfil (profiles).");
         window.location.href = "login.html";
         return;
@@ -326,9 +356,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (logoutButton) {
       logoutButton.addEventListener("click", async () => {
-        try {
-          if (window.sb) await window.sb.auth.signOut();
-        } catch (e) {}
+        try { if (window.sb) await window.sb.auth.signOut(); } catch (e) {}
         localStorage.removeItem("guest");
         localStorage.removeItem("username");
         window.location.href = "login.html";
@@ -341,7 +369,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // =========================
-  // 5) Notifications (compat)
+  // 5) NOTIFICATIONS (FIX FULL)
   // =========================
   async function tryLoadNotifications() {
     if (guest) return;
@@ -349,56 +377,126 @@ document.addEventListener("DOMContentLoaded", async () => {
     const username = myProfile?.username;
     if (!username) return;
 
+    const notifList = document.getElementById("notifList");
+    const notifEmpty = document.getElementById("notifEmpty");
+    const clearBtn = document.getElementById("clearNotificationsButton");
+
+    if (!notifList) return;
+
+    // limpia lista pero preserva empty
+    notifList.innerHTML = "";
+    if (notifEmpty) {
+      notifEmpty.style.display = "none";
+      notifList.appendChild(notifEmpty);
+    }
+
     try {
       const r = await fetch(`/notifications/${encodeURIComponent(username)}`);
       if (!r.ok) return;
 
       const data = await r.json();
-      if (data.notifications && data.notifications.length > 0) {
-        notificationCount.textContent = data.notifications.length;
-        notificationCount.style.display = "inline-flex";
+      const items = Array.isArray(data.notifications) ? data.notifications : [];
 
-        data.notifications.forEach((notification) => {
-          const notificationItem = document.createElement("div");
-          notificationItem.classList.add("notification-item");
-          notificationItem.innerHTML = `
-            <img src="${esc(notification.profilePicture)}" alt="Profile Picture" class="profile-picture">
-            <a href="profile.html?user=${encodeURIComponent(notification.senderUsername)}" class="notification-user">${esc(notification.senderUsername)}</a>
-            <span> ${esc(notification.message)}</span>
-          `;
-          notificationItem.addEventListener("click", () => {
-            window.location.href = notification.url;
-          });
-          notifications.appendChild(notificationItem);
-        });
+      // contador
+      if (notificationCount) {
+        if (items.length > 0) {
+          notificationCount.textContent = String(items.length);
+          notificationCount.style.display = "inline-flex";
+        } else {
+          notificationCount.style.display = "none";
+        }
       }
 
-      if (notificationButton && notifications) {
-        notificationButton.addEventListener("click", () => {
-          notifications.style.display = notifications.style.display === "none" ? "block" : "none";
-        });
+      // empty
+      if (notifEmpty) {
+        notifEmpty.style.display = items.length ? "none" : "block";
       }
 
-      const clearBtn = document.getElementById("clearNotificationsButton");
+      items.forEach((n) => {
+        const sender = String(n.senderUsername || "").replace(/^@/, "");
+        const msg = String(n.message || "");
+        const url = n.url || "#";
+        const imgUrl = n.profilePicture || "";
+
+        const msgHasSender =
+          sender && normalizeText(msg).includes(normalizeText(`@${sender}`));
+
+        const whenText = n.created_at
+          ? new Date(n.created_at).toLocaleString()
+          : (n.time ? String(n.time) : "");
+
+        // ✅ item usando tu layout nuevo
+        const a = document.createElement("a");
+        a.className = "notif-item";
+        a.href = url;
+
+        const initials = getInitials(sender);
+
+        a.innerHTML = `
+          <div style="display:flex; gap:10px; align-items:flex-start; width:100%;">
+            <div style="position:relative; width:34px; height:34px; flex:0 0 auto;">
+              <img
+                class="notif-avatar"
+                src="${esc(imgUrl)}"
+                alt="${esc(sender)}"
+                onerror="this.style.display='none'; this.parentElement.querySelector('.notif-fallback').style.display='flex';"
+              />
+              <div class="notif-fallback"
+                style="display:${imgUrl ? "none" : "flex"}; width:34px;height:34px;border-radius:12px;
+                       border:1px solid rgba(255,255,255,0.10);background:rgba(255,255,255,0.05);
+                       align-items:center;justify-content:center;font-weight:900;
+                       color:rgba(255,255,255,0.75);font-size:12px;">
+                ${esc(initials)}
+              </div>
+            </div>
+
+            <div class="notif-body">
+              <div class="msg">
+                ${
+                  msgHasSender
+                    ? `${esc(msg)}`
+                    : `<b>@${esc(sender)}</b> ${esc(msg)}`
+                }
+              </div>
+              <div class="meta">
+                ${whenText ? `<span>${esc(whenText)}</span>` : ""}
+              </div>
+            </div>
+          </div>
+        `;
+
+        if (!url || url === "#") {
+          a.addEventListener("click", (e) => e.preventDefault());
+        }
+
+        notifList.appendChild(a);
+      });
+
+      // ✅ Limpiar (no recrear el botón, usa el del header)
       if (clearBtn) {
-        clearBtn.addEventListener("click", async (event) => {
+        clearBtn.onclick = async (event) => {
           event.preventDefault();
           if (!confirm("¿Estás seguro de que quieres eliminar todas las notificaciones?")) return;
 
           const del = await fetch(`/notifications/${encodeURIComponent(username)}`, { method: "DELETE" });
           if (del.ok) {
-            notifications.innerHTML =
-              '<a id="clearNotificationsButton" href="#" style="display:block;padding:10px;color:red;text-align:center;">Limpiar Notificaciones</a>';
-            notificationCount.style.display = "none";
+            notifList.innerHTML = "";
+            if (notifEmpty) {
+              notifEmpty.style.display = "block";
+              notifList.appendChild(notifEmpty);
+            }
+            if (notificationCount) notificationCount.style.display = "none";
           }
-        });
+        };
       }
-    } catch (e) {}
+    } catch (e) {
+      console.warn("tryLoadNotifications error:", e);
+    }
   }
   tryLoadNotifications();
 
   // =========================
-  // 6) Games: display (MÁS COMPACTO)
+  // 6) Games: display
   // =========================
   function displayGames(games) {
     const gameList = document.getElementById("games");
@@ -410,13 +508,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     (games || []).forEach((game) => {
       const cover = game.cover_url || game.coverImagePath || "Logo/user.png";
       const uploader = game.owner_username || game.uploadedBy || "Unknown";
-
       const genre = game.genre || "";
       const platform = game.platform || "";
       const engine = game.engine || "";
 
       const li = document.createElement("li");
-
       li.innerHTML = `
         <a href="game.html?dir=${encodeURIComponent(game.dir)}" class="game-info">
           <img src="${esc(cover)}" alt="${esc(game.name)} Cover" class="screenshot" loading="lazy">
@@ -435,8 +531,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             <div class="card-footer">
               <span class="open-btn">Ver</span>
-              <span style="font-size:11px;color:var(--muted);">
-                ${game.likes ? `❤️ ${game.likes}` : ""}
+              <span style="font-size:12px;color:rgba(255,255,255,0.75);font-weight:800;">
+                ${typeof game.likes === "number" ? `❤️ ${game.likes}` : ""}
               </span>
             </div>
           </div>
@@ -448,12 +544,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       gameList.appendChild(li);
 
       const star = li.querySelector(".star");
-      star.addEventListener("click", (event) => handleStarClick(event, game));
+      star?.addEventListener("click", (event) => handleStarClick(event, game));
 
       const img = li.querySelector("img.screenshot");
-      img.addEventListener("error", () => {
-        img.src = "Logo/user.png";
-      });
+      img?.addEventListener("error", () => { img.src = "Logo/user.png"; });
     });
   }
 
@@ -487,21 +581,21 @@ document.addEventListener("DOMContentLoaded", async () => {
       const option = document.createElement("option");
       option.value = genre;
       option.textContent = genre;
-      genreFilter.appendChild(option);
+      genreFilter?.appendChild(option);
     });
 
     platforms.forEach((platform) => {
       const option = document.createElement("option");
       option.value = platform;
       option.textContent = platform;
-      platformFilter.appendChild(option);
+      platformFilter?.appendChild(option);
     });
 
     engines.forEach((engine) => {
       const option = document.createElement("option");
       option.value = engine;
       option.textContent = engine;
-      engineFilter.appendChild(option);
+      engineFilter?.appendChild(option);
     });
   }
 

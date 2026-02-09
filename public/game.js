@@ -1,5 +1,5 @@
 // public/game.js
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const sessionUser = localStorage.getItem("username");
   const guest = localStorage.getItem("guest");
 
@@ -14,6 +14,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const reportButton = document.getElementById("reportButton");
   const favoriteButton = document.getElementById("favoriteButton");
 
+  // Comments UI
+  const commentList = document.getElementById("commentList");
+  const commentInput = document.getElementById("commentInput");
+  const commentButton = document.getElementById("commentButton");
+
   // Menu user
   userMenuContainer.innerHTML = "";
 
@@ -26,7 +31,10 @@ document.addEventListener("DOMContentLoaded", () => {
     li.appendChild(a);
     userMenuContainer.appendChild(li);
 
-    logoutButton.addEventListener("click", () => {
+    logoutButton.addEventListener("click", async () => {
+      try {
+        if (window.sb) await window.sb.auth.signOut();
+      } catch (e) {}
       localStorage.removeItem("username");
       localStorage.removeItem("guest");
       window.location.href = "login.html";
@@ -70,20 +78,34 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // ✅ 1 SOLO juego (no traigas toda la lista)
+  // =========================
+  // ✅ TOKEN helper (NUEVO)
+  // =========================
+  async function getTokenOrNull() {
+    try {
+      if (!window.sb) return null;
+      const { data } = await window.sb.auth.getSession();
+      return data?.session?.access_token || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // ✅ View count (una vista al abrir)
+  interactWithGame("view");
+
+  // ✅ 1 SOLO juego
   fetch(`/games/${encodeURIComponent(dir)}`)
     .then((r) => {
       if (!r.ok) throw new Error("Juego no encontrado");
       return r.json();
     })
-    .then((game) => {
-      // DB columns reales
+    .then(async (game) => {
       const cover = game.cover_url || "";
       const owner = game.owner_username || "user";
       const download = game.downloadable_url || "#";
       const shots = Array.isArray(game.screenshots) ? game.screenshots : [];
 
-      // ✅ IMPORTANT: reproduce desde TU DOMINIO
       const playUrl = `/play/${dir}/index.html`;
 
       // Pintar detalles
@@ -137,6 +159,10 @@ document.addEventListener("DOMContentLoaded", () => {
       // Favoritos
       updateFavoriteButtonState(dir);
       favoriteButton.addEventListener("click", () => toggleFavoriteGame(dir));
+
+      // ✅ Comments
+      await loadComments(dir);
+      setupCommenting(dir);
     })
     .catch((err) => {
       console.error(err);
@@ -153,6 +179,9 @@ document.addEventListener("DOMContentLoaded", () => {
       gameIframe.style.display = "none";
       playButton.textContent = "Jugar";
     } else {
+      // ✅ cuenta vista también cuando le das play (opcional)
+      interactWithGame("view");
+
       gameIframe.src = url;
       gameIframe.style.display = "block";
       playButton.textContent = "Pausar";
@@ -170,21 +199,32 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("likeButton").onclick = () => interactWithGame("like");
   document.getElementById("dislikeButton").onclick = () => interactWithGame("dislike");
 
-  function interactWithGame(type) {
-    fetch(`/game/${encodeURIComponent(dir)}/interact`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type }),
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.success && data.game) {
-          document.getElementById("likeCount").textContent = data.game.likes || 0;
-          document.getElementById("dislikeCount").textContent = data.game.dislikes || 0;
-          document.getElementById("viewCount").textContent = data.game.views || 0;
-        }
-      })
-      .catch(console.warn);
+  // =========================
+  // ✅ Interact (LIKE/DISLIKE/VIEW) con token si existe (NUEVO)
+  // =========================
+  async function interactWithGame(type) {
+    try {
+      const token = await getTokenOrNull();
+
+      const r = await fetch(`/game/${encodeURIComponent(dir)}/interact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ type }),
+      });
+
+      const data = await r.json().catch(() => ({}));
+
+      if (data.success && data.game) {
+        document.getElementById("likeCount").textContent = data.game.likes || 0;
+        document.getElementById("dislikeCount").textContent = data.game.dislikes || 0;
+        document.getElementById("viewCount").textContent = data.game.views || 0;
+      }
+    } catch (e) {
+      console.warn(e);
+    }
   }
 
   function reportGame(gameDir, reportedUser, reportedBy, reason) {
@@ -198,19 +238,135 @@ document.addEventListener("DOMContentLoaded", () => {
       .catch((e) => console.error("report error:", e));
   }
 
-  function deleteGame(dir) {
-    fetch(`/games/${encodeURIComponent(dir)}`, { method: "DELETE" })
-      .then((r) => {
-        if (r.ok) {
-          alert("Juego eliminado correctamente.");
-          window.location.href = "index.html";
-        } else {
-          alert("Error al eliminar el juego.");
-        }
-      })
-      .catch(console.warn);
+  async function deleteGame(dirToDelete) {
+    try {
+      // ✅ Necesitamos token
+      if (!window.sb) {
+        alert("Falta Supabase en el front. Incluye js/supabase.js en game.html");
+        return;
+      }
+
+      const { data: sData } = await window.sb.auth.getSession();
+      const token = sData?.session?.access_token;
+
+      if (!token) {
+        alert("No hay sesión/token. Vuelve a loguearte.");
+        return;
+      }
+
+      const r = await fetch(`/games/${encodeURIComponent(dirToDelete)}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (r.ok) {
+        alert("Juego eliminado correctamente.");
+        window.location.href = "index.html";
+      } else {
+        const j = await r.json().catch(() => ({}));
+        alert(j.message || "Error al eliminar el juego.");
+      }
+    } catch (e) {
+      console.warn(e);
+      alert("Error al eliminar el juego.");
+    }
   }
 
+  // =========================
+  // COMMENTS
+  // =========================
+  function esc(str) {
+    return String(str ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  async function loadComments(gameDir) {
+    if (!commentList) return;
+    commentList.innerHTML = "Cargando comentarios...";
+
+    try {
+      const r = await fetch(`/comments/${encodeURIComponent(gameDir)}`);
+      const j = await r.json();
+      const comments = j?.comments || [];
+
+      if (!comments.length) {
+        commentList.innerHTML = "<div>Sin comentarios todavía.</div>";
+        return;
+      }
+
+      commentList.innerHTML = "";
+      comments.forEach((c) => {
+        const el = document.createElement("div");
+        const when = c.created_at ? new Date(c.created_at).toLocaleString() : "";
+        el.innerHTML = `<b>@${esc(c.username)}</b> <span style="opacity:.65;font-size:12px;">${esc(
+          when
+        )}</span><br>${esc(c.comment)}`;
+        commentList.appendChild(el);
+      });
+    } catch (e) {
+      console.error("loadComments error:", e);
+      commentList.innerHTML = "<div>Error cargando comentarios.</div>";
+    }
+  }
+
+  function setupCommenting(gameDir) {
+    if (!commentButton || !commentInput) return;
+
+    // guest no comenta
+    if (guest || !window.sb) {
+      commentInput.disabled = true;
+      commentInput.placeholder = "Inicia sesión para comentar";
+      commentButton.disabled = true;
+      return;
+    }
+
+    commentButton.onclick = async () => {
+      const text = (commentInput.value || "").trim();
+      if (!text) return;
+
+      const { data: sData } = await window.sb.auth.getSession();
+      const token = sData?.session?.access_token;
+      if (!token) {
+        alert("Inicia sesión para comentar.");
+        return;
+      }
+
+      commentButton.disabled = true;
+
+      try {
+        const r = await fetch(`/comments/${encodeURIComponent(gameDir)}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ comment: text }),
+        });
+
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          alert(j.message || "Error comentando");
+          return;
+        }
+
+        commentInput.value = "";
+        await loadComments(gameDir);
+      } catch (e) {
+        console.error("comment error:", e);
+        alert("Error comentando");
+      } finally {
+        commentButton.disabled = false;
+      }
+    };
+  }
+
+  // =========================
+  // Favoritos (tu lógica)
+  // =========================
   function loadFavorites() {
     const favorites = localStorage.getItem("favorites");
     return favorites ? JSON.parse(favorites) : [];

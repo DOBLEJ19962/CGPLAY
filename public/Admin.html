@@ -1,238 +1,560 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administración - CGPlay</title>
-    <style>
-        /* Estilo general */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            margin: 0;
-            padding: 0;
-            color: #f4f4f4;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Panel de Administración - CGPlay</title>
 
-        header {
-            background-color: #1e1e1e;
-            color: white;
-            padding: 10px 0;
-            text-align: center;
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-            header .main-nav {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
+  <style>
+    :root{
+      --bg:#0b0f17;
+      --panel: rgba(255,255,255,0.03);
+      --panel2: rgba(255,255,255,0.045);
+      --border: rgba(255,255,255,0.10);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.65);
+      --shadow: 0 12px 34px rgba(0,0,0,0.45);
+      --radius: 16px;
+      --accent: #6ee7ff;
+      --danger: #ff5a7a;
+      --ok: #34d399;
+      --warn: #fbbf24;
+    }
 
-                header .main-nav img {
-                    height: 40px;
-                    margin-right: 10px;
-                }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at 20% -10%, rgba(110,231,255,0.10), transparent 60%),
+        radial-gradient(900px 500px at 110% 20%, rgba(140,120,255,0.10), transparent 60%),
+        var(--bg);
+    }
 
-        main {
-            padding: 20px;
-        }
+    /* ===== Header tipo app ===== */
+    header.app-header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 10px 12px;
+      background: rgba(11,15,23,0.78);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-row{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      justify-content: space-between;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      text-decoration:none;
+      color: var(--text);
+      min-width: 220px;
+    }
+    .brand img{
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    }
+    .brand .t{ display:flex; flex-direction: column; line-height: 1.1; }
+    .brand .t strong{ font-weight: 900; letter-spacing: 0.2px; }
+    .brand .t span{ font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-        .admin-panel {
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: #1e1e1e;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        }
+    .search{
+      flex: 1;
+      max-width: 720px;
+      display:flex;
+      gap: 10px;
+      align-items:center;
+    }
+    .search input{
+      width:100%;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      outline:none;
+    }
+    .search input:focus{
+      border-color: rgba(110,231,255,0.35);
+      box-shadow: 0 0 0 4px rgba(110,231,255,0.08);
+    }
 
-        .search-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    .top-actions{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.88);
+      font-weight: 900;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .dot{
+      width: 8px;
+      height: 8px;
+      border-radius: 99px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(110,231,255,0.12);
+    }
 
-            .search-container input {
-                width: 80%;
-                padding: 10px;
-                font-size: 16px;
-                border-radius: 4px;
-                border: 1px solid #333;
-                background-color: #2e2e2e;
-                color: #f4f4f4;
-            }
+    /* ===== Layout ===== */
+    main.app{
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 12px;
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      gap: 12px;
+      align-items:start;
+    }
 
-        h2 {
-            border-bottom: 2px solid #333;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
-            color: #f4f4f4;
-        }
+    /* Sidebar / Acciones */
+    aside.side{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      border-radius: var(--radius);
+      overflow:hidden;
+      display:flex;
+      flex-direction: column;
+      min-height: calc(100vh - 100px);
+    }
+    .side .scroll{
+      padding: 12px;
+      overflow:auto;
+      flex:1;
+    }
+    .side h3{
+      margin: 0 0 10px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+    }
+    .hint{
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
 
-        .list-container {
-            margin-bottom: 20px;
-        }
+    .card{
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card + .card{ margin-top: 12px; }
+    .card .head{
+      padding: 12px 12px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: rgba(11,15,23,0.35);
+    }
+    .card .head strong{
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+    }
+    .card .body{ padding: 12px; }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-            table-layout: fixed; /* Para evitar que las celdas se extiendan infinitamente */
-        }
+    textarea{
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      outline:none;
+      font-family: inherit;
+      resize: vertical;
+    }
+    textarea:focus{
+      border-color: rgba(110,231,255,0.35);
+      box-shadow: 0 0 0 4px rgba(110,231,255,0.08);
+    }
+    #notificationMessage{ min-height: 120px; }
+    #banReason{ min-height: 70px; }
 
-        th, td {
-            padding: 10px;
-            border: 1px solid #333;
-            text-align: left;
-            word-wrap: break-word; /* Para que el texto se ajuste dentro de la celda */
-            white-space: pre-wrap; /* Para mantener los saltos de línea */
-        }
+    .row-actions{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items:center;
+      margin-top: 10px;
+    }
 
-        th {
-            background-color: #333;
-            color: white;
-        }
+    .btn{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-weight: 900;
+      font-size: 13px;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap: 8px;
+    }
+    .btn:hover{ background: rgba(255,255,255,0.06); }
 
-        td {
-            background-color: #2e2e2e;
-            color: #f4f4f4;
-        }
+    .btn-primary{
+      border-color: rgba(110,231,255,0.25);
+      background: rgba(110,231,255,0.12);
+    }
+    .btn-primary:hover{ background: rgba(110,231,255,0.16); }
 
-        a {
-            color: white;
-            text-decoration: none;
-        }
+    .btn-danger{
+      border-color: rgba(255,90,122,0.25);
+      background: rgba(255,90,122,0.10);
+    }
+    .btn-danger:hover{ background: rgba(255,90,122,0.14); }
 
-            a:hover {
-                text-decoration: underline;
-            }
+    .btn-ok{
+      border-color: rgba(52,211,153,0.22);
+      background: rgba(52,211,153,0.12);
+    }
+    .btn-ok:hover{ background: rgba(52,211,153,0.16); }
 
-        .delete-button {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+    .small{
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+    }
 
-            .delete-button:hover {
-                background-color: #c0392b;
-            }
+    /* Contenido principal */
+    section.content{ min-width: 0; }
 
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #333;
-            margin-bottom: 10px;
-            font-size: 16px;
-            background-color: #2e2e2e;
-            color: #f4f4f4;
-        }
+    .content-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .content-head h2{
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0.2px;
+    }
+    .content-head p{
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
 
-            textarea#notificationMessage {
-                height: 100px;
-            }
+    /* Tabs visuales (solo UI, no rompe JS) */
+    .tabs{
+      display:flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .tab{
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.03);
+      color: rgba(255,255,255,0.85);
+      font-weight: 900;
+      font-size: 12px;
+      cursor: default;
+      user-select:none;
+    }
 
-            textarea#banReason {
-                height: 50px;
-            }
+    /* Tabla moderna */
+    .table-card{
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      margin-bottom: 12px;
+    }
+    .table-card .thead{
+      padding: 12px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: rgba(11,15,23,0.35);
+    }
+    .table-card .thead strong{
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+    }
+    .table-card .thead span{
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+    }
 
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
+    .table-wrap{
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+    }
 
-            button#banUserButton {
-                background-color: #e74c3c;
-            }
+    table{
+      width:100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      table-layout: fixed;
+      min-width: 860px; /* para que no se rompa en móvil */
+    }
+    th, td{
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      text-align:left;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th{
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: rgba(11,15,23,0.92);
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      font-weight: 900;
+      color: rgba(255,255,255,0.92);
+    }
+    tr:hover td{ background: rgba(255,255,255,0.03); }
 
-                button#banUserButton:hover {
-                    background-color: #c0392b;
-                }
+    /* Badges */
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.03);
+      color: rgba(255,255,255,0.80);
+      white-space: nowrap;
+    }
+    .badge.ok{
+      border-color: rgba(52,211,153,0.25);
+      background: rgba(52,211,153,0.10);
+      color: rgba(185,255,211,0.95);
+    }
+    .badge.banned{
+      border-color: rgba(255,90,122,0.30);
+      background: rgba(255,90,122,0.12);
+      color: rgba(255,200,210,0.95);
+    }
 
-            button#sendNotificationButton:hover {
-                background-color: #2980b9;
-            }
-    </style>
+    /* Responsive */
+    @media (max-width: 1100px){
+      main.app{ grid-template-columns: 1fr; }
+      aside.side{ min-height:auto; }
+      .brand .t span{ display:none; }
+      table{ min-width: 820px; }
+    }
+    @media (max-width: 520px){
+      header.app-header{ padding: 10px 10px; }
+      .brand{ min-width: 44px; }
+      .brand .t{ display:none; }
+      .pill{ display:none; }
+    }
+  </style>
 </head>
+
 <body>
-    <header>
-        <div class="main-nav">
-            <img src="https://cdn.glitch.global/e5a5cdd1-5c78-4bd8-8fd5-7b2ee58c8459/Logo.png?v=1720826870070" alt="Logo">
-            <h1>CGPlay - Panel de Administración</h1>
+
+  <header class="app-header">
+    <div class="header-row">
+      <a class="brand" href="index.html">
+        <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/Logo.png" alt="Logo">
+        <div class="t">
+          <strong>CGPlay</strong>
+          <span>Panel de Administración</span>
         </div>
-    </header>
-    <main>
-        <section class="admin-panel">
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Buscar juegos o usuarios...">
+      </a>
+
+      <!-- ✅ mismo id para tu admin.js -->
+      <div class="search">
+        <input type="text" id="searchInput" placeholder="Buscar juegos o usuarios...">
+      </div>
+
+      <div class="top-actions">
+        <span class="pill"><span class="dot"></span> Admin</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="app">
+    <!-- Sidebar: acciones rápidas -->
+    <aside class="side">
+      <div class="scroll">
+        <h3>Acciones</h3>
+        <div class="hint">
+          Selecciona usuarios en la tabla y usa Banear / Quitar Ban / Notificar. <br>
+          El buscador filtra juegos y usuarios.
+        </div>
+
+        <!-- Ban / Unban -->
+        <div class="card">
+          <div class="head">
+            <strong>Banear / Quitar Ban</strong>
+            <span class="small" id="selectedCount">0 seleccionados</span>
+          </div>
+          <div class="body">
+            <textarea id="banReason" placeholder="Motivo del ban..."></textarea>
+            <div class="row-actions">
+              <button id="banUserButton" class="btn btn-danger" type="button">Banear</button>
+              <button id="unbanUserButton" class="btn btn-ok" type="button">Quitar Ban</button>
             </div>
+          </div>
+        </div>
 
-            <h2>Reportes</h2>
-            <div id="reportList" class="list-container">
-                <table id="reportTable">
-                    <thead>
-                        <tr>
-                            <th>Reportado Por</th>
-                            <th>Reportado A</th>
-                            <th>Juego Reportado</th>
-                            <th>Descripción</th>
-                            <th>Fecha y Hora</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Los reportes se mostrarán aquí -->
-                    </tbody>
-                </table>
-            </div>
-
-            <h2>Juegos</h2>
-            <div id="gameList" class="list-container">
-                <table id="gameTable">
-                    <thead>
-                        <tr>
-                            <th>Nombre del Juego</th>
-                            <th>Subido Por</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Los juegos se mostrarán aquí -->
-                    </tbody>
-                </table>
-            </div>
-
-            <h2>Usuarios</h2>
-            <div id="userList" class="list-container">
-                <table id="userTable">
-                    <thead>
-                        <tr>
-                            <th>Nombre de Usuario</th>
-                            <th>Email</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Los usuarios se mostrarán aquí -->
-                    </tbody>
-                </table>
-            </div>
-
-            <h2>Banear Usuario</h2>
-            <textarea id="banReason" placeholder="Escribe el motivo del ban aquí..."></textarea>
-            <button id="banUserButton">Banear</button>
-
-            <h2>Enviar Notificación</h2>
+        <!-- Notificaciones -->
+        <div class="card">
+          <div class="head">
+            <strong>Notificación</strong>
+            <span class="small">a seleccionados</span>
+          </div>
+          <div class="body">
             <textarea id="notificationMessage" placeholder="Escribe tu mensaje aquí..."></textarea>
-            <button id="sendNotificationButton">Enviar</button>
-        </section>
-    </main>
-    <script src="admin.js"></script>
+            <div class="row-actions">
+              <button id="sendNotificationButton" class="btn btn-primary" type="button">Enviar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tips -->
+        <div class="card">
+          <div class="head">
+            <strong>Tips</strong>
+            <span class="small">moderación</span>
+          </div>
+          <div class="body">
+            <div class="hint" style="margin:0;">
+              • Usa motivos claros en bans.<br>
+              • Revisa reportes antes de borrar juegos.<br>
+              • Notifica al usuario con contexto.
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Contenido principal -->
+    <section class="content">
+      <div class="content-head">
+        <div>
+          <h2>Panel</h2>
+          <p>Reportes, juegos y usuarios en un solo lugar</p>
+        </div>
+      </div>
+
+      <div class="tabs" aria-hidden="true">
+        <div class="tab">Reportes</div>
+        <div class="tab">Juegos</div>
+        <div class="tab">Usuarios</div>
+      </div>
+
+      <!-- Reportes -->
+      <div class="table-card">
+        <div class="thead">
+          <strong>Reportes</strong>
+          <span>Revisa y toma acción</span>
+        </div>
+        <div class="table-wrap">
+          <table id="reportTable">
+            <thead>
+              <tr>
+                <th>Reportado Por</th>
+                <th>Reportado A</th>
+                <th>Juego Reportado</th>
+                <th>Descripción</th>
+                <th>Fecha y Hora</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Juegos -->
+      <div class="table-card">
+        <div class="thead">
+          <strong>Juegos</strong>
+          <span>Gestiona contenido</span>
+        </div>
+        <div class="table-wrap">
+          <table id="gameTable">
+            <thead>
+              <tr>
+                <th>Nombre del Juego</th>
+                <th>Subido Por</th>
+                <th>Dir</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Usuarios -->
+      <div class="table-card">
+        <div class="thead">
+          <strong>Usuarios</strong>
+          <span>Selecciona para moderar</span>
+        </div>
+        <div class="table-wrap">
+          <table id="userTable">
+            <thead>
+              <tr>
+                <th>Seleccionar</th>
+                <th>Usuario</th>
+                <th>Email</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="admin.js"></script>
 </body>
 </html>

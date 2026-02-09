@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Detalles del Juego - CGPlay</title>
+  <title>Juego - CGPlay</title>
 
   <link rel="stylesheet" href="style.css">
 
@@ -14,16 +14,18 @@
   <style>
     :root{
       --bg:#0b0f17;
+      --panel: rgba(255,255,255,0.03);
+      --panel2: rgba(255,255,255,0.045);
       --border: rgba(255,255,255,0.10);
       --text: rgba(255,255,255,0.92);
       --muted: rgba(255,255,255,0.65);
-      --shadow: 0 10px 26px rgba(0,0,0,0.35);
-      --radius: 14px;
+      --shadow: 0 12px 34px rgba(0,0,0,0.45);
+      --radius: 16px;
       --accent: #6ee7ff;
       --danger: #ff5a7a;
-      --ok: #4CAF50;
+      --ok: #34d399;
+      --warn: #fbbf24;
     }
-
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
     body{
@@ -36,415 +38,401 @@
         var(--bg);
     }
 
-    /* ===== Header tipo app ===== */
+    /* Header tipo index */
     header.app-header{
       position: sticky;
       top: 0;
       z-index: 50;
-      padding: 12px 16px;
+      padding: 10px 12px;
       background: rgba(11,15,23,0.78);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
     }
     .header-row{
       display:flex;
-      gap: 12px;
+      gap: 10px;
       align-items:center;
       justify-content: space-between;
       max-width: 1400px;
       margin: 0 auto;
     }
-
     .brand{
       display:flex;
       align-items:center;
-      gap: 12px;
+      gap: 10px;
       text-decoration:none;
       color: var(--text);
-      min-width: 220px;
+      min-width: 160px;
     }
     .brand img{
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       border-radius: 12px;
       object-fit: cover;
       box-shadow: 0 8px 20px rgba(0,0,0,0.25);
     }
-    .brand .t{ display:flex; flex-direction: column; line-height: 1.05; }
-    .brand .t strong{ font-weight: 900; letter-spacing: 0.2px; font-size: 14px; }
+    .brand .t{
+      display:flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+    .brand .t strong{ font-weight: 900; letter-spacing: 0.2px; }
     .brand .t span{ font-size: 12px; color: var(--muted); margin-top: 2px; }
 
     .top-actions{
       display:flex;
       align-items:center;
       gap: 10px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
     }
 
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.04);
-      color: var(--text);
-      text-decoration:none;
-      font-weight: 900;
-      font-size: 13px;
-      cursor:pointer;
-      white-space: nowrap;
-    }
-    .btn:hover{ background: rgba(255,255,255,0.06); }
-
-    /* userMenuContainer */
-    #userMenuContainer{ display: contents; }
-    #userMenuContainer li{ list-style:none; }
-    #userMenuContainer a{
-      display:inline-flex;
-      align-items:center;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.04);
-      color: var(--text);
-      text-decoration:none;
-      font-weight: 900;
-      font-size: 13px;
-      max-width: 260px;
-      overflow:hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    #userMenuContainer a:hover{ background: rgba(255,255,255,0.06); }
-
-    /* menu ⋮ */
+    /* menu ⋮ (igual que index) */
     .menu{ position: relative; }
     .menu-button{
-      width: 42px; height: 42px;
+      width: 40px;
+      height: 40px;
       border-radius: 14px;
       border: 1px solid var(--border);
       background: rgba(255,255,255,0.04);
       color: var(--text);
       cursor:pointer;
       font-size: 18px;
-      line-height: 42px;
     }
     .menu-button:hover{ background: rgba(255,255,255,0.06); }
     .menu-content{
       position:absolute;
-      right:0; top: 50px;
-      width: 200px;
+      right:0;
+      top: 48px;
+      width: 190px;
       border-radius: 14px;
       border: 1px solid var(--border);
       background: rgba(11,15,23,0.95);
       box-shadow: var(--shadow);
       overflow:hidden;
       display:none;
-      z-index: 99;
     }
     .menu.open .menu-content{ display:block; }
-    .menu-content a, .menu-content button{
+    .menu-content a, .menu-content button, .menu-content li{
       display:block;
       width:100%;
-      padding: 11px 12px;
+      padding: 10px 12px;
       text-align:left;
       background: transparent;
       border:none;
       color: var(--text);
       text-decoration:none;
       cursor:pointer;
-      font-weight: 900;
+      font-weight: 800;
       font-size: 13px;
+      list-style:none;
     }
-    .menu-content a:hover, .menu-content button:hover{ background: rgba(255,255,255,0.06); }
+    .menu-content a:hover, .menu-content button:hover, .menu-content li:hover{
+      background: rgba(255,255,255,0.06);
+    }
     #logoutButton{ color: var(--danger); }
 
-    /* ===== Main centrado ===== */
-    main{
-      max-width: 1200px; /* ✅ más centrado */
+    /* Layout */
+    main.app{
+      max-width: 1400px;
       margin: 0 auto;
-      padding: 16px;
-    }
-
-    /* ✅ Layout más cómodo: izquierda (contenido) + derecha (info) */
-    .page-grid{
+      padding: 12px;
       display:grid;
-      grid-template-columns: 1fr 380px;
-      gap: 14px;
-      align-items: start;
+      grid-template-columns: 420px 1fr;
+      gap: 12px;
+      align-items:start;
     }
 
     .card{
-      border: 1px solid var(--border);
+      border: 1px solid rgba(255,255,255,0.10);
       background: rgba(255,255,255,0.03);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       overflow:hidden;
-      min-width: 0;
     }
-
-    .card-header{
-      padding: 16px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(255,255,255,0.02);
+    .card .head{
+      padding: 12px;
       display:flex;
-      gap: 12px;
-      align-items: center;
+      align-items:center;
       justify-content: space-between;
-      flex-wrap: wrap;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: rgba(11,15,23,0.35);
+    }
+    .card .head strong{
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+    }
+    .card .head span{
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+    .card .body{ padding: 12px; }
+
+    /* Cover / hero */
+    .cover{
+      width: 100%;
+      height: 240px;
+      border-radius: 14px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.02);
+      box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+    }
+    .cover img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display:block;
     }
 
-    .title-wrap{ min-width: 0; flex: 1; }
-    #gameName{
-      margin:0;
+    .title{
+      margin: 12px 0 6px;
       font-size: 20px;
       font-weight: 900;
       letter-spacing: 0.2px;
-      line-height: 1.2;
-      overflow:hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      line-height: 1.15;
     }
-    .meta-line{
-      margin-top: 8px;
+    .desc{
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .meta-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .meta{
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      padding: 10px;
+      min-width:0;
+    }
+    .meta .k{
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .meta .v{
+      margin-top: 5px;
+      font-size: 13px;
+      font-weight: 800;
+      color: rgba(255,255,255,0.92);
+      word-break: break-word;
+    }
+    #uploadedBy a{
+      color: rgba(110,231,255,0.95);
+      text-decoration:none;
+      font-weight: 900;
+    }
+    #uploadedBy a:hover{ text-decoration: underline; }
+
+    /* Stats */
+    .stats{
       display:flex;
       gap: 8px;
       flex-wrap: wrap;
-      color: var(--muted);
-      font-size: 13px;
-      align-items:center;
+      margin-bottom: 12px;
     }
-    .pill{
+    .stat{
       display:inline-flex;
       align-items:center;
       gap: 8px;
-      padding: 7px 10px;
+      padding: 8px 10px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(255,255,255,0.04);
-      font-weight: 900;
+      background: rgba(255,255,255,0.03);
       font-size: 12px;
-      color: rgba(255,255,255,0.88);
-      white-space: nowrap;
+      font-weight: 900;
+      color: rgba(255,255,255,0.85);
     }
+    .stat b{ color: rgba(255,255,255,0.95); }
 
-    /* ===== Botones ===== */
-    .button-container{
+    /* Buttons */
+    .btn-row{
       display:flex;
       gap: 10px;
       flex-wrap: wrap;
+      margin-top: 10px;
     }
-    .play-button, .fullscreen-button, .delete-button, .report-button, .favorite-button{
-      border: 1px solid var(--border);
+    .btn{
+      border: 1px solid rgba(255,255,255,0.12);
       background: rgba(255,255,255,0.04);
       color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
       font-weight: 900;
       font-size: 13px;
-      border-radius: 14px;
-      padding: 10px 12px;
-      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap: 8px;
+      white-space: nowrap;
     }
-    .play-button{ border-color: rgba(110,231,255,0.25); background: rgba(110,231,255,0.10); }
-    .play-button:hover{ background: rgba(110,231,255,0.14); }
-    .delete-button{ border-color: rgba(255,90,122,0.25); background: rgba(255,90,122,0.10); }
-    .delete-button:hover{ background: rgba(255,90,122,0.14); }
-    .fullscreen-button:hover, .favorite-button:hover, .report-button:hover{ background: rgba(255,255,255,0.06); }
+    .btn:hover{ background: rgba(255,255,255,0.06); }
 
-    /* ===== Preview area ===== */
-    .preview{
-      padding: 16px;
-      display:grid;
-      gap: 12px;
-      justify-items: center; /* ✅ centra la carátula */
+    .btn-primary{
+      border-color: rgba(110,231,255,0.25);
+      background: rgba(110,231,255,0.12);
     }
+    .btn-primary:hover{ background: rgba(110,231,255,0.16); }
 
-    /* ✅ Carátula "tamaño real" (no gigante) */
-    .cover-wrap{
-      width: 100%;
-      display:flex;
-      justify-content: center; /* ✅ centrada */
+    .btn-danger{
+      border-color: rgba(255,90,122,0.25);
+      background: rgba(255,90,122,0.10);
     }
+    .btn-danger:hover{ background: rgba(255,90,122,0.14); }
 
-    #gameScreenshot{
-      width: min(720px, 100%); /* ✅ no gigante */
-      aspect-ratio: 16 / 9;    /* ✅ look “store” */
-      border-radius: 14px;
-      object-fit: cover;
-      display:block;
+    .btn-ok{
+      border-color: rgba(52,211,153,0.22);
+      background: rgba(52,211,153,0.12);
+    }
+    .btn-ok:hover{ background: rgba(52,211,153,0.16); }
+
+    /* Right panel */
+    .stack > .card{ margin-bottom: 12px; }
+
+    /* Iframe play */
+    .play-wrap{
       border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(255,255,255,0.04);
+      border-radius: 16px;
+      overflow:hidden;
+      background: rgba(0,0,0,0.25);
+      box-shadow: 0 12px 34px rgba(0,0,0,0.35);
     }
-
-    /* iframe se queda grande solo cuando se juega */
     #gameIframe{
       width: 100%;
-      height: min(72vh, 760px);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 14px;
-      background: rgba(0,0,0,0.25);
+      height: 520px;
+      border: 0;
+      display:none;
+      background: #000;
     }
 
-    /* descripción en card */
-    #gameDescription{
-      width: 100%;
-      margin: 0;
-      color: rgba(255,255,255,0.82);
-      line-height: 1.6;
-      font-size: 14px;
-      padding: 12px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.02);
-      border-radius: 12px;
-      white-space: pre-wrap;
-    }
+    /* Screenshots (NO recorte, se ve completo) */
+#screenshotGallery{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
 
-    /* ===== Gallery ===== */
-    .gallery{
-      padding: 0 16px 16px;
-      display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 10px;
-    }
-    .gallery img{
-      width:100%;
-      aspect-ratio: 16/10;
-      object-fit: cover;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(255,255,255,0.04);
-      cursor: pointer;
-      transition: transform 120ms ease;
-    }
-    .gallery img:hover{ transform: translateY(-1px); }
+#screenshotGallery img{
+  width: 100%;
+  aspect-ratio: 16 / 9;     /* ventana más grande */
+  height: auto;             /* importante */
+  object-fit: contain;      /* ✅ NO recorta */
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.35); /* “marco” oscuro para letterbox */
+  cursor:pointer;
+  transition: transform .12s ease, border-color .12s ease;
+  padding: 6px;             /* margen interno para que se vea premium */
+}
 
-    /* ===== Right panel ===== */
-    .side{ position: sticky; top: 86px; }
-    .side-body{ padding: 16px; display:grid; gap: 12px; }
+#screenshotGallery img:hover{
+  transform: translateY(-2px);
+  border-color: rgba(110,231,255,0.18);
+}
 
-    .likes-dislikes{
+
+    /* Comments */
+    .comment-box{
       display:flex;
       gap: 10px;
-      align-items:center;
-      flex-wrap: wrap;
+      align-items:flex-start;
     }
-    .likes-dislikes button{
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(255,255,255,0.04);
-      color: var(--text);
-      font-weight: 900;
-      font-size: 13px;
-      border-radius: 12px;
-      padding: 8px 10px;
-      cursor:pointer;
-    }
-    .likes-dislikes button:hover{ background: rgba(255,255,255,0.06); }
-    .likes-dislikes span{ font-weight: 900; min-width: 18px; text-align:center; }
-
-    .kv{
-      display:flex;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.02);
-      font-size: 13px;
-      align-items: center;
-    }
-    .kv span:first-child{ color: var(--muted); font-weight: 900; }
-    .kv span:last-child{
-      text-align:right;
-      overflow:hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: 65%;
-    }
-
-    .download-button{
-      display:block;
-      text-align:center;
-      text-decoration:none;
-      padding: 12px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(110,231,255,0.25);
-      background: rgba(110,231,255,0.10);
-      color: rgba(255,255,255,0.95);
-      font-weight: 900;
-      font-size: 14px;
-    }
-    .download-button:hover{ background: rgba(110,231,255,0.14); }
-
-    /* ===== Comments ===== */
-    .comments{
-      padding: 16px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.01);
-    }
-    .comments h3{ margin: 0 0 10px; font-size: 16px; font-weight: 900; }
-
-    #commentList{ display:grid; gap: 10px; margin-bottom: 10px; }
-    #commentList > *{
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.02);
-      border-radius: 12px;
-      padding: 10px 12px;
-      color: rgba(255,255,255,0.86);
-      font-size: 13px;
-      line-height: 1.5;
-      overflow-wrap: anywhere;
-    }
-
     #commentInput{
-      width:100%;
+      flex: 1;
       padding: 10px 12px;
       border-radius: 14px;
-      border: 1px solid var(--border);
+      border: 1px solid rgba(255,255,255,0.12);
       background: rgba(255,255,255,0.04);
       color: var(--text);
       outline:none;
-      min-height: 90px;
-      resize: vertical;
-      margin-top: 6px;
+      font-family: inherit;
+      min-height: 44px;
     }
     #commentInput:focus{
       border-color: rgba(110,231,255,0.35);
       box-shadow: 0 0 0 4px rgba(110,231,255,0.08);
     }
-
-    #commentButton{
-      margin-top: 10px;
-      border: 1px solid rgba(110,231,255,0.25);
-      background: rgba(110,231,255,0.10);
-      color: rgba(255,255,255,0.95);
-      font-weight: 900;
-      font-size: 14px;
+    #commentList{
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .comment-item{
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
       border-radius: 14px;
-      padding: 10px 12px;
-      cursor:pointer;
+      padding: 10px 10px;
+      display:flex;
+      gap: 10px;
+      align-items:flex-start;
     }
-    #commentButton:hover{ background: rgba(110,231,255,0.14); }
-
-    /* ===== Mobile ===== */
-    @media (max-width: 980px){
-      .page-grid{ grid-template-columns: 1fr; }
-      .side{ position: static; }
-      #gameName{ white-space: normal; }
-      #gameIframe{ height: min(60vh, 560px); }
-      #gameScreenshot{ width: 100%; }
+    .avatar{
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.05);
+      flex: 0 0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 900;
+      color: rgba(255,255,255,0.75);
+      font-size: 12px;
+      margin-top: 1px;
+    }
+    .cbody{ min-width: 0; flex: 1; }
+    .cmeta{
+      display:flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items:center;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .cmeta b{
+      color: rgba(255,255,255,0.92);
+      font-weight: 900;
+    }
+    .ctext{
+      font-size: 13px;
+      line-height: 1.35;
+      color: rgba(255,255,255,0.92);
+      word-break: break-word;
+      overflow-wrap: anywhere;
     }
 
+    footer{
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 14px 12px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 1100px){
+      main.app{ grid-template-columns: 1fr; }
+      #screenshotGallery{ grid-template-columns: repeat(2, 1fr); }
+      #gameIframe{ height: 56vh; }
+    }
     @media (max-width: 520px){
-      header.app-header{ padding: 10px 10px; }
-      .brand{ min-width: 44px; }
       .brand .t{ display:none; }
-      main{ padding: 12px; }
-      .card-header, .preview, .side-body, .comments{ padding: 12px; }
-      .gallery{ padding: 0 12px 12px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-
-      .button-container > *{ flex: 1 1 160px; }
+      #screenshotGallery{ grid-template-columns: 1fr; }
+      #gameIframe{ height: 52vh; }
     }
   </style>
 </head>
@@ -461,98 +449,186 @@
       </a>
 
       <div class="top-actions">
-        <a class="btn" href="index.html">← Inicio</a>
-        <div id="userMenuContainer"></div>
-
+        <!-- Menu (IDs compatibles con tu game.js) -->
         <div class="menu" id="menuWrap">
           <button class="menu-button" id="menuBtn" aria-label="Menú">⋮</button>
           <div class="menu-content" id="menuContent">
+            <div id="userMenuContainer"></div>
             <a href="profile.html" id="profileLink">Perfil</a>
             <a href="upload.html" id="uploadLink">Subir Juego</a>
-            <button id="logoutButton">Logout</button>
+            <button id="logoutButton" type="button">Logout</button>
           </div>
         </div>
       </div>
     </div>
   </header>
 
-  <main>
-    <div class="page-grid">
-      <!-- LEFT -->
-      <section class="card">
-        <div class="card-header">
-          <div class="title-wrap">
-            <h2 id="gameName" class="game-name"></h2>
-            <div class="meta-line">
-              <span class="pill">👁️ <span id="viewCount">0</span> vistas</span>
-            </div>
-          </div>
+  <main class="app">
+    <!-- LEFT: tarjeta del juego -->
+    <section class="card">
+      <div class="body">
+        <div class="cover">
+          <img id="gameScreenshot" alt="Cover del juego" />
+        </div>
 
-          <div class="button-container">
-            <button id="playButton" class="play-button" style="display:none;">Jugar</button>
-            <button id="fullScreenButton" class="fullscreen-button">Pantalla Completa</button>
-            <button id="deleteButton" class="delete-button" style="display:none;">Eliminar</button>
-            <button id="reportButton" class="report-button">Reportar</button>
-            <button id="favoriteButton" class="favorite-button">Añadir a Favoritos</button>
+        <div class="title" id="gameName">...</div>
+        <div class="desc" id="gameDescription">...</div>
+
+        <div class="meta-grid">
+          <div class="meta">
+            <div class="k">Subido por</div>
+            <div class="v" id="uploadedBy">...</div>
+          </div>
+          <div class="meta">
+            <div class="k">Plataforma</div>
+            <div class="v" id="gamePlatform">...</div>
+          </div>
+          <div class="meta">
+            <div class="k">Género</div>
+            <div class="v" id="gameGenre">...</div>
+          </div>
+          <div class="meta">
+            <div class="k">Motor</div>
+            <div class="v" id="gameEngine">...</div>
           </div>
         </div>
 
-        <div class="preview">
-          <iframe id="gameIframe" style="display:none;" allow="fullscreen" allowfullscreen></iframe>
-
-          <div class="cover-wrap">
-            <img id="gameScreenshot" class="screenshot" src="" alt="Screenshot del Juego">
-          </div>
-
-          <p id="gameDescription"></p>
+        <div class="stats">
+          <div class="stat">👍 <b id="likeCount">0</b></div>
+          <div class="stat">👎 <b id="dislikeCount">0</b></div>
+          <div class="stat">👁️ <b id="viewCount">0</b></div>
         </div>
 
-        <div class="gallery" id="screenshotGallery"></div>
+        <div class="btn-row">
+          <button id="playButton" class="btn btn-primary" style="display:none;" type="button">Jugar</button>
+          <button id="fullScreenButton" class="btn" type="button">Pantalla completa</button>
 
-        <div class="comments">
-          <h3>Comentarios</h3>
+          <button id="likeButton" class="btn btn-ok" type="button">Like</button>
+          <button id="dislikeButton" class="btn" type="button">Dislike</button>
+
+          <a id="downloadLink" class="btn" href="#" target="_blank" rel="noopener">Descargar</a>
+
+          <button id="favoriteButton" class="btn" type="button">Añadir a Favoritos</button>
+          <button id="reportButton" class="btn btn-danger" type="button">Reportar</button>
+
+          <!-- delete button debe existir para tu JS -->
+          <button id="deleteButton" class="btn btn-danger" type="button" style="display:none;">Eliminar</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: play / screenshots / comments -->
+    <section class="stack">
+      <div class="card">
+        <div class="head">
+          <strong>Jugar</strong>
+          <span>Web embed</span>
+        </div>
+        <div class="body">
+          <div class="play-wrap">
+            <iframe id="gameIframe" allow="fullscreen; autoplay; gamepad *; clipboard-read; clipboard-write"></iframe>
+          </div>
+          <div style="margin-top:10px;color:var(--muted);font-size:12px;line-height:1.4;">
+            Tip: si el juego no carga, prueba en “Descargar” o revisa permisos del navegador.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="head">
+          <strong>Screenshots</strong>
+          <span>Galería</span>
+        </div>
+        <div class="body">
+          <div id="screenshotGallery"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="head">
+          <strong>Comentarios</strong>
+          <span>Tu comunidad</span>
+        </div>
+        <div class="body">
+          <div class="comment-box">
+            <input id="commentInput" type="text" placeholder="Escribe un comentario..." />
+            <button id="commentButton" class="btn btn-primary" type="button">Enviar</button>
+          </div>
+
           <div id="commentList"></div>
-          <textarea id="commentInput" placeholder="Deja un comentario"></textarea>
-          <button id="commentButton">Comentar</button>
         </div>
-      </section>
-
-      <!-- RIGHT -->
-      <aside class="card side">
-        <div class="side-body">
-          <div class="likes-dislikes">
-            <button id="likeButton">Like</button> <span id="likeCount">0</span>
-            <button id="dislikeButton">Dislike</button> <span id="dislikeCount">0</span>
-          </div>
-
-          <div class="kv"><span>Plataforma</span><span id="gamePlatform"></span></div>
-          <div class="kv"><span>Género</span><span id="gameGenre"></span></div>
-          <div class="kv"><span>Motor</span><span id="gameEngine"></span></div>
-          <div class="kv"><span>Subido por</span><span id="uploadedBy"></span></div>
-
-          <a id="downloadLink" href="#" target="_blank" class="download-button">Descargar Juego</a>
-        </div>
-      </aside>
-    </div>
+      </div>
+    </section>
   </main>
 
+  <footer>
+    <div class="footer-left">© <span id="year"></span> CGPlay</div>
+  </footer>
+
   <script>
-    // dropdown menu (solo UI)
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Menú (igual que index)
     const menuWrap = document.getElementById("menuWrap");
     const menuBtn = document.getElementById("menuBtn");
-
     menuBtn?.addEventListener("click", (e) => {
       e.stopPropagation();
       menuWrap.classList.toggle("open");
     });
     document.addEventListener("click", () => menuWrap?.classList.remove("open"));
-
-    // Oculta carátula hasta que game.js ponga el src real
-    const img = document.getElementById("gameScreenshot");
-    if (img && (!img.getAttribute("src") || img.getAttribute("src") === "")) img.style.display = "none";
-    img?.addEventListener("load", () => (img.style.display = "block"));
   </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+
+  <!-- Tu lógica -->
   <script src="game.js"></script>
+
+  <!-- ✅ pequeño parche visual SOLO para comments (no rompe lógica)
+       Convierte lo que game.js imprime en "cards bonitas" sin tocar tu fetch.
+  -->
+  <script>
+    // Observa cambios en commentList y re-envuelve los items existentes con el look pro
+    const commentList = document.getElementById("commentList");
+    if (commentList) {
+      const obs = new MutationObserver(() => {
+        // si ya tiene .comment-item no rehacer
+        const kids = Array.from(commentList.children);
+        kids.forEach((node) => {
+          if (node.classList && node.classList.contains("comment-item")) return;
+          // si node es un texto/loader, no tocar
+          if (!(node instanceof HTMLElement)) return;
+          // "Sin comentarios..." lo dejamos simple
+          if ((node.textContent || "").toLowerCase().includes("sin comentarios")) return;
+
+          // transform
+          const raw = node.innerHTML;
+          const tmp = document.createElement("div");
+          tmp.innerHTML = raw;
+
+          const b = tmp.querySelector("b");
+          const metaSpan = tmp.querySelector("span");
+          const name = b ? b.textContent : "@user";
+          const when = metaSpan ? metaSpan.textContent : "";
+          const text = tmp.innerHTML
+            .replace(b ? b.outerHTML : "", "")
+            .replace(metaSpan ? metaSpan.outerHTML : "", "")
+            .replace(/^<br>/, "")
+            .trim();
+
+          node.className = "comment-item";
+          node.innerHTML = `
+            <div class="avatar">${(name || "@").replace("@","").slice(0,2).toUpperCase()}</div>
+            <div class="cbody">
+              <div class="cmeta"><b>${name}</b> <span>${when}</span></div>
+              <div class="ctext">${text}</div>
+            </div>
+          `;
+        });
+      });
+      obs.observe(commentList, { childList: true, subtree: false });
+    }
+  </script>
+
 </body>
 </html>

@@ -1,50 +1,391 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro - CeVesGames-VPlay</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Registro - CGPlay</title>
+
   <link rel="stylesheet" href="style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0b0f17;
+      --panel: rgba(255,255,255,0.03);
+      --panel2: rgba(255,255,255,0.045);
+      --border: rgba(255,255,255,0.10);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.65);
+      --shadow: 0 10px 26px rgba(0,0,0,0.35);
+      --radius: 14px;
+      --accent: #6ee7ff;
+      --danger: #ff5a7a;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at 20% -10%, rgba(110,231,255,0.10), transparent 60%),
+        radial-gradient(900px 500px at 110% 20%, rgba(140,120,255,0.10), transparent 60%),
+        var(--bg);
+    }
+
+    /* ====== Header tipo app (igual que index) ====== */
+    header.app-header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 10px 12px;
+      background: rgba(11,15,23,0.78);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-row{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      justify-content: space-between;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      text-decoration:none;
+      color: var(--text);
+      min-width: 160px;
+    }
+    .brand img{
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    }
+    .brand .t{
+      display:flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+    .brand .t strong{
+      font-weight: 900;
+      letter-spacing: 0.2px;
+    }
+    .brand .t span{
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .top-actions{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .icon-link{
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      color: var(--text);
+      text-decoration:none;
+    }
+    .icon-link:hover{ background: rgba(255,255,255,0.06); }
+    .icon-link img{ width: 22px; height: 22px; object-fit: contain; }
+
+    /* ====== Layout ====== */
+    main.app{
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 12px;
+      display:grid;
+      grid-template-columns: 270px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    aside.side{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      border-radius: var(--radius);
+      overflow:hidden;
+      display:flex;
+      flex-direction: column;
+      min-height: calc(100vh - 100px);
+    }
+    .side .scroll{ padding: 12px; overflow:auto; flex:1; }
+    .side h3{
+      margin: 0 0 10px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+    }
+
+    .nav-link{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      text-decoration:none;
+      color: var(--text);
+      font-weight: 900;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+    .nav-link:hover{
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(110,231,255,0.18);
+    }
+
+    a.terms-link{
+      margin-top: auto;
+      display:block;
+      padding: 12px;
+      text-align:center;
+      text-decoration:none;
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+      border-top: 1px solid var(--border);
+      font-weight: 800;
+    }
+    a.terms-link:hover{ background: rgba(255,255,255,0.06); }
+
+    section.content{ min-width: 0; }
+
+    .page-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .page-head h2{
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0.2px;
+    }
+    .page-head p{
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .card{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .card-inner{ padding: 14px; }
+
+    .field{
+      display:flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .field label{
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    input[type="text"], input[type="email"], input[type="password"]{
+      width:100%;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      outline:none;
+      font-family: inherit;
+    }
+    input:focus{
+      border-color: rgba(110,231,255,0.35);
+      box-shadow: 0 0 0 4px rgba(110,231,255,0.08);
+    }
+
+    .hint{
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: -4px;
+      margin-bottom: 12px;
+    }
+
+    .actions{
+      display:flex;
+      gap: 10px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .btn{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-weight: 900;
+      font-size: 13px;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap: 8px;
+    }
+    .btn:hover{ background: rgba(255,255,255,0.06); }
+
+    .btn-primary{
+      border-color: rgba(110,231,255,0.25);
+      background: rgba(110,231,255,0.12);
+    }
+    .btn-primary:hover{ background: rgba(110,231,255,0.16); }
+
+    .muted{
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+    .muted a{
+      color: rgba(110,231,255,0.95);
+      text-decoration: none;
+      font-weight: 900;
+    }
+    .muted a:hover{ text-decoration: underline; }
+
+    footer{
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 14px 12px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 980px){
+      main.app{ grid-template-columns: 1fr; }
+      aside.side{ min-height:auto; }
+      .brand .t span{ display:none; }
+    }
+    @media (max-width: 520px){
+      header.app-header{ padding: 10px 10px; }
+      .brand{ min-width: 44px; }
+      .brand .t{ display:none; }
+      .icon-link{ width: 38px; height: 38px; border-radius: 13px; }
+    }
+  </style>
 </head>
+
 <body>
-  <header>
-    <div class="main-nav">
-      <img src="https://cdn.glitch.global/e5a5cdd1-5c78-4bd8-8fd5-7b2ee58c8459/Logo.png?v=1720826870070" alt="Logo">
-      <h1>CGPlay</h1>
+
+  <!-- Header tipo index -->
+  <header class="app-header">
+    <div class="header-row">
+      <a class="brand" href="index.html">
+        <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/Logo.png" alt="Logo">
+        <div class="t">
+          <strong>CGPlay</strong>
+          <span>Juegos de la comunidad</span>
+        </div>
+      </a>
+
+      <div class="top-actions">
+        <a class="icon-link" href="https://gdscript-online.github.io/" title="GDScript">
+          <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/logo_vertical_monochrome_dark.png" alt="">
+        </a>
+        <a class="icon-link" href="https://www.mycompiler.io/es/new/csharp" title="C#">
+          <img src="https://esgaqcsgilnvbfmkyxvf.supabase.co/storage/v1/object/public/cgpbucket/Logo/icon.png" alt="">
+        </a>
+      </div>
     </div>
-    <nav>
-      <ul>
-        <li><a href="index.html">Inicio</a></li>
-      </ul>
-    </nav>
   </header>
 
-  <main>
-    <section class="auth-section">
-      <h2>Registro</h2>
+  <main class="app">
+    <!-- Sidebar (solo visual) -->
+    <aside class="side">
+      <div class="scroll">
+        <h3>Registro</h3>
+        <a class="nav-link" href="index.html">Volver al inicio <span>›</span></a>
+        <a class="nav-link" href="login.html">Ya tengo cuenta <span>›</span></a>
+      </div>
+      <a href="Terminos.html" class="terms-link">Leer Términos y Condiciones</a>
+    </aside>
 
-      <form id="registerForm">
-        <label for="username">Nombre de usuario:</label>
-        <input type="text" id="username" name="username" required>
+    <section class="content">
+      <div class="page-head">
+        <div>
+          <h2>Registro</h2>
+          <p>Crea tu cuenta para publicar y guardar favoritos ⭐</p>
+        </div>
+      </div>
 
-        <label for="email">Correo electrónico:</label>
-        <input type="email" id="email" name="email" required>
+      <div class="card">
+        <div class="card-inner">
+          <!-- ✅ MISMO FORM + MISMAS IDS -->
+          <form id="registerForm">
+            <div class="field">
+              <label for="username">Nombre de usuario</label>
+              <input type="text" id="username" name="username" required>
+              <div class="hint">Mínimo 6 caracteres y no puede ser solo números.</div>
+            </div>
 
-        <label for="password">Contraseña:</label>
-        <input type="password" id="password" name="password" required>
+            <div class="field">
+              <label for="email">Correo electrónico</label>
+              <input type="email" id="email" name="email" required>
+            </div>
 
-        <button type="submit">Registrar</button>
-      </form>
+            <div class="field">
+              <label for="password">Contraseña</label>
+              <input type="password" id="password" name="password" required>
+              <div class="hint">Mínimo 7 caracteres.</div>
+            </div>
 
-      <p>¿Ya tienes una cuenta? <a href="login.html">Inicia sesión aquí</a></p>
+            <div class="actions">
+              <button class="btn btn-primary" type="submit">Registrar</button>
+            </div>
+
+            <div class="muted">
+              ¿Ya tienes una cuenta? <a href="login.html">Inicia sesión aquí</a>
+            </div>
+          </form>
+        </div>
+      </div>
     </section>
   </main>
+
+  <footer>
+    <div class="footer-left">© <span id="year"></span> CGPlay</div>
+  </footer>
 
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/js/supabase.js"></script>
 
   <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
     document.getElementById('registerForm').addEventListener('submit', async (event) => {
       event.preventDefault();
 
@@ -90,8 +431,6 @@
         }
 
         // 2) Si hay user id, guardamos/actualizamos profile
-        // (si tienes confirm email ON, puede que no haya sesión inmediata,
-        // pero data.user casi siempre viene)
         const userId = data?.user?.id;
 
         if (userId) {
@@ -105,7 +444,6 @@
 
           if (upErr) {
             console.warn(upErr);
-            // no bloqueamos el registro por esto
           }
         }
 

@@ -1,11 +1,10 @@
+<!-- ✅ PÉGALO COMPLETO EN TU game.html (reemplaza tu archivo si quieres) -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Juego - CGPlay</title>
-
-  <link rel="stylesheet" href="style.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +14,6 @@
     :root{
       --bg:#0b0f17;
       --panel: rgba(255,255,255,0.03);
-      --panel2: rgba(255,255,255,0.045);
       --border: rgba(255,255,255,0.10);
       --text: rgba(255,255,255,0.92);
       --muted: rgba(255,255,255,0.65);
@@ -24,7 +22,6 @@
       --accent: #6ee7ff;
       --danger: #ff5a7a;
       --ok: #34d399;
-      --warn: #fbbf24;
     }
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
@@ -38,7 +35,6 @@
         var(--bg);
     }
 
-    /* Header tipo index */
     header.app-header{
       position: sticky;
       top: 0;
@@ -71,25 +67,13 @@
       object-fit: cover;
       box-shadow: 0 8px 20px rgba(0,0,0,0.25);
     }
-    .brand .t{
-      display:flex;
-      flex-direction: column;
-      line-height: 1.1;
-    }
+    .brand .t{ display:flex; flex-direction: column; line-height: 1.1; }
     .brand .t strong{ font-weight: 900; letter-spacing: 0.2px; }
     .brand .t span{ font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-    .top-actions{
-      display:flex;
-      align-items:center;
-      gap: 10px;
-    }
-
-    /* menu ⋮ (igual que index) */
     .menu{ position: relative; }
     .menu-button{
-      width: 40px;
-      height: 40px;
+      width: 40px; height: 40px;
       border-radius: 14px;
       border: 1px solid var(--border);
       background: rgba(255,255,255,0.04);
@@ -100,8 +84,7 @@
     .menu-button:hover{ background: rgba(255,255,255,0.06); }
     .menu-content{
       position:absolute;
-      right:0;
-      top: 48px;
+      right:0; top: 48px;
       width: 190px;
       border-radius: 14px;
       border: 1px solid var(--border);
@@ -130,7 +113,6 @@
     }
     #logoutButton{ color: var(--danger); }
 
-    /* Layout */
     main.app{
       max-width: 1400px;
       margin: 0 auto;
@@ -169,7 +151,6 @@
     }
     .card .body{ padding: 12px; }
 
-    /* Cover / hero */
     .cover{
       width: 100%;
       height: 240px;
@@ -179,26 +160,10 @@
       background: rgba(255,255,255,0.02);
       box-shadow: 0 10px 26px rgba(0,0,0,0.35);
     }
-    .cover img{
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display:block;
-    }
+    .cover img{ width:100%; height:100%; object-fit:cover; display:block; }
 
-    .title{
-      margin: 12px 0 6px;
-      font-size: 20px;
-      font-weight: 900;
-      letter-spacing: 0.2px;
-      line-height: 1.15;
-    }
-    .desc{
-      margin: 0 0 12px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
+    .title{ margin: 12px 0 6px; font-size: 20px; font-weight: 900; line-height: 1.15; }
+    .desc{ margin: 0 0 12px; color: var(--muted); font-size: 13px; line-height: 1.5; }
 
     .meta-grid{
       display:grid;
@@ -211,57 +176,23 @@
       background: rgba(255,255,255,0.03);
       border-radius: 14px;
       padding: 10px;
-      min-width:0;
     }
-    .meta .k{
-      font-size: 11px;
-      color: var(--muted);
-      font-weight: 900;
-      letter-spacing: 0.4px;
-      text-transform: uppercase;
-    }
-    .meta .v{
-      margin-top: 5px;
-      font-size: 13px;
-      font-weight: 800;
-      color: rgba(255,255,255,0.92);
-      word-break: break-word;
-    }
-    #uploadedBy a{
-      color: rgba(110,231,255,0.95);
-      text-decoration:none;
-      font-weight: 900;
-    }
+    .meta .k{ font-size: 11px; color: var(--muted); font-weight: 900; text-transform: uppercase; }
+    .meta .v{ margin-top: 5px; font-size: 13px; font-weight: 800; word-break: break-word; }
+
+    #uploadedBy a{ color: rgba(110,231,255,0.95); text-decoration:none; font-weight: 900; }
     #uploadedBy a:hover{ text-decoration: underline; }
 
-    /* Stats */
-    .stats{
-      display:flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 12px;
-    }
+    .stats{ display:flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
     .stat{
-      display:inline-flex;
-      align-items:center;
-      gap: 8px;
+      display:inline-flex; align-items:center; gap: 8px;
       padding: 8px 10px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.10);
       background: rgba(255,255,255,0.03);
-      font-size: 12px;
-      font-weight: 900;
-      color: rgba(255,255,255,0.85);
+      font-size: 12px; font-weight: 900;
     }
-    .stat b{ color: rgba(255,255,255,0.95); }
-
-    /* Buttons */
-    .btn-row{
-      display:flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
+    .btn-row{ display:flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
     .btn{
       border: 1px solid rgba(255,255,255,0.12);
       background: rgba(255,255,255,0.04);
@@ -279,35 +210,21 @@
       white-space: nowrap;
     }
     .btn:hover{ background: rgba(255,255,255,0.06); }
-
-    .btn-primary{
-      border-color: rgba(110,231,255,0.25);
-      background: rgba(110,231,255,0.12);
-    }
+    .btn-primary{ border-color: rgba(110,231,255,0.25); background: rgba(110,231,255,0.12); }
     .btn-primary:hover{ background: rgba(110,231,255,0.16); }
-
-    .btn-danger{
-      border-color: rgba(255,90,122,0.25);
-      background: rgba(255,90,122,0.10);
-    }
+    .btn-danger{ border-color: rgba(255,90,122,0.25); background: rgba(255,90,122,0.10); }
     .btn-danger:hover{ background: rgba(255,90,122,0.14); }
-
-    .btn-ok{
-      border-color: rgba(52,211,153,0.22);
-      background: rgba(52,211,153,0.12);
-    }
+    .btn-ok{ border-color: rgba(52,211,153,0.22); background: rgba(52,211,153,0.12); }
     .btn-ok:hover{ background: rgba(52,211,153,0.16); }
 
-    /* Right panel */
     .stack > .card{ margin-bottom: 12px; }
-
-    /* Iframe play */
     .play-wrap{
       border: 1px solid rgba(255,255,255,0.10);
       border-radius: 16px;
       overflow:hidden;
       background: rgba(0,0,0,0.25);
       box-shadow: 0 12px 34px rgba(0,0,0,0.35);
+      position: relative; /* ✅ para overlay */
     }
     #gameIframe{
       width: 100%;
@@ -317,112 +234,151 @@
       background: #000;
     }
 
-    /* Screenshots (NO recorte, se ve completo) */
-#screenshotGallery{
-  display:grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-#screenshotGallery img{
-  width: 100%;
-  aspect-ratio: 16 / 9;     /* ventana más grande */
-  height: auto;             /* importante */
-  object-fit: contain;      /* ✅ NO recorta */
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(0,0,0,0.35); /* “marco” oscuro para letterbox */
-  cursor:pointer;
-  transition: transform .12s ease, border-color .12s ease;
-  padding: 6px;             /* margen interno para que se vea premium */
-}
-
-#screenshotGallery img:hover{
-  transform: translateY(-2px);
-  border-color: rgba(110,231,255,0.18);
-}
-
-
-    /* Comments */
-    .comment-box{
-      display:flex;
+    /* Screenshots */
+    #screenshotGallery{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 10px;
-      align-items:flex-start;
     }
-    #commentInput{
-      flex: 1;
-      padding: 10px 12px;
+    #screenshotGallery img{
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      height: auto;
+      object-fit: contain;
       border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.04);
-      color: var(--text);
-      outline:none;
-      font-family: inherit;
-      min-height: 44px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.35);
+      cursor:pointer;
+      transition: transform .12s ease, border-color .12s ease;
+      padding: 6px;
     }
-    #commentInput:focus{
-      border-color: rgba(110,231,255,0.35);
-      box-shadow: 0 0 0 4px rgba(110,231,255,0.08);
+    #screenshotGallery img:hover{
+      transform: translateY(-2px);
+      border-color: rgba(110,231,255,0.18);
     }
-    #commentList{
+
+    /* =========================
+       ✅ MOBILE CONTROLS OVERLAY
+       ========================= */
+    .mobile-controls{
+      position:absolute;
+      inset: 0;
+      pointer-events: none; /* solo los botones reciben eventos */
+      z-index: 5;
+    }
+    .mc-top{
+      position:absolute;
+      left: 10px; right: 10px; top: 10px;
+      display:flex;
+      justify-content: space-between;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .mc-pill{
+      pointer-events: auto;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(11,15,23,0.55);
+      color: rgba(255,255,255,0.92);
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 12px;
+      backdrop-filter: blur(10px);
+      cursor:pointer;
+      user-select:none;
+      -webkit-user-select:none;
+      touch-action: manipulation;
+    }
+    .mc-bottom{
+      position:absolute;
+      left: 10px; right: 10px; bottom: 10px;
+      display:flex;
+      justify-content: space-between;
+      gap: 12px;
+      pointer-events: none;
+      align-items:flex-end;
+    }
+    .mc-move, .mc-actions{
+      pointer-events: none;
       display:flex;
       flex-direction: column;
-      gap: 10px;
-      margin-top: 12px;
+      gap: 8px;
     }
-    .comment-item{
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.03);
-      border-radius: 14px;
-      padding: 10px 10px;
-      display:flex;
-      gap: 10px;
-      align-items:flex-start;
-    }
-    .avatar{
-      width: 34px;
-      height: 34px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(255,255,255,0.05);
-      flex: 0 0 auto;
+    .mc-row{ display:flex; gap: 8px; pointer-events:none; }
+    .mc-btn{
+      pointer-events: auto;
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(11,15,23,0.55);
+      color: rgba(255,255,255,0.92);
+      font-weight: 1000;
+      font-size: 14px;
+      backdrop-filter: blur(10px);
+      cursor:pointer;
+      user-select:none;
+      -webkit-user-select:none;
+      touch-action: none; /* importante para no scrollear */
       display:flex;
       align-items:center;
       justify-content:center;
-      font-weight: 900;
+    }
+    .mc-btn:active{ transform: scale(0.98); }
+    .mc-wide{ width: 120px; }
+    .mc-space{ width: 140px; }
+
+    /* Joystick cámara */
+    .mc-look{
+      pointer-events: auto;
+      width: 150px;
+      height: 150px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(11,15,23,0.35);
+      backdrop-filter: blur(10px);
+      position: relative;
+      touch-action: none;
+      user-select:none;
+      -webkit-user-select:none;
+      overflow:hidden;
+    }
+    .mc-stick{
+      width: 54px;
+      height: 54px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.10);
+      position:absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%,-50%);
+    }
+    .mc-label{
+      position:absolute;
+      bottom: 8px;
+      left: 0; right: 0;
+      text-align:center;
+      font-size: 11px;
       color: rgba(255,255,255,0.75);
-      font-size: 12px;
-      margin-top: 1px;
-    }
-    .cbody{ min-width: 0; flex: 1; }
-    .cmeta{
-      display:flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items:center;
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-    .cmeta b{
-      color: rgba(255,255,255,0.92);
       font-weight: 900;
-    }
-    .ctext{
-      font-size: 13px;
-      line-height: 1.35;
-      color: rgba(255,255,255,0.92);
-      word-break: break-word;
-      overflow-wrap: anywhere;
+      pointer-events:none;
     }
 
-    footer{
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 14px 12px;
-      color: var(--muted);
-      border-top: 1px solid var(--border);
+    /* Modo fullscreen en móvil: la UI ocupa toda la pantalla */
+    body.mobile-fullscreen header.app-header,
+    body.mobile-fullscreen main.app > section.card{
+      display:none;
     }
+    body.mobile-fullscreen main.app{
+      grid-template-columns: 1fr;
+      padding: 0;
+      margin: 0;
+      max-width: none;
+    }
+    body.mobile-fullscreen .stack{ margin:0; }
+    body.mobile-fullscreen .stack > .card{ margin:0; border-radius: 0; border:0; box-shadow:none; }
+    body.mobile-fullscreen .play-wrap{ border-radius: 0; border:0; height: 100vh; }
+    body.mobile-fullscreen #gameIframe{ height: 100vh !important; display:block; }
 
     @media (max-width: 1100px){
       main.app{ grid-template-columns: 1fr; }
@@ -449,7 +405,6 @@
       </a>
 
       <div class="top-actions">
-        <!-- Menu (IDs compatibles con tu game.js) -->
         <div class="menu" id="menuWrap">
           <button class="menu-button" id="menuBtn" aria-label="Menú">⋮</button>
           <div class="menu-content" id="menuContent">
@@ -464,7 +419,7 @@
   </header>
 
   <main class="app">
-    <!-- LEFT: tarjeta del juego -->
+    <!-- LEFT -->
     <section class="card">
       <div class="body">
         <div class="cover">
@@ -511,13 +466,12 @@
           <button id="favoriteButton" class="btn" type="button">Añadir a Favoritos</button>
           <button id="reportButton" class="btn btn-danger" type="button">Reportar</button>
 
-          <!-- delete button debe existir para tu JS -->
           <button id="deleteButton" class="btn btn-danger" type="button" style="display:none;">Eliminar</button>
         </div>
       </div>
     </section>
 
-    <!-- RIGHT: play / screenshots / comments -->
+    <!-- RIGHT -->
     <section class="stack">
       <div class="card">
         <div class="head">
@@ -525,9 +479,45 @@
           <span>Web embed</span>
         </div>
         <div class="body">
-          <div class="play-wrap">
+          <div class="play-wrap" id="playWrap">
             <iframe id="gameIframe" allow="fullscreen; autoplay; gamepad *; clipboard-read; clipboard-write"></iframe>
+
+            <!-- ✅ CONTROLES MOVILES -->
+            <div id="mobileControls" class="mobile-controls" style="display:none;">
+              <div class="mc-top">
+                <button id="mcToggle" class="mc-pill" type="button">Controles móviles: ON</button>
+                <button id="mcFs" class="mc-pill" type="button">Pantalla completa</button>
+              </div>
+
+              <div class="mc-bottom">
+                <!-- Move pad -->
+                <div class="mc-move">
+                  <button class="mc-btn" data-key="KeyW" type="button">W</button>
+                  <div class="mc-row">
+                    <button class="mc-btn" data-key="KeyA" type="button">A</button>
+                    <button class="mc-btn" data-key="KeyS" type="button">S</button>
+                    <button class="mc-btn" data-key="KeyD" type="button">D</button>
+                  </div>
+                  <div class="mc-row">
+                    <button class="mc-btn mc-space" data-key="Space" type="button">⎵ Espacio</button>
+                    <button class="mc-btn mc-wide" data-key="ShiftLeft" type="button">⇧ Shift</button>
+                  </div>
+                </div>
+
+                <!-- Look joystick -->
+                <div class="mc-look" id="mcLook">
+                  <div class="mc-stick" id="mcStick"></div>
+                  <div class="mc-label">Cámara</div>
+                </div>
+
+                <!-- Acciones extra (si luego quieres) -->
+                <div class="mc-actions" style="opacity:.0; pointer-events:none;">
+                  <!-- reservado -->
+                </div>
+              </div>
+            </div>
           </div>
+
           <div style="margin-top:10px;color:var(--muted);font-size:12px;line-height:1.4;">
             Tip: si el juego no carga, prueba en “Descargar” o revisa permisos del navegador.
           </div>
@@ -550,85 +540,278 @@
           <span>Tu comunidad</span>
         </div>
         <div class="body">
-          <div class="comment-box">
-            <input id="commentInput" type="text" placeholder="Escribe un comentario..." />
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <input id="commentInput" type="text" placeholder="Escribe un comentario..."
+              style="flex:1;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:var(--text);outline:none;font-family:inherit;min-height:44px;" />
             <button id="commentButton" class="btn btn-primary" type="button">Enviar</button>
           </div>
-
-          <div id="commentList"></div>
+          <div id="commentList" style="display:flex;flex-direction:column;gap:10px;margin-top:12px;"></div>
         </div>
       </div>
     </section>
   </main>
 
-  <footer>
-    <div class="footer-left">© <span id="year"></span> CGPlay</div>
+  <footer style="max-width:1400px;margin:0 auto;padding:14px 12px;color:var(--muted);border-top:1px solid var(--border);">
+    <div>© <span id="year"></span> CGPlay</div>
   </footer>
 
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
-
-    // Menú (igual que index)
     const menuWrap = document.getElementById("menuWrap");
     const menuBtn = document.getElementById("menuBtn");
-    menuBtn?.addEventListener("click", (e) => {
-      e.stopPropagation();
-      menuWrap.classList.toggle("open");
-    });
+    menuBtn?.addEventListener("click", (e) => { e.stopPropagation(); menuWrap.classList.toggle("open"); });
     document.addEventListener("click", () => menuWrap?.classList.remove("open"));
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
 
-  <!-- Tu lógica -->
+  <!-- ✅ Tu lógica -->
   <script src="game.js"></script>
 
-  <!-- ✅ pequeño parche visual SOLO para comments (no rompe lógica)
-       Convierte lo que game.js imprime en "cards bonitas" sin tocar tu fetch.
-  -->
+  <!-- ✅ MOBILE CONTROLS: Simula teclado + mouse hacia el iframe -->
   <script>
-    // Observa cambios en commentList y re-envuelve los items existentes con el look pro
-    const commentList = document.getElementById("commentList");
-    if (commentList) {
-      const obs = new MutationObserver(() => {
-        // si ya tiene .comment-item no rehacer
-        const kids = Array.from(commentList.children);
-        kids.forEach((node) => {
-          if (node.classList && node.classList.contains("comment-item")) return;
-          // si node es un texto/loader, no tocar
-          if (!(node instanceof HTMLElement)) return;
-          // "Sin comentarios..." lo dejamos simple
-          if ((node.textContent || "").toLowerCase().includes("sin comentarios")) return;
+    (function(){
+      const iframe = document.getElementById("gameIframe");
+      const playWrap = document.getElementById("playWrap");
+      const overlay = document.getElementById("mobileControls");
+      const btnToggle = document.getElementById("mcToggle");
+      const btnFs = document.getElementById("mcFs");
+      const look = document.getElementById("mcLook");
+      const stick = document.getElementById("mcStick");
 
-          // transform
-          const raw = node.innerHTML;
-          const tmp = document.createElement("div");
-          tmp.innerHTML = raw;
+      // Heurística: móvil/tablet
+      const isTouchDevice = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
+      const isSmall = window.matchMedia("(max-width: 900px)").matches;
 
-          const b = tmp.querySelector("b");
-          const metaSpan = tmp.querySelector("span");
-          const name = b ? b.textContent : "@user";
-          const when = metaSpan ? metaSpan.textContent : "";
-          const text = tmp.innerHTML
-            .replace(b ? b.outerHTML : "", "")
-            .replace(metaSpan ? metaSpan.outerHTML : "", "")
-            .replace(/^<br>/, "")
-            .trim();
+      // Estado
+      let enabled = true;
+      const pressed = new Set();
 
-          node.className = "comment-item";
-          node.innerHTML = `
-            <div class="avatar">${(name || "@").replace("@","").slice(0,2).toUpperCase()}</div>
-            <div class="cbody">
-              <div class="cmeta"><b>${name}</b> <span>${when}</span></div>
-              <div class="ctext">${text}</div>
-            </div>
-          `;
+      // Para mouse look
+      let lookPointerId = null;
+      let lookCenter = null;
+      let lookActive = false;
+      let lastSentAt = 0;
+
+      function showOverlayIfNeeded(){
+        // Solo mostrar si el iframe está visible y estamos en touch
+        const iframeVisible = iframe && iframe.style.display !== "none";
+        if (isTouchDevice && isSmall && iframeVisible) {
+          overlay.style.display = enabled ? "block" : "none";
+        } else {
+          overlay.style.display = "none";
+        }
+      }
+
+      function cw(){
+        try { return iframe?.contentWindow || null; } catch(e){ return null; }
+      }
+
+      function sendKey(type, code){
+        const w = cw();
+        if (!w) return;
+
+        // Muchos WebGL escuchan window/document. Lanzamos en ambos.
+        const evt = new KeyboardEvent(type, {
+          code,
+          key: code === "Space" ? " " : code,
+          bubbles: true,
+          cancelable: true
         });
-      });
-      obs.observe(commentList, { childList: true, subtree: false });
-    }
-  </script>
 
+        try { w.document.dispatchEvent(evt); } catch(e){}
+        try { w.dispatchEvent(evt); } catch(e){}
+      }
+
+      // Mouse move (para cámara)
+      function sendMouseMove(dx, dy){
+        const w = cw();
+        if (!w) return;
+
+        // Throttle para no spamear
+        const now = performance.now();
+        if (now - lastSentAt < 16) return; // ~60fps
+        lastSentAt = now;
+
+        const evt = new MouseEvent("mousemove", {
+          bubbles: true,
+          cancelable: true,
+          movementX: dx,
+          movementY: dy,
+          clientX: 0,
+          clientY: 0
+        });
+
+        try { w.document.dispatchEvent(evt); } catch(e){}
+        try { w.dispatchEvent(evt); } catch(e){}
+      }
+
+      // Botones WASD / Space / Shift (touch -> keydown/keyup)
+      function bindKeyButtons(){
+        const buttons = overlay.querySelectorAll("[data-key]");
+        buttons.forEach((btn) => {
+          const code = btn.getAttribute("data-key");
+          if (!code) return;
+
+          const down = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!enabled) return;
+            if (pressed.has(code)) return;
+            pressed.add(code);
+            sendKey("keydown", code);
+            btn.style.filter = "brightness(1.2)";
+          };
+
+          const up = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!pressed.has(code)) return;
+            pressed.delete(code);
+            sendKey("keyup", code);
+            btn.style.filter = "";
+          };
+
+          btn.addEventListener("pointerdown", down, { passive:false });
+          btn.addEventListener("pointerup", up, { passive:false });
+          btn.addEventListener("pointercancel", up, { passive:false });
+          btn.addEventListener("pointerleave", up, { passive:false });
+        });
+      }
+
+      // Joystick cámara (pointer drag)
+      function bindLookJoystick(){
+        if (!look) return;
+
+        const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+        function setStick(x, y){
+          stick.style.transform = `translate(${x}px, ${y}px)`;
+        }
+
+        function resetStick(){
+          stick.style.transform = "translate(-50%,-50%)";
+        }
+
+        look.addEventListener("pointerdown", (e) => {
+          if (!enabled) return;
+          e.preventDefault();
+          lookPointerId = e.pointerId;
+          look.setPointerCapture(lookPointerId);
+          const rect = look.getBoundingClientRect();
+          lookCenter = { x: rect.left + rect.width/2, y: rect.top + rect.height/2, r: rect.width/2 - 28 };
+          lookActive = true;
+        }, { passive:false });
+
+        look.addEventListener("pointermove", (e) => {
+          if (!enabled || !lookActive || e.pointerId !== lookPointerId || !lookCenter) return;
+          e.preventDefault();
+
+          const dx = e.clientX - lookCenter.x;
+          const dy = e.clientY - lookCenter.y;
+
+          const mag = Math.hypot(dx, dy) || 1;
+          const maxR = lookCenter.r;
+
+          const ndx = (mag > maxR) ? (dx / mag) * maxR : dx;
+          const ndy = (mag > maxR) ? (dy / mag) * maxR : dy;
+
+          // mover stick visual
+          // usamos translate relativo al centro original
+          stick.style.transform = `translate(calc(-50% + ${ndx}px), calc(-50% + ${ndy}px))`;
+
+          // sensibilidad: ajusta si quieres
+          const sensitivity = 0.22;
+          sendMouseMove(ndx * sensitivity, ndy * sensitivity);
+        }, { passive:false });
+
+        const end = (e) => {
+          if (e.pointerId !== lookPointerId) return;
+          e.preventDefault();
+          lookActive = false;
+          lookPointerId = null;
+          lookCenter = null;
+          resetStick();
+        };
+
+        look.addEventListener("pointerup", end, { passive:false });
+        look.addEventListener("pointercancel", end, { passive:false });
+        look.addEventListener("pointerleave", end, { passive:false });
+      }
+
+      // Toggle overlay
+      function bindToggle(){
+        btnToggle?.addEventListener("click", (e) => {
+          e.preventDefault();
+          enabled = !enabled;
+
+          // soltar teclas si apagamos
+          if (!enabled) {
+            pressed.forEach((code) => sendKey("keyup", code));
+            pressed.clear();
+          }
+
+          btnToggle.textContent = enabled ? "Controles móviles: ON" : "Controles móviles: OFF";
+          showOverlayIfNeeded();
+        });
+      }
+
+      // Fullscreen móvil real (con fallback iOS)
+      async function requestFullscreenMobile(){
+        // 1) Fullscreen API si existe
+        try{
+          if (!document.fullscreenElement) {
+            await (playWrap.requestFullscreen?.() || iframe.requestFullscreen?.());
+          } else {
+            await document.exitFullscreen?.();
+          }
+        } catch(e){
+          // iOS Safari no siempre soporta fullscreen en div.
+        }
+
+        // 2) Modo “pseudo fullscreen” (si no hay Fullscreen API)
+        document.body.classList.toggle("mobile-fullscreen");
+        // asegurar visible iframe si entró a modo
+        if (document.body.classList.contains("mobile-fullscreen")) {
+          iframe.style.display = "block";
+        }
+        showOverlayIfNeeded();
+      }
+
+      function bindFullscreen(){
+        btnFs?.addEventListener("click", (e) => {
+          e.preventDefault();
+          requestFullscreenMobile();
+        });
+
+        // También reacciona a cambios de fullscreen nativo
+        document.addEventListener("fullscreenchange", () => {
+          showOverlayIfNeeded();
+        });
+      }
+
+      // Evitar scroll/zoom mientras se usa overlay
+      function preventGestures(){
+        // Bloquea scroll solo cuando overlay visible
+        document.addEventListener("touchmove", (e) => {
+          if (overlay.style.display !== "none") e.preventDefault();
+        }, { passive:false });
+      }
+
+      // Ejecutar
+      bindKeyButtons();
+      bindLookJoystick();
+      bindToggle();
+      bindFullscreen();
+      preventGestures();
+
+      // Observa cambios de tamaño
+      window.addEventListener("resize", showOverlayIfNeeded);
+
+      // Cada 300ms revisa si el iframe ya está visible (porque tu playButton lo muestra)
+      setInterval(showOverlayIfNeeded, 300);
+    })();
+  </script>
 </body>
 </html>

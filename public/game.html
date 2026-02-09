@@ -90,7 +90,7 @@
       gap: 10px;
     }
 
-    /* menu ⋮ (igual que index) */
+    /* menu ⋮ */
     .menu{ position: relative; }
     .menu-button{
       width: 40px;
@@ -313,7 +313,7 @@
       overflow:hidden;
       background: rgba(0,0,0,0.25);
       box-shadow: 0 12px 34px rgba(0,0,0,0.35);
-      position: relative; /* ✅ para overlay */
+      position: relative;
     }
     #gameIframe{
       width: 100%;
@@ -323,9 +323,7 @@
       background: #000;
     }
 
-    /* =========================
-       ✅ Screenshots PEQUEÑOS (premium + contain)
-       ========================= */
+    /* ✅ Screenshots pequeños SIEMPRE */
     #screenshotGallery{
       display:grid;
       grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -334,9 +332,8 @@
     #screenshotGallery img{
       width: 100%;
       aspect-ratio: 16 / 9;
-      height: auto;
-      max-height: 96px;        /* ✅ pequeño SIEMPRE */
-      object-fit: contain;     /* ✅ NO recorta */
+      max-height: 96px;
+      object-fit: contain;
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,0.10);
       background: rgba(0,0,0,0.35);
@@ -346,11 +343,11 @@
     }
     #screenshotGallery img:hover{
       transform: translateY(-2px);
-      border-color: rgba(110,231,255,0.18);
+      border-color: rgba(255,255,255,0.16);
     }
 
     /* =========================
-       ✅ MOBILE CONTROLS (3 MODOS) — SIN BLUR
+       ✅ MOBILE CONTROLS (SIN BLUR)
        ========================= */
     .mobile-controls{
       position:absolute;
@@ -360,12 +357,13 @@
       display:none;
     }
 
+    /* capa touch-anywhere para cámara (solo shooter) */
     .mc-look-anywhere{
       position:absolute;
       inset:0;
       z-index:1;
       background: transparent;
-      pointer-events: none; /* se activa solo en shooter */
+      pointer-events: none;
       touch-action: none;
     }
     .mc-look-anywhere.active{ pointer-events: auto; }
@@ -457,11 +455,19 @@
       display:flex;
       align-items:center;
       justify-content:center;
+      transition: transform .06s ease, background .06s ease, border-color .06s ease;
     }
-    .mc-btn:active{
-      transform: scale(0.98);
-      background: rgba(0,0,0, calc(var(--mc-alpha) + 0.06));
+
+    /* ✅ PRESSED LOOK (SIN VERDE, SIN AZUL) */
+    .mc-btn.is-down,
+    .mc-pill.is-down{
+      transform: scale(0.97);
+      background: rgba(0,0,0, calc(var(--mc-alpha) + 0.12));
+      border-color: rgba(255,255,255,0.22);
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.06);
+      filter: brightness(1.06);
     }
+
     .mc-wide{ width: 160px; height: 50px; border-radius: 14px; font-size: 14px; }
     .mc-jump{ width: 190px; height: 64px; border-radius: 18px; font-size: 16px; }
 
@@ -495,6 +501,34 @@
       border-radius: 18px;
     }
 
+    /* ✅ Fake fullscreen (siempre funciona) */
+    body.mobile-fullscreen header.app-header,
+    body.mobile-fullscreen main.app > section.card{
+      display:none !important;
+    }
+    body.mobile-fullscreen main.app{
+      grid-template-columns: 1fr !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      max-width: none !important;
+    }
+    body.mobile-fullscreen .stack{ margin:0 !important; }
+    body.mobile-fullscreen .stack > .card{
+      margin:0 !important;
+      border-radius: 0 !important;
+      border:0 !important;
+      box-shadow:none !important;
+    }
+    body.mobile-fullscreen .play-wrap{
+      border-radius: 0 !important;
+      border:0 !important;
+      height: 100vh !important;
+    }
+    body.mobile-fullscreen #gameIframe{
+      height: 100vh !important;
+      display:block !important;
+    }
+
     /* Comments */
     .comment-box{
       display:flex;
@@ -512,60 +546,11 @@
       font-family: inherit;
       min-height: 44px;
     }
-    #commentInput:focus{
-      border-color: rgba(110,231,255,0.35);
-      box-shadow: 0 0 0 4px rgba(110,231,255,0.08);
-    }
     #commentList{
       display:flex;
       flex-direction: column;
       gap: 10px;
       margin-top: 12px;
-    }
-    .comment-item{
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.03);
-      border-radius: 14px;
-      padding: 10px 10px;
-      display:flex;
-      gap: 10px;
-      align-items:flex-start;
-    }
-    .avatar{
-      width: 34px;
-      height: 34px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(255,255,255,0.05);
-      flex: 0 0 auto;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight: 900;
-      color: rgba(255,255,255,0.75);
-      font-size: 12px;
-      margin-top: 1px;
-    }
-    .cbody{ min-width: 0; flex: 1; }
-    .cmeta{
-      display:flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items:center;
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-    .cmeta b{
-      color: rgba(255,255,255,0.92);
-      font-weight: 900;
-    }
-    .ctext{
-      font-size: 13px;
-      line-height: 1.35;
-      color: rgba(255,255,255,0.92);
-      word-break: break-word;
-      overflow-wrap: anywhere;
     }
 
     footer{
@@ -752,7 +737,7 @@
     <div class="footer-left">© <span id="year"></span> CGPlay</div>
   </footer>
 
-  <!-- ✅ Modal Screenshots (tap para ver grande) -->
+  <!-- ✅ Modal Screenshots -->
   <div id="shotModal" style="
     position:fixed; inset:0; z-index:9999; display:none;
     background: rgba(0,0,0,0.75);
@@ -774,7 +759,6 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // Menú
     const menuWrap = document.getElementById("menuWrap");
     const menuBtn = document.getElementById("menuBtn");
     menuBtn?.addEventListener("click", (e) => {
@@ -788,46 +772,7 @@
   <script src="js/supabase.js"></script>
   <script src="game.js"></script>
 
-  <!-- ✅ Comentarios visual (sin romper tu lógica) -->
-  <script>
-    const commentList = document.getElementById("commentList");
-    if (commentList) {
-      const obs = new MutationObserver(() => {
-        const kids = Array.from(commentList.children);
-        kids.forEach((node) => {
-          if (!(node instanceof HTMLElement)) return;
-          if (node.classList.contains("comment-item")) return;
-          if ((node.textContent || "").toLowerCase().includes("sin comentarios")) return;
-
-          const raw = node.innerHTML;
-          const tmp = document.createElement("div");
-          tmp.innerHTML = raw;
-
-          const b = tmp.querySelector("b");
-          const metaSpan = tmp.querySelector("span");
-          const name = b ? b.textContent : "@user";
-          const when = metaSpan ? metaSpan.textContent : "";
-          const text = tmp.innerHTML
-            .replace(b ? b.outerHTML : "", "")
-            .replace(metaSpan ? metaSpan.outerHTML : "", "")
-            .replace(/^<br>/, "")
-            .trim();
-
-          node.className = "comment-item";
-          node.innerHTML = `
-            <div class="avatar">${(name || "@").replace("@","").slice(0,2).toUpperCase()}</div>
-            <div class="cbody">
-              <div class="cmeta"><b>${name}</b> <span>${when}</span></div>
-              <div class="ctext">${text}</div>
-            </div>
-          `;
-        });
-      });
-      obs.observe(commentList, { childList: true, subtree: false });
-    }
-  </script>
-
-  <!-- ✅ Modal Screenshots -->
+  <!-- ✅ Screenshot modal -->
   <script>
     (function(){
       const modal = document.getElementById("shotModal");
@@ -847,7 +792,7 @@
     })();
   </script>
 
-  <!-- ✅ Mobile Controls: 3 Modos + Opacidad + Shooter look-anywhere -->
+  <!-- ✅ Mobile controls FULL -->
   <script>
     (function(){
       const iframe = document.getElementById("gameIframe");
@@ -857,13 +802,14 @@
       const btnToggle = document.getElementById("mcToggle");
       const btnFs = document.getElementById("mcFs");
       const btnMode = document.getElementById("mcModeBtn");
+      const lookAnywhere = document.getElementById("mcLookAnywhere");
 
       const mcLeft = document.getElementById("mcLeft");
       const mcCenter = document.getElementById("mcCenter");
       const mcRight = document.getElementById("mcRight");
-      const lookAnywhere = document.getElementById("mcLookAnywhere");
 
       const opacitySlider = document.getElementById("mcOpacity");
+      const desktopFsBtn = document.getElementById("fullScreenButton");
 
       const isTouchDevice = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
       const mqSmall = window.matchMedia("(max-width: 900px)");
@@ -953,16 +899,19 @@
 
       function clearNode(n){ while(n.firstChild) n.removeChild(n.firstChild); }
 
+      // ✅ botón (con pressed visible, SIN VERDE)
       function makeBtn(text, code, opts={}){
         const b = document.createElement("button");
         b.type = "button";
         b.className = "mc-btn" + (opts.wide ? " mc-wide" : "") + (opts.jump ? " mc-jump" : "");
         b.textContent = text;
-        b.dataset.key = code;
 
         const down = (e) => {
           e.preventDefault(); e.stopPropagation();
           if (!enabled) return;
+
+          b.classList.add("is-down");
+
           if (pressed.has(code)) return;
           pressed.add(code);
 
@@ -973,6 +922,8 @@
 
         const up = (e) => {
           e.preventDefault(); e.stopPropagation();
+          b.classList.remove("is-down");
+
           if (!pressed.has(code)) return;
           pressed.delete(code);
 
@@ -1035,7 +986,6 @@
         if (mode === "shooter"){
           mcLeft.appendChild(makeBtn("⇧ Correr","ShiftLeft",{wide:true}));
           mcLeft.appendChild(makeDpadDiamond());
-
           mcCenter.appendChild(makeBtn("⎵ Saltar","Space",{jump:true}));
 
           const col = document.createElement("div");
@@ -1149,7 +1099,7 @@
       lookAnywhere?.addEventListener("pointercancel", endLook, { passive:false });
       lookAnywhere?.addEventListener("pointerleave", endLook, { passive:false });
 
-      // Mostrar overlay solo cuando tiene sentido
+      // ✅ Overlay visibility
       function iframeVisible(){
         return iframe && iframe.style.display !== "none" && iframe.src && iframe.src !== "";
       }
@@ -1159,45 +1109,64 @@
         else overlay.style.display = "none";
       }
 
-      // Toggle
+      // ✅ Fullscreen (SIEMPRE funciona)
+      async function toggleFullscreen(){
+        // Fake fullscreen (siempre)
+        document.body.classList.toggle("mobile-fullscreen");
+
+        // Intentar Fullscreen API (si se puede)
+        try{
+          if (!document.fullscreenElement && playWrap?.requestFullscreen) {
+            await playWrap.requestFullscreen();
+          } else if (document.fullscreenElement && document.exitFullscreen) {
+            await document.exitFullscreen();
+          }
+        } catch(e){}
+      }
+
+      // Toggle controls
       btnToggle?.addEventListener("click", (e) => {
         e.preventDefault();
         enabled = !enabled;
 
-        if (!enabled) {
-          pressed.forEach((code) => {
-            if (code === "MouseLeft" || code === "MouseRight") sendMouse("mouseup");
-            else sendKey("keyup", code);
-          });
-          pressed.clear();
-        }
+        // limpiar presionados y quitar visual pressed
+        pressed.forEach((code) => {
+          if (code === "MouseLeft" || code === "MouseRight") sendMouse("mouseup");
+          else sendKey("keyup", code);
+        });
+        pressed.clear();
+
+        overlay.querySelectorAll(".is-down").forEach(el => el.classList.remove("is-down"));
 
         btnToggle.textContent = enabled ? "Controles: ON" : "Controles: OFF";
         showOverlayIfNeeded();
         applyLookAnywhere(getMode());
       });
 
-      // Modo cycle
+      // Mode cycle
       btnMode?.addEventListener("click", (e) => {
         e.preventDefault();
+        btnMode.classList.add("is-down");
+        setTimeout(() => btnMode.classList.remove("is-down"), 90);
+
         const cur = getMode();
         const idx = MODES.indexOf(cur);
         const next = MODES[(idx + 1) % MODES.length];
         setMode(next);
       });
 
-      // Fullscreen
-      async function requestFullscreenMobile(){
-        try{
-          if (!document.fullscreenElement) {
-            await (playWrap.requestFullscreen?.() || iframe.requestFullscreen?.());
-          } else {
-            await document.exitFullscreen?.();
-          }
-        } catch(e){}
-      }
-      btnFs?.addEventListener("click", (e) => { e.preventDefault(); requestFullscreenMobile(); });
-      document.addEventListener("fullscreenchange", () => showOverlayIfNeeded());
+      // Fullscreen buttons
+      btnFs?.addEventListener("click", (e) => {
+        e.preventDefault();
+        btnFs.classList.add("is-down");
+        setTimeout(() => btnFs.classList.remove("is-down"), 90);
+        toggleFullscreen();
+      });
+
+      desktopFsBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        toggleFullscreen();
+      });
 
       // Init
       const startMode = getMode();
